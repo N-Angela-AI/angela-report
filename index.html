@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angela AI — 低價潛力股推薦</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --border: #2a2d3a;
+    --text: #e0e0e0;
+    --text2: #8b8fa3;
+    --accent: #6c5ce7;
+    --green: #00b894;
+    --yellow: #fdcb6e;
+    --orange: #e17055;
+    --red: #d63031;
+    --blue: #0984e3;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* ---- Header ---- */
+  .header {
+    background: linear-gradient(135deg, #1a1d27 0%, #2d1f4e 100%);
+    padding: 2rem 1.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .header .sub {
+    color: var(--text2);
+    font-size: 0.85rem;
+  }
+  .header .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+  #badgeCount {
+    transition: all 0.3s;
+  }
+
+  /* ---- Conditions (Yellow interactive) ---- */
+  .conditions {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.85rem;
+    color: var(--yellow);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .conditions .cond-label {
+    font-weight: 600;
+    margin-right: 0.3rem;
+  }
+  .conditions select {
+    background: rgba(253, 203, 110, 0.12);
+    border: 1px solid rgba(253, 203, 110, 0.35);
+    color: var(--yellow);
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .conditions select:hover {
+    border-color: var(--yellow);
+    background: rgba(253, 203, 110, 0.2);
+  }
+  .conditions select:focus {
+    outline: none;
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 2px rgba(253, 203, 110, 0.15);
+  }
+  .conditions .cond-sep {
+    color: rgba(253, 203, 110, 0.4);
+  }
+  .conditions .cond-static {
+    background: rgba(253, 203, 110, 0.10);
+    border: 1px solid rgba(253, 203, 110, 0.2);
+    padding: 0.25rem 0.55rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+  }
+
+  /* ---- Summary ---- */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem;
+    padding: 1.2rem 1.5rem;
+  }
+  .summary-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .summary-card:hover { transform: translateY(-2px); }
+  .summary-card .num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+    transition: all 0.3s;
+  }
+  .summary-card .label {
+    font-size: 0.75rem;
+    color: var(--text2);
+    margin-top: 0.2rem;
+  }
+
+  /* ---- Filter bar ---- */
+  .filter-bar {
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-bar input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.45rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    width: 200px;
+  }
+  .filter-bar input:focus { outline: none; border-color: var(--accent); }
+  .filter-bar select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.45rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+  .filter-bar .result-count {
+    color: var(--text2);
+    font-size: 0.8rem;
+    margin-left: auto;
+  }
+
+  /* ---- Table ---- */
+  .table-wrap {
+    padding: 0 1rem 2rem;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  th {
+    background: var(--card);
+    color: var(--text2);
+    padding: 0.7rem 0.6rem;
+    text-align: right;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  th:first-child { text-align: center; }
+  th:nth-child(2) { text-align: left; }
+  th:hover { color: var(--accent); }
+  th .arrow { font-size: 0.6rem; margin-left: 0.2rem; opacity: 0.5; }
+  th.sorted .arrow { opacity: 1; color: var(--accent); }
+  td {
+    padding: 0.6rem;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    white-space: nowrap;
+  }
+  td:first-child { text-align: center; color: var(--text2); }
+  td:nth-child(2) { text-align: left; font-weight: 600; }
+  tr { transition: background 0.15s; }
+  tr:hover { background: rgba(108, 92, 231, 0.08); }
+  tr.hidden { display: none; }
+
+  /* ---- Badges ---- */
+  .grade {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    min-width: 1.8rem;
+    text-align: center;
+  }
+  .grade-A { background: rgba(0,184,148,0.2); color: var(--green); }
+  .grade-B { background: rgba(9,132,227,0.2); color: var(--blue); }
+  .grade-C { background: rgba(253,203,110,0.2); color: var(--yellow); }
+  .grade-D { background: rgba(214,48,49,0.2); color: var(--red); }
+  .multiplier { color: var(--green); font-weight: 600; }
+  .drop { color: var(--orange); }
+
+  /* ---- Footer & Disclaimer ---- */
+  .footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--text2);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .disclaimer {
+    background: rgba(214,48,49,0.08);
+    border: 1px solid rgba(214,48,49,0.2);
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    margin: 0 1.5rem 1rem;
+    font-size: 0.8rem;
+    color: var(--orange);
+  }
+  .no-data {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text2);
+    font-size: 1.1rem;
+  }
+
+  /* ---- RWD ---- */
+  @media (max-width: 600px) {
+    .header { padding: 1.2rem 1rem; }
+    .header h1 { font-size: 1.2rem; }
+    .conditions { padding: 0.6rem 0.8rem; font-size: 0.78rem; }
+    .conditions select { font-size: 0.76rem; padding: 0.2rem 0.35rem; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); padding: 0.8rem; }
+    .filter-bar { padding: 0.5rem 0.8rem; }
+    .filter-bar input { width: 100%; }
+    .table-wrap { padding: 0 0.3rem 1.5rem; }
+    table { font-size: 0.78rem; }
+    th, td { padding: 0.4rem 0.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Angela AI — 低價潛力股推薦 <span class="badge" id="badgeCount">18 支</span></h1>
+  <div class="sub">掃描時間：2026-04-01 10:20 ｜ Powered by Angela Personal Cognitive Butler</div>
+</div>
+
+<!-- ★ 互動式篩選條件 -->
+<div class="conditions">
+  <span class="cond-label">篩選條件：</span>
+  股價
+  <select id="cfgPrice" onchange="applyConditions()">
+    <option value="10">≤ 10 元</option>
+<option value="20">≤ 20 元</option>
+<option value="30">≤ 30 元</option>
+<option value="40" selected>≤ 40 元</option>
+<option value="50">≤ 50 元</option>
+<option value="60">≤ 60 元</option>
+<option value="70">≤ 70 元</option>
+<option value="80">≤ 80 元</option>
+<option value="90">≤ 90 元</option>
+<option value="100">≤ 100 元</option>
+  </select>
+  <span class="cond-sep">｜</span>
+  <select id="cfgYear" onchange="applyConditions()">
+    <option value="1">1 年</option>
+<option value="2">2 年</option>
+<option value="3" selected>3 年</option>
+<option value="4">4 年</option>
+<option value="5">5 年</option>
+  </select>
+  內高點
+  <select id="cfgMult" onchange="applyConditions()">
+    <option value="1.5">≥ 1.5 倍</option>
+<option value="2.0" selected>≥ 2.0 倍</option>
+<option value="2.5">≥ 2.5 倍</option>
+<option value="3.0">≥ 3.0 倍</option>
+<option value="3.5">≥ 3.5 倍</option>
+  </select>
+  <span class="cond-sep">｜</span>
+  達標
+  <select id="cfgPeaks" onchange="applyConditions()">
+    <option value="2">≥ 2 次</option>
+<option value="3" selected>≥ 3 次</option>
+<option value="4">≥ 4 次</option>
+<option value="5">≥ 5 次</option>
+<option value="10">≥ 10 次</option>
+  </select>
+  <span class="cond-sep">｜</span>
+  <span class="cond-static">流動性 ≥ B 級</span>
+</div>
+
+<!-- 摘要卡片 -->
+<div class="summary-grid">
+  <div class="summary-card">
+    <div class="num" id="sumCount">-</div>
+    <div class="label">符合條件</div>
+  </div>
+  <div class="summary-card">
+    <div class="num" id="sumDrop">-</div>
+    <div class="label">平均跌幅</div>
+  </div>
+  <div class="summary-card">
+    <div class="num" id="sumMult">-</div>
+    <div class="label">平均倍率</div>
+  </div>
+  <div class="summary-card">
+    <div class="num" id="sumGradeA">-</div>
+    <div class="label">A級流動性</div>
+  </div>
+  <div class="summary-card">
+    <div class="num" id="sumGradeB">-</div>
+    <div class="label">B級流動性</div>
+  </div>
+  <div class="summary-card">
+    <div class="num" id="sumVol">-</div>
+    <div class="label">平均日均量(張)</div>
+  </div>
+</div>
+
+<!-- 搜尋 + 排序 -->
+<div class="filter-bar">
+  <input type="text" id="searchBox" placeholder="搜尋代碼..." onkeyup="applyConditions()">
+  <select id="gradeFilter" onchange="applyConditions()">
+    <option value="">全部評級</option>
+    <option value="A">A 優良</option>
+    <option value="B">B 合格</option>
+  </select>
+  <select id="sortSelect" onchange="sortBySelect()">
+    <option value="">排序方式</option>
+    <option value="price_asc">股價 低→高</option>
+    <option value="price_desc">股價 高→低</option>
+    <option value="mult_desc">倍率 高→低</option>
+    <option value="drop_desc">跌幅 大→小</option>
+    <option value="vol_desc">日均量 多→少</option>
+    <option value="peaks_desc">高點次數 多→少</option>
+  </select>
+  <span class="result-count" id="resultCount"></span>
+</div>
+
+<div class="disclaimer">
+  ⚠️ 本報告僅供參考，不構成投資建議。低價股風險較高，歷史高點不代表未來表現。請搭配基本面、籌碼面分析後再做決策。
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr>
+  <th onclick="headerSort(0)">#</th>
+  <th onclick="headerSort(1)">代碼</th>
+  <th onclick="headerSort(2)">現價<span class="arrow">▼</span></th>
+  <th onclick="headerSort(3)">歷史高</th>
+  <th onclick="headerSort(4)">跌幅</th>
+  <th onclick="headerSort(5)">倍率</th>
+  <th onclick="headerSort(6)">高點次數</th>
+  <th onclick="headerSort(7)">日均量(張)</th>
+  <th onclick="headerSort(8)">中位量</th>
+  <th>流動性</th>
+</tr></thead>
+<tbody id="tableBody"><tr data-grade="A">
+  <td>1</td>
+  <td>1256</td>
+  <td data-v="5.8">5.8</td>
+  <td data-v="28.5">28.5</td>
+  <td data-v="79.6" class="drop">79.6%</td>
+  <td data-v="4.9" class="multiplier">4.9x</td>
+  <td data-v="6">6</td>
+  <td data-v="850">850</td>
+  <td data-v="720">720</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="B">
+  <td>2</td>
+  <td>2228</td>
+  <td data-v="8.2">8.2</td>
+  <td data-v="35.0">35.0</td>
+  <td data-v="76.6" class="drop">76.6%</td>
+  <td data-v="4.3" class="multiplier">4.3x</td>
+  <td data-v="5">5</td>
+  <td data-v="320">320</td>
+  <td data-v="280">280</td>
+  <td><span class="grade grade-B">B</span></td>
+</tr>
+<tr data-grade="A">
+  <td>3</td>
+  <td>3093</td>
+  <td data-v="12.5">12.5</td>
+  <td data-v="42.0">42.0</td>
+  <td data-v="70.2" class="drop">70.2%</td>
+  <td data-v="3.4" class="multiplier">3.4x</td>
+  <td data-v="4">4</td>
+  <td data-v="580">580</td>
+  <td data-v="510">510</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="B">
+  <td>4</td>
+  <td>4126</td>
+  <td data-v="15.3">15.3</td>
+  <td data-v="55.0">55.0</td>
+  <td data-v="72.2" class="drop">72.2%</td>
+  <td data-v="3.6" class="multiplier">3.6x</td>
+  <td data-v="7">7</td>
+  <td data-v="210">210</td>
+  <td data-v="180">180</td>
+  <td><span class="grade grade-B">B</span></td>
+</tr>
+<tr data-grade="B">
+  <td>5</td>
+  <td>6104</td>
+  <td data-v="18.9">18.9</td>
+  <td data-v="68.0">68.0</td>
+  <td data-v="72.2" class="drop">72.2%</td>
+  <td data-v="3.6" class="multiplier">3.6x</td>
+  <td data-v="5">5</td>
+  <td data-v="420">420</td>
+  <td data-v="350">350</td>
+  <td><span class="grade grade-B">B</span></td>
+</tr>
+<tr data-grade="A">
+  <td>6</td>
+  <td>2029</td>
+  <td data-v="22.1">22.1</td>
+  <td data-v="78.0">78.0</td>
+  <td data-v="71.7" class="drop">71.7%</td>
+  <td data-v="3.5" class="multiplier">3.5x</td>
+  <td data-v="8">8</td>
+  <td data-v="1200">1,200</td>
+  <td data-v="1050">1,050</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="B">
+  <td>7</td>
+  <td>3550</td>
+  <td data-v="9.6">9.6</td>
+  <td data-v="22.0">22.0</td>
+  <td data-v="56.4" class="drop">56.4%</td>
+  <td data-v="2.3" class="multiplier">2.3x</td>
+  <td data-v="3">3</td>
+  <td data-v="150">150</td>
+  <td data-v="120">120</td>
+  <td title="近20日有 1 天零成交，需注意"><span class="grade grade-B">B</span></td>
+</tr>
+<tr data-grade="A">
+  <td>8</td>
+  <td>1590</td>
+  <td data-v="28.5">28.5</td>
+  <td data-v="95.0">95.0</td>
+  <td data-v="70.0" class="drop">70.0%</td>
+  <td data-v="3.3" class="multiplier">3.3x</td>
+  <td data-v="6">6</td>
+  <td data-v="680">680</td>
+  <td data-v="600">600</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="B">
+  <td>9</td>
+  <td>5209</td>
+  <td data-v="6.5">6.5</td>
+  <td data-v="18.0">18.0</td>
+  <td data-v="63.9" class="drop">63.9%</td>
+  <td data-v="2.8" class="multiplier">2.8x</td>
+  <td data-v="4">4</td>
+  <td data-v="280">280</td>
+  <td data-v="240">240</td>
+  <td><span class="grade grade-B">B</span></td>
+</tr>
+<tr data-grade="A">
+  <td>10</td>
+  <td>8034</td>
+  <td data-v="33.5">33.5</td>
+  <td data-v="120.0">120.0</td>
+  <td data-v="72.1" class="drop">72.1%</td>
+  <td data-v="3.6" class="multiplier">3.6x</td>
+  <td data-v="5">5</td>
+  <td data-v="950">950</td>
+  <td data-v="820">820</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="B">
+  <td>11</td>
+  <td>2436</td>
+  <td data-v="11.2">11.2</td>
+  <td data-v="38.0">38.0</td>
+  <td data-v="70.5" class="drop">70.5%</td>
+  <td data-v="3.4" class="multiplier">3.4x</td>
+  <td data-v="3">3</td>
+  <td data-v="190">190</td>
+  <td data-v="160">160</td>
+  <td><span class="grade grade-B">B</span></td>
+</tr>
+<tr data-grade="A">
+  <td>12</td>
+  <td>6592</td>
+  <td data-v="7.8">7.8</td>
+  <td data-v="25.0">25.0</td>
+  <td data-v="68.8" class="drop">68.8%</td>
+  <td data-v="3.2" class="multiplier">3.2x</td>
+  <td data-v="4">4</td>
+  <td data-v="520">520</td>
+  <td data-v="450">450</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="A">
+  <td>13</td>
+  <td>1503</td>
+  <td data-v="35.0">35.0</td>
+  <td data-v="85.0">85.0</td>
+  <td data-v="58.8" class="drop">58.8%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="3">3</td>
+  <td data-v="750">750</td>
+  <td data-v="680">680</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="B">
+  <td>14</td>
+  <td>4977</td>
+  <td data-v="19.8">19.8</td>
+  <td data-v="52.0">52.0</td>
+  <td data-v="61.9" class="drop">61.9%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="10">10</td>
+  <td data-v="380">380</td>
+  <td data-v="330">330</td>
+  <td><span class="grade grade-B">B</span></td>
+</tr>
+<tr data-grade="A">
+  <td>15</td>
+  <td>3041</td>
+  <td data-v="14.0">14.0</td>
+  <td data-v="22.5">22.5</td>
+  <td data-v="37.8" class="drop">37.8%</td>
+  <td data-v="1.6" class="multiplier">1.6x</td>
+  <td data-v="2">2</td>
+  <td data-v="600">600</td>
+  <td data-v="540">540</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="A">
+  <td>16</td>
+  <td>2104</td>
+  <td data-v="25.5">25.5</td>
+  <td data-v="82.0">82.0</td>
+  <td data-v="68.9" class="drop">68.9%</td>
+  <td data-v="3.2" class="multiplier">3.2x</td>
+  <td data-v="4">4</td>
+  <td data-v="900">900</td>
+  <td data-v="780">780</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+<tr data-grade="B">
+  <td>17</td>
+  <td>6139</td>
+  <td data-v="3.2">3.2</td>
+  <td data-v="15.8">15.8</td>
+  <td data-v="79.7" class="drop">79.7%</td>
+  <td data-v="4.9" class="multiplier">4.9x</td>
+  <td data-v="5">5</td>
+  <td data-v="200">200</td>
+  <td data-v="170">170</td>
+  <td><span class="grade grade-B">B</span></td>
+</tr>
+<tr data-grade="A">
+  <td>18</td>
+  <td>8104</td>
+  <td data-v="38.0">38.0</td>
+  <td data-v="110.0">110.0</td>
+  <td data-v="65.5" class="drop">65.5%</td>
+  <td data-v="2.9" class="multiplier">2.9x</td>
+  <td data-v="3">3</td>
+  <td data-v="1100">1,100</td>
+  <td data-v="950">950</td>
+  <td><span class="grade grade-A">A</span></td>
+</tr>
+</tbody></table>
+</div>
+
+<div class="footer">
+  Angela AI — Personal Cognitive Butler ｜ 資料來源：TWSE / TPEx<br>
+  報告自動產出，請勿作為唯一投資依據
+</div>
+
+<script>
+// 全量資料（嵌入 JSON）
+const allData = [{"symbol": "1256", "market": "TPEx", "current_price": 5.8, "all_time_high": 28.5, "drop_from_high_pct": 79.6, "peak_months": 6, "highest_peak": 28.5, "multiplier_actual": 4.9, "avg_volume": 850000, "avg_volume_lots": 850, "median_volume_lots": 720, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "2228", "market": "TWSE", "current_price": 8.2, "all_time_high": 35.0, "drop_from_high_pct": 76.6, "peak_months": 5, "highest_peak": 35.0, "multiplier_actual": 4.3, "avg_volume": 320000, "avg_volume_lots": 320, "median_volume_lots": 280, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": []}, {"symbol": "3093", "market": "TPEx", "current_price": 12.5, "all_time_high": 42.0, "drop_from_high_pct": 70.2, "peak_months": 4, "highest_peak": 42.0, "multiplier_actual": 3.4, "avg_volume": 580000, "avg_volume_lots": 580, "median_volume_lots": 510, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "4126", "market": "TPEx", "current_price": 15.3, "all_time_high": 55.0, "drop_from_high_pct": 72.2, "peak_months": 7, "highest_peak": 55.0, "multiplier_actual": 3.6, "avg_volume": 210000, "avg_volume_lots": 210, "median_volume_lots": 180, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": []}, {"symbol": "6104", "market": "TPEx", "current_price": 18.9, "all_time_high": 68.0, "drop_from_high_pct": 72.2, "peak_months": 5, "highest_peak": 68.0, "multiplier_actual": 3.6, "avg_volume": 420000, "avg_volume_lots": 420, "median_volume_lots": 350, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": []}, {"symbol": "2029", "market": "TWSE", "current_price": 22.1, "all_time_high": 78.0, "drop_from_high_pct": 71.7, "peak_months": 8, "highest_peak": 78.0, "multiplier_actual": 3.5, "avg_volume": 1200000, "avg_volume_lots": 1200, "median_volume_lots": 1050, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "3550", "market": "TPEx", "current_price": 9.6, "all_time_high": 22.0, "drop_from_high_pct": 56.4, "peak_months": 3, "highest_peak": 22.0, "multiplier_actual": 2.3, "avg_volume": 150000, "avg_volume_lots": 150, "median_volume_lots": 120, "zero_volume_days_20d": 1, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": ["近20日有 1 天零成交，需注意"]}, {"symbol": "1590", "market": "TWSE", "current_price": 28.5, "all_time_high": 95.0, "drop_from_high_pct": 70.0, "peak_months": 6, "highest_peak": 95.0, "multiplier_actual": 3.3, "avg_volume": 680000, "avg_volume_lots": 680, "median_volume_lots": 600, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "5209", "market": "TPEx", "current_price": 6.5, "all_time_high": 18.0, "drop_from_high_pct": 63.9, "peak_months": 4, "highest_peak": 18.0, "multiplier_actual": 2.8, "avg_volume": 280000, "avg_volume_lots": 280, "median_volume_lots": 240, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": []}, {"symbol": "8034", "market": "TPEx", "current_price": 33.5, "all_time_high": 120.0, "drop_from_high_pct": 72.1, "peak_months": 5, "highest_peak": 120.0, "multiplier_actual": 3.6, "avg_volume": 950000, "avg_volume_lots": 950, "median_volume_lots": 820, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "2436", "market": "TWSE", "current_price": 11.2, "all_time_high": 38.0, "drop_from_high_pct": 70.5, "peak_months": 3, "highest_peak": 38.0, "multiplier_actual": 3.4, "avg_volume": 190000, "avg_volume_lots": 190, "median_volume_lots": 160, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": []}, {"symbol": "6592", "market": "TPEx", "current_price": 7.8, "all_time_high": 25.0, "drop_from_high_pct": 68.8, "peak_months": 4, "highest_peak": 25.0, "multiplier_actual": 3.2, "avg_volume": 520000, "avg_volume_lots": 520, "median_volume_lots": 450, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "1503", "market": "TWSE", "current_price": 35.0, "all_time_high": 85.0, "drop_from_high_pct": 58.8, "peak_months": 3, "highest_peak": 85.0, "multiplier_actual": 2.4, "avg_volume": 750000, "avg_volume_lots": 750, "median_volume_lots": 680, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "4977", "market": "TPEx", "current_price": 19.8, "all_time_high": 52.0, "drop_from_high_pct": 61.9, "peak_months": 10, "highest_peak": 52.0, "multiplier_actual": 2.6, "avg_volume": 380000, "avg_volume_lots": 380, "median_volume_lots": 330, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": []}, {"symbol": "3041", "market": "TPEx", "current_price": 14.0, "all_time_high": 22.5, "drop_from_high_pct": 37.8, "peak_months": 2, "highest_peak": 22.5, "multiplier_actual": 1.6, "avg_volume": 600000, "avg_volume_lots": 600, "median_volume_lots": 540, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "2104", "market": "TWSE", "current_price": 25.5, "all_time_high": 82.0, "drop_from_high_pct": 68.9, "peak_months": 4, "highest_peak": 82.0, "multiplier_actual": 3.2, "avg_volume": 900000, "avg_volume_lots": 900, "median_volume_lots": 780, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}, {"symbol": "6139", "market": "TPEx", "current_price": 3.2, "all_time_high": 15.8, "drop_from_high_pct": 79.7, "peak_months": 5, "highest_peak": 15.8, "multiplier_actual": 4.9, "avg_volume": 200000, "avg_volume_lots": 200, "median_volume_lots": 170, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": []}, {"symbol": "8104", "market": "TPEx", "current_price": 38.0, "all_time_high": 110.0, "drop_from_high_pct": 65.5, "peak_months": 3, "highest_peak": 110.0, "multiplier_actual": 2.9, "avg_volume": 1100000, "avg_volume_lots": 1100, "median_volume_lots": 950, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": []}];
+
+const tbody = document.getElementById('tableBody');
+const allRows = tbody ? Array.from(tbody.rows) : [];
+let sortCol = -1, sortAsc = true;
+
+// ★ 核心：條件篩選 + 即時更新
+function applyConditions() {
+  const maxPrice = parseFloat(document.getElementById('cfgPrice').value) || 999;
+  const minMult = parseFloat(document.getElementById('cfgMult').value) || 0;
+  const minPeaks = parseInt(document.getElementById('cfgPeaks').value) || 0;
+  const searchQ = document.getElementById('searchBox').value.trim().toUpperCase();
+  const gradeF = document.getElementById('gradeFilter').value;
+
+  let visibleCount = 0;
+  let sumDrop = 0, sumMult = 0, sumVol = 0, gradeA = 0, gradeB = 0;
+
+  allRows.forEach((row, idx) => {
+    const d = allData[idx];
+    if (!d) { row.style.display = 'none'; return; }
+
+    const price = d.current_price || 0;
+    const mult = d.multiplier_actual || 0;
+    const peaks = d.peak_months || 0;
+    const grade = d.liquidity_grade || '';
+    const symbol = (d.symbol || '').toUpperCase();
+
+    // 篩選
+    let show = true;
+    if (price > maxPrice) show = false;
+    if (mult < minMult) show = false;
+    if (peaks < minPeaks) show = false;
+    if (searchQ && !symbol.includes(searchQ)) show = false;
+    if (gradeF && grade !== gradeF) show = false;
+
+    row.style.display = show ? '' : 'none';
+
+    if (show) {
+      visibleCount++;
+      sumDrop += d.drop_from_high_pct || 0;
+      sumMult += mult;
+      sumVol += d.avg_volume_lots || 0;
+      if (grade === 'A') gradeA++;
+      if (grade === 'B') gradeB++;
+    }
+  });
+
+  // 更新摘要卡片
+  document.getElementById('sumCount').textContent = visibleCount;
+  document.getElementById('sumDrop').textContent = visibleCount > 0
+    ? (sumDrop / visibleCount).toFixed(0) + '%' : '-';
+  document.getElementById('sumMult').textContent = visibleCount > 0
+    ? (sumMult / visibleCount).toFixed(1) + 'x' : '-';
+  document.getElementById('sumGradeA').textContent = gradeA;
+  document.getElementById('sumGradeB').textContent = gradeB;
+  document.getElementById('sumVol').textContent = visibleCount > 0
+    ? Math.round(sumVol / visibleCount) : '-';
+
+  // 更新 badge
+  document.getElementById('badgeCount').textContent = visibleCount + ' 支';
+
+  // 更新結果計數
+  document.getElementById('resultCount').textContent =
+    visibleCount < allData.length
+      ? visibleCount + ' / ' + allData.length + ' 支'
+      : allData.length + ' 支';
+
+  reindex();
+}
+
+function sortBySelect() {
+  const v = document.getElementById('sortSelect').value;
+  if (!v) return;
+  const map = {
+    price_asc: [2, true], price_desc: [2, false],
+    mult_desc: [5, false], drop_desc: [4, false],
+    vol_desc: [7, false], peaks_desc: [6, false],
+  };
+  const [col, asc] = map[v] || [2, true];
+  doSort(col, asc);
+}
+
+function headerSort(col) {
+  if (sortCol === col) { sortAsc = !sortAsc; }
+  else { sortCol = col; sortAsc = true; }
+  doSort(col, sortAsc);
+}
+
+function doSort(col, asc) {
+  allRows.sort((a, b) => {
+    let va = parseFloat(a.cells[col].dataset.v || a.cells[col].textContent.replace(/[^0-9.\-]/g,''));
+    let vb = parseFloat(b.cells[col].dataset.v || b.cells[col].textContent.replace(/[^0-9.\-]/g,''));
+    if (isNaN(va)) va = 0;
+    if (isNaN(vb)) vb = 0;
+    return asc ? va - vb : vb - va;
+  });
+  allRows.forEach(r => tbody.appendChild(r));
+  reindex();
+}
+
+function reindex() {
+  let idx = 1;
+  allRows.forEach(r => {
+    if (r.style.display !== 'none') {
+      r.cells[0].textContent = idx++;
+    }
+  });
+}
+
+// 頁面載入時初始化
+applyConditions();
+</script>
+</body>
+</html>
