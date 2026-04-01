@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angela AI — 彩券號碼分析報告</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+    background: #0a0e1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+.header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 30px 20px;
+    text-align: center;
+    border-bottom: 3px solid #e94560;
+}
+.header h1 {
+    font-size: 2em;
+    background: linear-gradient(90deg, #ffd700, #ff6b35, #e94560);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+}
+.header .subtitle { color: #888; font-size: 0.9em; }
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 20px auto;
+    max-width: 400px;
+}
+.tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    background: #1a1a2e;
+    border: 2px solid #333;
+    color: #888;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.tab-btn:first-child { border-radius: 8px 0 0 8px; }
+.tab-btn:last-child { border-radius: 0 8px 8px 0; }
+.tab-btn.active {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.section {
+    background: #12152a;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    border: 1px solid #1e2240;
+}
+.section h2 {
+    font-size: 1.3em;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e94560;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+/* 號碼球 */
+.ball-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+}
+.ball {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85em;
+    position: relative;
+}
+.ball.hot { background: #e94560; color: #fff; }
+.ball.warm { background: #444; color: #ccc; }
+.ball.cold { background: #1a3a5c; color: #6ca6cd; border: 2px solid #2a5a8c; }
+.ball.special { background: #ffd700; color: #000; }
+.ball .count {
+    position: absolute;
+    bottom: -16px;
+    font-size: 0.65em;
+    color: #888;
+}
+/* 推薦區 */
+.rec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+.rec-card {
+    background: #1a1f38;
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid #2a2f48;
+}
+.rec-card h3 {
+    font-size: 1em;
+    margin-bottom: 8px;
+    color: #ffd700;
+}
+.rec-card .desc { color: #888; font-size: 0.85em; margin-bottom: 10px; }
+.rec-nums {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.rec-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e94560;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+/* 智慧選號特殊樣式 */
+.smart-section {
+    background: linear-gradient(135deg, #1a1f38, #0f2847);
+    border: 2px solid #ffd700;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+.smart-section h2 {
+    color: #ffd700;
+    border-bottom-color: #ffd700;
+}
+.smart-nums {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 16px 0;
+}
+.smart-num {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffd700, #ff6b35);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    box-shadow: 0 0 12px rgba(255,215,0,0.3);
+}
+.ev-badge {
+    display: inline-block;
+    background: #e94560;
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin: 8px 0;
+}
+.reason-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 14px;
+}
+.reason-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #1e2240;
+    color: #ccc;
+    font-size: 0.9em;
+}
+.reason-list li::before {
+    content: "✦ ";
+    color: #ffd700;
+}
+/* 統計條 */
+.stat-bar-wrap {
+    margin: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.stat-label { width: 40px; text-align: right; font-size: 0.85em; color: #aaa; }
+.stat-bar {
+    flex: 1;
+    height: 22px;
+    background: #1a1f38;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.stat-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    font-size: 0.75em;
+    color: #fff;
+}
+.stat-value { width: 50px; font-size: 0.85em; color: #aaa; }
+/* 模式統計 */
+.pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+.pattern-card {
+    background: #1a1f38;
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+}
+.pattern-card .label { color: #888; font-size: 0.85em; }
+.pattern-card .value { font-size: 1.4em; font-weight: bold; color: #ffd700; margin-top: 4px; }
+/* 遺漏分析 */
+.gap-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85em;
+}
+.gap-table th {
+    background: #1a1f38;
+    padding: 8px;
+    text-align: center;
+    border-bottom: 2px solid #333;
+    color: #ffd700;
+}
+.gap-table td {
+    padding: 6px 8px;
+    text-align: center;
+    border-bottom: 1px solid #1e2240;
+}
+.gap-table tr:hover { background: #1a1f38; }
+.overdue { color: #e94560; font-weight: bold; }
+.disclaimer {
+    background: #1a1a2e;
+    border-left: 4px solid #ffd700;
+    padding: 16px;
+    margin-top: 20px;
+    border-radius: 0 8px 8px 0;
+    color: #aaa;
+    font-size: 0.85em;
+}
+.footer {
+    text-align: center;
+    padding: 30px;
+    color: #555;
+    font-size: 0.8em;
+}
+@media (max-width: 600px) {
+    .ball { width: 36px; height: 36px; font-size: 0.75em; }
+    .rec-grid { grid-template-columns: 1fr; }
+    .pattern-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🎰 Angela AI 彩券號碼分析</h1>
+    <div class="subtitle">產出時間：2026-04-01 15:39 ｜ 資料來源：台灣彩券</div>
+</div>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('lotto649')">🎱 大樂透</button>
+        <button class="tab-btn" onclick="switchTab('super_lotto')">⚡ 威力彩</button>
+    </div>
+
+    <div id="tab-lotto649" class="tab-content active">
+        
+        <div class="smart-section">
+            <h2>🧠 撞號迴避智慧選號</h2>
+            <p style="color:#ccc; margin-bottom:12px;">
+                選別人不太會選的號碼 — 中獎機率不變，但期望獎金更高
+            </p>
+            <div class="smart-nums"><div class="smart-num">18</div><div class="smart-num">32</div><div class="smart-num">33</div><div class="smart-num">34</div><div class="smart-num">35</div><div class="smart-num">43</div></div>
+            <div style="text-align:center;">
+                <span class="ev-badge">預估撞號率降低 ~144%</span>
+            </div>
+            <p style="color:#aaa; font-size:0.85em; text-align:center; margin-top:8px;">
+                一般人選號的平均人氣分 2.6，這組的人氣分 -1.2，預估撞號率比隨機選號低約 144%，等效期望獎金提升
+            </p>
+            <ul class="reason-list"><li>包含 5 個大號（32, 33, 34, 35, 43）— 超過 31 的號碼較少人選（生日效應），撞號機率低</li><li>含連號（32-33, 33-34, 34-35）— 多數人刻意避開連號，但連號出現率約 50%</li><li>尾數避開了 0/5/7/8 等「好看」數字 — 減少與直覺選號者撞號</li><li>6 個號碼不在常見幸運數字中 — 避開文化偏誤選號</li><li>奇偶比 3:3 — 符合歷史常見分佈</li><li>號碼總和 195 — 落在歷史合理區間</li></ul>
+        </div>
+
+        <div class="section">
+            <h2>🎯 AI 統計推薦</h2>
+            <div class="rec-grid">
+            <div class="rec-card">
+                <h3>熱號追蹤</h3>
+                <div class="desc">選擇近期出現頻率最高的號碼</div>
+                <div class="rec-nums"><div class="rec-num">30</div><div class="rec-num">33</div></div>
+            </div>
+            <div class="rec-card">
+                <h3>冷號回歸</h3>
+                <div class="desc">選擇最久沒出現、即將回歸的號碼</div>
+                <div class="rec-nums"><div class="rec-num">3</div><div class="rec-num">11</div><div class="rec-num">12</div><div class="rec-num">13</div><div class="rec-num">18</div><div class="rec-num">45</div></div>
+            </div>
+            <div class="rec-card">
+                <h3>冷熱均衡</h3>
+                <div class="desc">3 個熱號 + 3 個冷號的均衡組合</div>
+                <div class="rec-nums"><div class="rec-num">15</div><div class="rec-num">16</div><div class="rec-num">20</div><div class="rec-num">30</div><div class="rec-num">33</div></div>
+            </div>
+            <div class="rec-card">
+                <h3>綜合評分</h3>
+                <div class="desc">結合頻率、遺漏、趨勢的綜合推薦</div>
+                <div class="rec-nums"><div class="rec-num">3</div><div class="rec-num">11</div><div class="rec-num">12</div><div class="rec-num">18</div><div class="rec-num">34</div><div class="rec-num">43</div></div>
+            </div></div>
+            <div style="margin-top:12px; color:#ffd700;">⭐ 特別號推薦：36, 44, 20</div>
+        </div>
+
+        <div class="section">
+            <h2>🌡️ 冷熱號分佈</h2>
+            <p style="color:#888; margin-bottom:12px;">
+                🔴 熱號 (2) ｜
+                ⚪ 溫號 (42) ｜
+                🔵 冷號 (5)
+            </p>
+            <div class="ball-grid"><div class="ball warm">1</div><div class="ball warm">2</div><div class="ball warm">3</div><div class="ball warm">4</div><div class="ball warm">5</div><div class="ball warm">6</div><div class="ball warm">7</div><div class="ball warm">8</div><div class="ball warm">9</div><div class="ball warm">10</div><div class="ball warm">11</div><div class="ball warm">12</div><div class="ball warm">13</div><div class="ball warm">14</div><div class="ball cold">15</div><div class="ball cold">16</div><div class="ball warm">17</div><div class="ball warm">18</div><div class="ball warm">19</div><div class="ball cold">20</div><div class="ball warm">21</div><div class="ball cold">22</div><div class="ball warm">23</div><div class="ball cold">24</div><div class="ball warm">25</div><div class="ball warm">26</div><div class="ball warm">27</div><div class="ball warm">28</div><div class="ball warm">29</div><div class="ball hot">30</div><div class="ball warm">31</div><div class="ball warm">32</div><div class="ball hot">33</div><div class="ball warm">34</div><div class="ball warm">35</div><div class="ball warm">36</div><div class="ball warm">37</div><div class="ball warm">38</div><div class="ball warm">39</div><div class="ball warm">40</div><div class="ball warm">41</div><div class="ball warm">42</div><div class="ball warm">43</div><div class="ball warm">44</div><div class="ball warm">45</div><div class="ball warm">46</div><div class="ball warm">47</div><div class="ball warm">48</div><div class="ball warm">49</div></div>
+        </div>
+
+        <div class="section">
+            <h2>📊 號碼頻率排行 (Top 15)</h2>
+            <p style="color:#888; margin-bottom:12px;">理論期望頻率：12.24%</p>
+            
+            <div class="stat-bar-wrap">
+                <div class="stat-label">30</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:100.0%; background:hsl(0,70%,45%);">
+                        50次
+                    </div>
+                </div>
+                <div class="stat-value">16.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">17</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:94.0%; background:hsl(0,70%,45%);">
+                        47次
+                    </div>
+                </div>
+                <div class="stat-value">15.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">35</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:92.0%; background:hsl(0,70%,45%);">
+                        46次
+                    </div>
+                </div>
+                <div class="stat-value">15.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">36</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:92.0%; background:hsl(0,70%,45%);">
+                        46次
+                    </div>
+                </div>
+                <div class="stat-value">15.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">27</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:90.0%; background:hsl(0,70%,45%);">
+                        45次
+                    </div>
+                </div>
+                <div class="stat-value">15.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">48</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:90.0%; background:hsl(0,70%,45%);">
+                        45次
+                    </div>
+                </div>
+                <div class="stat-value">15.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">34</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:88.0%; background:hsl(0,70%,45%);">
+                        44次
+                    </div>
+                </div>
+                <div class="stat-value">14.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">7</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:86.0%; background:hsl(0,70%,45%);">
+                        43次
+                    </div>
+                </div>
+                <div class="stat-value">14.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">23</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:86.0%; background:hsl(0,70%,45%);">
+                        43次
+                    </div>
+                </div>
+                <div class="stat-value">14.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">40</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:84.0%; background:hsl(0,70%,45%);">
+                        42次
+                    </div>
+                </div>
+                <div class="stat-value">14.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">6</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:82.0%; background:hsl(0,70%,45%);">
+                        41次
+                    </div>
+                </div>
+                <div class="stat-value">13.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">45</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:82.0%; background:hsl(0,70%,45%);">
+                        41次
+                    </div>
+                </div>
+                <div class="stat-value">13.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">18</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:80.0%; background:hsl(0,70%,45%);">
+                        40次
+                    </div>
+                </div>
+                <div class="stat-value">13.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">31</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:80.0%; background:hsl(0,70%,45%);">
+                        40次
+                    </div>
+                </div>
+                <div class="stat-value">13.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">42</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:80.0%; background:hsl(0,70%,45%);">
+                        40次
+                    </div>
+                </div>
+                <div class="stat-value">13.33%</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⏳ 遺漏值分析 (Top 10)</h2>
+            <p style="color:#888; margin-bottom:12px;">遺漏超期：已有 8 個號碼超過平均遺漏 1.5 倍</p>
+            <table class="gap-table">
+                <thead><tr>
+                    <th>號碼</th><th>目前遺漏</th><th>平均遺漏</th><th>最大遺漏</th><th>狀態</th>
+                </tr></thead>
+                <tbody>
+            <tr>
+                <td><strong>11</strong></td>
+                <td class="overdue">28</td>
+                <td>8.1</td>
+                <td>47</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>12</strong></td>
+                <td class="overdue">20</td>
+                <td>8.7</td>
+                <td>18</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>13</strong></td>
+                <td class="overdue">17</td>
+                <td>8.3</td>
+                <td>30</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>3</strong></td>
+                <td class="overdue">16</td>
+                <td>8.8</td>
+                <td>28</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>18</strong></td>
+                <td class="overdue">16</td>
+                <td>6.8</td>
+                <td>51</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>45</strong></td>
+                <td class="overdue">13</td>
+                <td>7.2</td>
+                <td>33</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>4</strong></td>
+                <td>11</td>
+                <td>8.9</td>
+                <td>32</td>
+                <td>✅ 正常</td>
+            </tr>
+            <tr>
+                <td><strong>9</strong></td>
+                <td>11</td>
+                <td>7.5</td>
+                <td>25</td>
+                <td>✅ 正常</td>
+            </tr>
+            <tr>
+                <td><strong>15</strong></td>
+                <td>11</td>
+                <td>9.9</td>
+                <td>29</td>
+                <td>✅ 正常</td>
+            </tr>
+            <tr>
+                <td><strong>43</strong></td>
+                <td class="overdue">11</td>
+                <td>7.3</td>
+                <td>21</td>
+                <td>🔴 超期</td>
+            </tr></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🧩 組合模式統計</h2>
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <div class="label">最常見奇偶比</div>
+                    <div class="value">3:3</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">最常見大小比</div>
+                    <div class="value">3:3</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">號碼總和平均</div>
+                    <div class="value">151.6</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">含連號比例</div>
+                    <div class="value">57.0%</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">總和最小</div>
+                    <div class="value">62</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">總和最大</div>
+                    <div class="value">258</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⭐ 特別號分析 (Top 10)</h2>
+            
+            <div class="stat-bar-wrap">
+                <div class="stat-label">36</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:100.0%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        12次
+                    </div>
+                </div>
+                <div class="stat-value">4.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">44</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:100.0%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        12次
+                    </div>
+                </div>
+                <div class="stat-value">4.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">20</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:91.7%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        11次
+                    </div>
+                </div>
+                <div class="stat-value">3.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">41</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:91.7%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        11次
+                    </div>
+                </div>
+                <div class="stat-value">3.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">3</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:83.3%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        10次
+                    </div>
+                </div>
+                <div class="stat-value">3.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">13</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:83.3%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        10次
+                    </div>
+                </div>
+                <div class="stat-value">3.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">23</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:83.3%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        10次
+                    </div>
+                </div>
+                <div class="stat-value">3.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">25</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:83.3%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        10次
+                    </div>
+                </div>
+                <div class="stat-value">3.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">46</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:83.3%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        10次
+                    </div>
+                </div>
+                <div class="stat-value">3.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">15</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:75.0%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        9次
+                    </div>
+                </div>
+                <div class="stat-value">3.0%</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-super_lotto" class="tab-content">
+        
+        <div class="smart-section">
+            <h2>🧠 撞號迴避智慧選號</h2>
+            <p style="color:#ccc; margin-bottom:12px;">
+                選別人不太會選的號碼 — 中獎機率不變，但期望獎金更高
+            </p>
+            <div class="smart-nums"><div class="smart-num">9</div><div class="smart-num">11</div><div class="smart-num">14</div><div class="smart-num">22</div><div class="smart-num">32</div><div class="smart-num">33</div></div>
+            <div style="text-align:center;">
+                <span class="ev-badge">預估撞號率降低 ~31%</span>
+            </div>
+            <p style="color:#aaa; font-size:0.85em; text-align:center; margin-top:8px;">
+                一般人選號的平均人氣分 4.0，這組的人氣分 2.8，預估撞號率比隨機選號低約 31%，等效期望獎金提升
+            </p>
+            <ul class="reason-list"><li>包含 2 個大號（32, 33）— 超過 31 的號碼較少人選（生日效應），撞號機率低</li><li>含連號（32-33）— 多數人刻意避開連號，但連號出現率約 50%</li><li>尾數避開了 0/5/7/8 等「好看」數字 — 減少與直覺選號者撞號</li><li>5 個號碼不在常見幸運數字中 — 避開文化偏誤選號</li><li>奇偶比 3:3 — 符合歷史常見分佈</li><li>號碼總和 121 — 落在歷史合理區間</li></ul>
+        </div>
+
+        <div class="section">
+            <h2>🎯 AI 統計推薦</h2>
+            <div class="rec-grid">
+            <div class="rec-card">
+                <h3>熱號追蹤</h3>
+                <div class="desc">選擇近期出現頻率最高的號碼</div>
+                <div class="rec-nums"><div class="rec-num">9</div><div class="rec-num">26</div><div class="rec-num">32</div><div class="rec-num">34</div></div>
+            </div>
+            <div class="rec-card">
+                <h3>冷號回歸</h3>
+                <div class="desc">選擇最久沒出現、即將回歸的號碼</div>
+                <div class="rec-nums"><div class="rec-num">5</div><div class="rec-num">14</div><div class="rec-num">16</div><div class="rec-num">20</div><div class="rec-num">23</div><div class="rec-num">37</div></div>
+            </div>
+            <div class="rec-card">
+                <h3>冷熱均衡</h3>
+                <div class="desc">3 個熱號 + 3 個冷號的均衡組合</div>
+                <div class="rec-nums"><div class="rec-num">9</div><div class="rec-num">26</div><div class="rec-num">34</div></div>
+            </div>
+            <div class="rec-card">
+                <h3>綜合評分</h3>
+                <div class="desc">結合頻率、遺漏、趨勢的綜合推薦</div>
+                <div class="rec-nums"><div class="rec-num">2</div><div class="rec-num">3</div><div class="rec-num">5</div><div class="rec-num">14</div><div class="rec-num">27</div><div class="rec-num">37</div></div>
+            </div></div>
+            <div style="margin-top:12px; color:#ffd700;">⭐ 第二區推薦：8, 1, 7</div>
+        </div>
+
+        <div class="section">
+            <h2>🌡️ 冷熱號分佈</h2>
+            <p style="color:#888; margin-bottom:12px;">
+                🔴 熱號 (4) ｜
+                ⚪ 溫號 (34) ｜
+                🔵 冷號 (0)
+            </p>
+            <div class="ball-grid"><div class="ball warm">1</div><div class="ball warm">2</div><div class="ball warm">3</div><div class="ball warm">4</div><div class="ball warm">5</div><div class="ball warm">6</div><div class="ball warm">7</div><div class="ball warm">8</div><div class="ball hot">9</div><div class="ball warm">10</div><div class="ball warm">11</div><div class="ball warm">12</div><div class="ball warm">13</div><div class="ball warm">14</div><div class="ball warm">15</div><div class="ball warm">16</div><div class="ball warm">17</div><div class="ball warm">18</div><div class="ball warm">19</div><div class="ball warm">20</div><div class="ball warm">21</div><div class="ball warm">22</div><div class="ball warm">23</div><div class="ball warm">24</div><div class="ball warm">25</div><div class="ball hot">26</div><div class="ball warm">27</div><div class="ball warm">28</div><div class="ball warm">29</div><div class="ball warm">30</div><div class="ball warm">31</div><div class="ball hot">32</div><div class="ball warm">33</div><div class="ball hot">34</div><div class="ball warm">35</div><div class="ball warm">36</div><div class="ball warm">37</div><div class="ball warm">38</div></div>
+        </div>
+
+        <div class="section">
+            <h2>📊 號碼頻率排行 (Top 15)</h2>
+            <p style="color:#888; margin-bottom:12px;">理論期望頻率：15.79%</p>
+            
+            <div class="stat-bar-wrap">
+                <div class="stat-label">32</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:100.0%; background:hsl(0,70%,45%);">
+                        69次
+                    </div>
+                </div>
+                <div class="stat-value">23.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">3</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:85.5%; background:hsl(0,70%,45%);">
+                        59次
+                    </div>
+                </div>
+                <div class="stat-value">19.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">18</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:85.5%; background:hsl(0,70%,45%);">
+                        59次
+                    </div>
+                </div>
+                <div class="stat-value">19.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">22</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:82.6%; background:hsl(0,70%,45%);">
+                        57次
+                    </div>
+                </div>
+                <div class="stat-value">19.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">8</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:79.7%; background:hsl(0,70%,45%);">
+                        55次
+                    </div>
+                </div>
+                <div class="stat-value">18.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">21</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:79.7%; background:hsl(0,70%,45%);">
+                        55次
+                    </div>
+                </div>
+                <div class="stat-value">18.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">24</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:79.7%; background:hsl(0,70%,45%);">
+                        55次
+                    </div>
+                </div>
+                <div class="stat-value">18.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">9</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:78.3%; background:hsl(0,70%,45%);">
+                        54次
+                    </div>
+                </div>
+                <div class="stat-value">18.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">6</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:75.4%; background:hsl(0,70%,45%);">
+                        52次
+                    </div>
+                </div>
+                <div class="stat-value">17.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">7</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:75.4%; background:hsl(0,70%,45%);">
+                        52次
+                    </div>
+                </div>
+                <div class="stat-value">17.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">26</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:75.4%; background:hsl(0,70%,45%);">
+                        52次
+                    </div>
+                </div>
+                <div class="stat-value">17.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">11</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:73.9%; background:hsl(0,70%,45%);">
+                        51次
+                    </div>
+                </div>
+                <div class="stat-value">17.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">38</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:73.9%; background:hsl(0,70%,45%);">
+                        51次
+                    </div>
+                </div>
+                <div class="stat-value">17.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">37</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:72.5%; background:hsl(0,70%,45%);">
+                        50次
+                    </div>
+                </div>
+                <div class="stat-value">16.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">12</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:71.0%; background:hsl(0,70%,45%);">
+                        49次
+                    </div>
+                </div>
+                <div class="stat-value">16.33%</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⏳ 遺漏值分析 (Top 10)</h2>
+            <p style="color:#888; margin-bottom:12px;">遺漏超期：已有 8 個號碼超過平均遺漏 1.5 倍</p>
+            <table class="gap-table">
+                <thead><tr>
+                    <th>號碼</th><th>目前遺漏</th><th>平均遺漏</th><th>最大遺漏</th><th>狀態</th>
+                </tr></thead>
+                <tbody>
+            <tr>
+                <td><strong>20</strong></td>
+                <td class="overdue">32</td>
+                <td>6.2</td>
+                <td>19</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>37</strong></td>
+                <td class="overdue">21</td>
+                <td>5.6</td>
+                <td>22</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>16</strong></td>
+                <td class="overdue">20</td>
+                <td>7.1</td>
+                <td>34</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>5</strong></td>
+                <td class="overdue">18</td>
+                <td>6.5</td>
+                <td>22</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>14</strong></td>
+                <td class="overdue">16</td>
+                <td>6.0</td>
+                <td>34</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>23</strong></td>
+                <td class="overdue">15</td>
+                <td>8.3</td>
+                <td>22</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>13</strong></td>
+                <td class="overdue">13</td>
+                <td>6.7</td>
+                <td>41</td>
+                <td>🔴 超期</td>
+            </tr>
+            <tr>
+                <td><strong>29</strong></td>
+                <td>10</td>
+                <td>8.3</td>
+                <td>56</td>
+                <td>✅ 正常</td>
+            </tr>
+            <tr>
+                <td><strong>35</strong></td>
+                <td>10</td>
+                <td>8.0</td>
+                <td>35</td>
+                <td>✅ 正常</td>
+            </tr>
+            <tr>
+                <td><strong>3</strong></td>
+                <td class="overdue">9</td>
+                <td>4.8</td>
+                <td>13</td>
+                <td>🔴 超期</td>
+            </tr></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🧩 組合模式統計</h2>
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <div class="label">最常見奇偶比</div>
+                    <div class="value">3:3</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">最常見大小比</div>
+                    <div class="value">3:3</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">號碼總和平均</div>
+                    <div class="value">116.3</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">含連號比例</div>
+                    <div class="value">54.7%</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">總和最小</div>
+                    <div class="value">37</div>
+                </div>
+                <div class="pattern-card">
+                    <div class="label">總和最大</div>
+                    <div class="value">183</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⭐ 第二區分析 (Top 10)</h2>
+            
+            <div class="stat-bar-wrap">
+                <div class="stat-label">8</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:100.0%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        46次
+                    </div>
+                </div>
+                <div class="stat-value">15.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">1</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:95.7%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        44次
+                    </div>
+                </div>
+                <div class="stat-value">14.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">7</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:87.0%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        40次
+                    </div>
+                </div>
+                <div class="stat-value">13.33%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">5</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:82.6%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        38次
+                    </div>
+                </div>
+                <div class="stat-value">12.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">6</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:78.3%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        36次
+                    </div>
+                </div>
+                <div class="stat-value">12.0%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">2</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:76.1%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        35次
+                    </div>
+                </div>
+                <div class="stat-value">11.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">4</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:69.6%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        32次
+                    </div>
+                </div>
+                <div class="stat-value">10.67%</div>
+            </div>
+            <div class="stat-bar-wrap">
+                <div class="stat-label">3</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width:63.0%; background:linear-gradient(90deg, #ffd700, #ff6b35);">
+                        29次
+                    </div>
+                </div>
+                <div class="stat-value">9.67%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        ⚠️ <strong>免責聲明</strong>：本報告僅為歷史資料的統計分析參考。樂透開獎為完全隨機事件，過去的統計模式不代表未來結果。請理性購買彩券，量力而為。Angela AI 不對任何投注結果負責。
+    </div>
+</div>
+
+<div class="footer">
+    Powered by Angela AI — Nathan 的專屬 AI 助理<br>
+    資料更新於 2026-04-01 15:39
+</div>
+
+<script>
+const DATA = {"lotto649": {"draw_type": "lotto649", "config": {"name": "大樂透", "max_number": 49, "pick_count": 6, "has_special": true, "special_name": "特別號", "special_range": 49, "draw_days": "週二、週五"}, "total_draws": 300, "recent_n": 50, "date_range": {"from": "2024-01-02", "to": "2024-12-21"}, "frequency": {"total_draws": 300, "expected_rate": 12.24, "ranking": [{"number": 30, "count": 50, "rate": 16.67}, {"number": 17, "count": 47, "rate": 15.67}, {"number": 35, "count": 46, "rate": 15.33}, {"number": 36, "count": 46, "rate": 15.33}, {"number": 27, "count": 45, "rate": 15.0}, {"number": 48, "count": 45, "rate": 15.0}, {"number": 34, "count": 44, "rate": 14.67}, {"number": 7, "count": 43, "rate": 14.33}, {"number": 23, "count": 43, "rate": 14.33}, {"number": 40, "count": 42, "rate": 14.0}, {"number": 6, "count": 41, "rate": 13.67}, {"number": 45, "count": 41, "rate": 13.67}, {"number": 18, "count": 40, "rate": 13.33}, {"number": 31, "count": 40, "rate": 13.33}, {"number": 42, "count": 40, "rate": 13.33}, {"number": 8, "count": 39, "rate": 13.0}, {"number": 9, "count": 39, "rate": 13.0}, {"number": 21, "count": 39, "rate": 13.0}, {"number": 39, "count": 39, "rate": 13.0}, {"number": 1, "count": 38, "rate": 12.67}, {"number": 20, "count": 37, "rate": 12.33}, {"number": 38, "count": 37, "rate": 12.33}, {"number": 47, "count": 37, "rate": 12.33}, {"number": 2, "count": 36, "rate": 12.0}, {"number": 10, "count": 36, "rate": 12.0}, {"number": 33, "count": 36, "rate": 12.0}, {"number": 41, "count": 36, "rate": 12.0}, {"number": 13, "count": 35, "rate": 11.67}, {"number": 26, "count": 35, "rate": 11.67}, {"number": 28, "count": 35, "rate": 11.67}, {"number": 46, "count": 35, "rate": 11.67}, {"number": 11, "count": 34, "rate": 11.33}, {"number": 3, "count": 33, "rate": 11.0}, {"number": 12, "count": 33, "rate": 11.0}, {"number": 22, "count": 33, "rate": 11.0}, {"number": 32, "count": 33, "rate": 11.0}, {"number": 43, "count": 33, "rate": 11.0}, {"number": 44, "count": 33, "rate": 11.0}, {"number": 4, "count": 32, "rate": 10.67}, {"number": 14, "count": 32, "rate": 10.67}, {"number": 29, "count": 32, "rate": 10.67}, {"number": 16, "count": 31, "rate": 10.33}, {"number": 19, "count": 31, "rate": 10.33}, {"number": 5, "count": 30, "rate": 10.0}, {"number": 15, "count": 29, "rate": 9.67}, {"number": 25, "count": 29, "rate": 9.67}, {"number": 24, "count": 28, "rate": 9.33}, {"number": 49, "count": 28, "rate": 9.33}, {"number": 37, "count": 24, "rate": 8.0}], "top10": [{"number": 30, "count": 50, "rate": 16.67}, {"number": 17, "count": 47, "rate": 15.67}, {"number": 35, "count": 46, "rate": 15.33}, {"number": 36, "count": 46, "rate": 15.33}, {"number": 27, "count": 45, "rate": 15.0}, {"number": 48, "count": 45, "rate": 15.0}, {"number": 34, "count": 44, "rate": 14.67}, {"number": 7, "count": 43, "rate": 14.33}, {"number": 23, "count": 43, "rate": 14.33}, {"number": 40, "count": 42, "rate": 14.0}], "bottom10": [{"number": 14, "count": 32, "rate": 10.67}, {"number": 29, "count": 32, "rate": 10.67}, {"number": 16, "count": 31, "rate": 10.33}, {"number": 19, "count": 31, "rate": 10.33}, {"number": 5, "count": 30, "rate": 10.0}, {"number": 15, "count": 29, "rate": 9.67}, {"number": 25, "count": 29, "rate": 9.67}, {"number": 24, "count": 28, "rate": 9.33}, {"number": 49, "count": 28, "rate": 9.33}, {"number": 37, "count": 24, "rate": 8.0}]}, "recent_frequency": {"total_draws": 50, "expected_rate": 12.24, "ranking": [{"number": 30, "count": 11, "rate": 22.0}, {"number": 33, "count": 11, "rate": 22.0}, {"number": 31, "count": 9, "rate": 18.0}, {"number": 42, "count": 9, "rate": 18.0}, {"number": 1, "count": 8, "rate": 16.0}, {"number": 7, "count": 8, "rate": 16.0}, {"number": 8, "count": 8, "rate": 16.0}, {"number": 21, "count": 8, "rate": 16.0}, {"number": 28, "count": 8, "rate": 16.0}, {"number": 29, "count": 8, "rate": 16.0}, {"number": 32, "count": 8, "rate": 16.0}, {"number": 34, "count": 8, "rate": 16.0}, {"number": 35, "count": 8, "rate": 16.0}, {"number": 36, "count": 8, "rate": 16.0}, {"number": 40, "count": 8, "rate": 16.0}, {"number": 9, "count": 7, "rate": 14.0}, {"number": 10, "count": 7, "rate": 14.0}, {"number": 17, "count": 7, "rate": 14.0}, {"number": 18, "count": 7, "rate": 14.0}, {"number": 23, "count": 7, "rate": 14.0}, {"number": 27, "count": 7, "rate": 14.0}, {"number": 37, "count": 7, "rate": 14.0}, {"number": 38, "count": 7, "rate": 14.0}, {"number": 44, "count": 7, "rate": 14.0}, {"number": 12, "count": 6, "rate": 12.0}, {"number": 14, "count": 6, "rate": 12.0}, {"number": 19, "count": 6, "rate": 12.0}, {"number": 26, "count": 6, "rate": 12.0}, {"number": 43, "count": 6, "rate": 12.0}, {"number": 3, "count": 5, "rate": 10.0}, {"number": 6, "count": 5, "rate": 10.0}, {"number": 11, "count": 5, "rate": 10.0}, {"number": 46, "count": 5, "rate": 10.0}, {"number": 48, "count": 5, "rate": 10.0}, {"number": 49, "count": 5, "rate": 10.0}, {"number": 2, "count": 4, "rate": 8.0}, {"number": 4, "count": 4, "rate": 8.0}, {"number": 5, "count": 4, "rate": 8.0}, {"number": 13, "count": 4, "rate": 8.0}, {"number": 25, "count": 4, "rate": 8.0}, {"number": 39, "count": 4, "rate": 8.0}, {"number": 41, "count": 4, "rate": 8.0}, {"number": 45, "count": 4, "rate": 8.0}, {"number": 47, "count": 4, "rate": 8.0}, {"number": 20, "count": 3, "rate": 6.0}, {"number": 22, "count": 3, "rate": 6.0}, {"number": 24, "count": 3, "rate": 6.0}, {"number": 15, "count": 2, "rate": 4.0}, {"number": 16, "count": 2, "rate": 4.0}], "top10": [{"number": 30, "count": 11, "rate": 22.0}, {"number": 33, "count": 11, "rate": 22.0}, {"number": 31, "count": 9, "rate": 18.0}, {"number": 42, "count": 9, "rate": 18.0}, {"number": 1, "count": 8, "rate": 16.0}, {"number": 7, "count": 8, "rate": 16.0}, {"number": 8, "count": 8, "rate": 16.0}, {"number": 21, "count": 8, "rate": 16.0}, {"number": 28, "count": 8, "rate": 16.0}, {"number": 29, "count": 8, "rate": 16.0}], "bottom10": [{"number": 25, "count": 4, "rate": 8.0}, {"number": 39, "count": 4, "rate": 8.0}, {"number": 41, "count": 4, "rate": 8.0}, {"number": 45, "count": 4, "rate": 8.0}, {"number": 47, "count": 4, "rate": 8.0}, {"number": 20, "count": 3, "rate": 6.0}, {"number": 22, "count": 3, "rate": 6.0}, {"number": 24, "count": 3, "rate": 6.0}, {"number": 15, "count": 2, "rate": 4.0}, {"number": 16, "count": 2, "rate": 4.0}]}, "hot_cold": {"hot": [{"number": 30, "all_count": 50, "recent_count": 11, "all_ratio": 1.36, "recent_ratio": 1.8, "status": "hot"}, {"number": 33, "all_count": 36, "recent_count": 11, "all_ratio": 0.98, "recent_ratio": 1.8, "status": "hot"}], "cold": [{"number": 15, "all_count": 29, "recent_count": 2, "all_ratio": 0.79, "recent_ratio": 0.33, "status": "cold"}, {"number": 16, "all_count": 31, "recent_count": 2, "all_ratio": 0.84, "recent_ratio": 0.33, "status": "cold"}, {"number": 20, "all_count": 37, "recent_count": 3, "all_ratio": 1.01, "recent_ratio": 0.49, "status": "cold"}, {"number": 22, "all_count": 33, "recent_count": 3, "all_ratio": 0.9, "recent_ratio": 0.49, "status": "cold"}, {"number": 24, "all_count": 28, "recent_count": 3, "all_ratio": 0.76, "recent_ratio": 0.49, "status": "cold"}], "warm": [{"number": 1, "all_count": 38, "recent_count": 8, "all_ratio": 1.03, "recent_ratio": 1.31, "status": "warm"}, {"number": 2, "all_count": 36, "recent_count": 4, "all_ratio": 0.98, "recent_ratio": 0.65, "status": "warm"}, {"number": 3, "all_count": 33, "recent_count": 5, "all_ratio": 0.9, "recent_ratio": 0.82, "status": "warm"}, {"number": 4, "all_count": 32, "recent_count": 4, "all_ratio": 0.87, "recent_ratio": 0.65, "status": "warm"}, {"number": 5, "all_count": 30, "recent_count": 4, "all_ratio": 0.82, "recent_ratio": 0.65, "status": "warm"}, {"number": 6, "all_count": 41, "recent_count": 5, "all_ratio": 1.12, "recent_ratio": 0.82, "status": "warm"}, {"number": 7, "all_count": 43, "recent_count": 8, "all_ratio": 1.17, "recent_ratio": 1.31, "status": "warm"}, {"number": 8, "all_count": 39, "recent_count": 8, "all_ratio": 1.06, "recent_ratio": 1.31, "status": "warm"}, {"number": 9, "all_count": 39, "recent_count": 7, "all_ratio": 1.06, "recent_ratio": 1.14, "status": "warm"}, {"number": 10, "all_count": 36, "recent_count": 7, "all_ratio": 0.98, "recent_ratio": 1.14, "status": "warm"}, {"number": 11, "all_count": 34, "recent_count": 5, "all_ratio": 0.93, "recent_ratio": 0.82, "status": "warm"}, {"number": 12, "all_count": 33, "recent_count": 6, "all_ratio": 0.9, "recent_ratio": 0.98, "status": "warm"}, {"number": 13, "all_count": 35, "recent_count": 4, "all_ratio": 0.95, "recent_ratio": 0.65, "status": "warm"}, {"number": 14, "all_count": 32, "recent_count": 6, "all_ratio": 0.87, "recent_ratio": 0.98, "status": "warm"}, {"number": 17, "all_count": 47, "recent_count": 7, "all_ratio": 1.28, "recent_ratio": 1.14, "status": "warm"}, {"number": 18, "all_count": 40, "recent_count": 7, "all_ratio": 1.09, "recent_ratio": 1.14, "status": "warm"}, {"number": 19, "all_count": 31, "recent_count": 6, "all_ratio": 0.84, "recent_ratio": 0.98, "status": "warm"}, {"number": 21, "all_count": 39, "recent_count": 8, "all_ratio": 1.06, "recent_ratio": 1.31, "status": "warm"}, {"number": 23, "all_count": 43, "recent_count": 7, "all_ratio": 1.17, "recent_ratio": 1.14, "status": "warm"}, {"number": 25, "all_count": 29, "recent_count": 4, "all_ratio": 0.79, "recent_ratio": 0.65, "status": "warm"}, {"number": 26, "all_count": 35, "recent_count": 6, "all_ratio": 0.95, "recent_ratio": 0.98, "status": "warm"}, {"number": 27, "all_count": 45, "recent_count": 7, "all_ratio": 1.22, "recent_ratio": 1.14, "status": "warm"}, {"number": 28, "all_count": 35, "recent_count": 8, "all_ratio": 0.95, "recent_ratio": 1.31, "status": "warm"}, {"number": 29, "all_count": 32, "recent_count": 8, "all_ratio": 0.87, "recent_ratio": 1.31, "status": "warm"}, {"number": 31, "all_count": 40, "recent_count": 9, "all_ratio": 1.09, "recent_ratio": 1.47, "status": "warm"}, {"number": 32, "all_count": 33, "recent_count": 8, "all_ratio": 0.9, "recent_ratio": 1.31, "status": "warm"}, {"number": 34, "all_count": 44, "recent_count": 8, "all_ratio": 1.2, "recent_ratio": 1.31, "status": "warm"}, {"number": 35, "all_count": 46, "recent_count": 8, "all_ratio": 1.25, "recent_ratio": 1.31, "status": "warm"}, {"number": 36, "all_count": 46, "recent_count": 8, "all_ratio": 1.25, "recent_ratio": 1.31, "status": "warm"}, {"number": 37, "all_count": 24, "recent_count": 7, "all_ratio": 0.65, "recent_ratio": 1.14, "status": "warm"}, {"number": 38, "all_count": 37, "recent_count": 7, "all_ratio": 1.01, "recent_ratio": 1.14, "status": "warm"}, {"number": 39, "all_count": 39, "recent_count": 4, "all_ratio": 1.06, "recent_ratio": 0.65, "status": "warm"}, {"number": 40, "all_count": 42, "recent_count": 8, "all_ratio": 1.14, "recent_ratio": 1.31, "status": "warm"}, {"number": 41, "all_count": 36, "recent_count": 4, "all_ratio": 0.98, "recent_ratio": 0.65, "status": "warm"}, {"number": 42, "all_count": 40, "recent_count": 9, "all_ratio": 1.09, "recent_ratio": 1.47, "status": "warm"}, {"number": 43, "all_count": 33, "recent_count": 6, "all_ratio": 0.9, "recent_ratio": 0.98, "status": "warm"}, {"number": 44, "all_count": 33, "recent_count": 7, "all_ratio": 0.9, "recent_ratio": 1.14, "status": "warm"}, {"number": 45, "all_count": 41, "recent_count": 4, "all_ratio": 1.12, "recent_ratio": 0.65, "status": "warm"}, {"number": 46, "all_count": 35, "recent_count": 5, "all_ratio": 0.95, "recent_ratio": 0.82, "status": "warm"}, {"number": 47, "all_count": 37, "recent_count": 4, "all_ratio": 1.01, "recent_ratio": 0.65, "status": "warm"}, {"number": 48, "all_count": 45, "recent_count": 5, "all_ratio": 1.22, "recent_ratio": 0.82, "status": "warm"}, {"number": 49, "all_count": 28, "recent_count": 5, "all_ratio": 0.76, "recent_ratio": 0.82, "status": "warm"}], "hot_count": 2, "cold_count": 5, "warm_count": 42}, "gap": {"details": [{"number": 1, "current_gap": 2, "avg_gap": 7.9, "max_gap": 29, "overdue": false}, {"number": 2, "current_gap": 7, "avg_gap": 8.3, "max_gap": 24, "overdue": false}, {"number": 3, "current_gap": 16, "avg_gap": 8.8, "max_gap": 28, "overdue": true}, {"number": 4, "current_gap": 11, "avg_gap": 8.9, "max_gap": 32, "overdue": false}, {"number": 5, "current_gap": 5, "avg_gap": 10.1, "max_gap": 33, "overdue": false}, {"number": 6, "current_gap": 8, "avg_gap": 7.2, "max_gap": 28, "overdue": false}, {"number": 7, "current_gap": 0, "avg_gap": 7.0, "max_gap": 30, "overdue": false}, {"number": 8, "current_gap": 0, "avg_gap": 7.3, "max_gap": 33, "overdue": false}, {"number": 9, "current_gap": 11, "avg_gap": 7.5, "max_gap": 25, "overdue": false}, {"number": 10, "current_gap": 6, "avg_gap": 8.3, "max_gap": 32, "overdue": false}, {"number": 11, "current_gap": 28, "avg_gap": 8.1, "max_gap": 47, "overdue": true}, {"number": 12, "current_gap": 20, "avg_gap": 8.7, "max_gap": 18, "overdue": true}, {"number": 13, "current_gap": 17, "avg_gap": 8.3, "max_gap": 30, "overdue": true}, {"number": 14, "current_gap": 4, "avg_gap": 9.5, "max_gap": 29, "overdue": false}, {"number": 15, "current_gap": 11, "avg_gap": 9.9, "max_gap": 29, "overdue": false}, {"number": 16, "current_gap": 2, "avg_gap": 9.8, "max_gap": 46, "overdue": false}, {"number": 17, "current_gap": 4, "avg_gap": 5.8, "max_gap": 20, "overdue": false}, {"number": 18, "current_gap": 16, "avg_gap": 6.8, "max_gap": 51, "overdue": true}, {"number": 19, "current_gap": 3, "avg_gap": 9.2, "max_gap": 43, "overdue": false}, {"number": 20, "current_gap": 7, "avg_gap": 7.9, "max_gap": 32, "overdue": false}, {"number": 21, "current_gap": 0, "avg_gap": 7.5, "max_gap": 31, "overdue": false}, {"number": 22, "current_gap": 5, "avg_gap": 9.1, "max_gap": 29, "overdue": false}, {"number": 23, "current_gap": 4, "avg_gap": 6.9, "max_gap": 24, "overdue": false}, {"number": 24, "current_gap": 7, "avg_gap": 10.4, "max_gap": 39, "overdue": false}, {"number": 25, "current_gap": 5, "avg_gap": 10.3, "max_gap": 54, "overdue": false}, {"number": 26, "current_gap": 4, "avg_gap": 8.4, "max_gap": 34, "overdue": false}, {"number": 27, "current_gap": 1, "avg_gap": 6.7, "max_gap": 22, "overdue": false}, {"number": 28, "current_gap": 8, "avg_gap": 8.4, "max_gap": 44, "overdue": false}, {"number": 29, "current_gap": 2, "avg_gap": 9.5, "max_gap": 59, "overdue": false}, {"number": 30, "current_gap": 6, "avg_gap": 5.6, "max_gap": 23, "overdue": false}, {"number": 31, "current_gap": 10, "avg_gap": 7.4, "max_gap": 31, "overdue": false}, {"number": 32, "current_gap": 2, "avg_gap": 9.2, "max_gap": 46, "overdue": false}, {"number": 33, "current_gap": 0, "avg_gap": 8.5, "max_gap": 79, "overdue": false}, {"number": 34, "current_gap": 10, "avg_gap": 6.5, "max_gap": 20, "overdue": true}, {"number": 35, "current_gap": 6, "avg_gap": 5.9, "max_gap": 18, "overdue": false}, {"number": 36, "current_gap": 1, "avg_gap": 6.3, "max_gap": 20, "overdue": false}, {"number": 37, "current_gap": 1, "avg_gap": 12.2, "max_gap": 37, "overdue": false}, {"number": 38, "current_gap": 2, "avg_gap": 8.2, "max_gap": 47, "overdue": false}, {"number": 39, "current_gap": 1, "avg_gap": 7.8, "max_gap": 22, "overdue": false}, {"number": 40, "current_gap": 1, "avg_gap": 7.2, "max_gap": 25, "overdue": false}, {"number": 41, "current_gap": 5, "avg_gap": 8.2, "max_gap": 24, "overdue": false}, {"number": 42, "current_gap": 0, "avg_gap": 6.8, "max_gap": 24, "overdue": false}, {"number": 43, "current_gap": 11, "avg_gap": 7.3, "max_gap": 21, "overdue": true}, {"number": 44, "current_gap": 3, "avg_gap": 8.7, "max_gap": 30, "overdue": false}, {"number": 45, "current_gap": 13, "avg_gap": 7.2, "max_gap": 33, "overdue": true}, {"number": 46, "current_gap": 7, "avg_gap": 8.2, "max_gap": 30, "overdue": false}, {"number": 47, "current_gap": 0, "avg_gap": 8.3, "max_gap": 41, "overdue": false}, {"number": 48, "current_gap": 5, "avg_gap": 6.5, "max_gap": 20, "overdue": false}, {"number": 49, "current_gap": 7, "avg_gap": 10.2, "max_gap": 34, "overdue": false}], "most_overdue": [{"number": 11, "current_gap": 28, "avg_gap": 8.1, "max_gap": 47, "overdue": true}, {"number": 12, "current_gap": 20, "avg_gap": 8.7, "max_gap": 18, "overdue": true}, {"number": 13, "current_gap": 17, "avg_gap": 8.3, "max_gap": 30, "overdue": true}, {"number": 3, "current_gap": 16, "avg_gap": 8.8, "max_gap": 28, "overdue": true}, {"number": 18, "current_gap": 16, "avg_gap": 6.8, "max_gap": 51, "overdue": true}, {"number": 45, "current_gap": 13, "avg_gap": 7.2, "max_gap": 33, "overdue": true}, {"number": 4, "current_gap": 11, "avg_gap": 8.9, "max_gap": 32, "overdue": false}, {"number": 9, "current_gap": 11, "avg_gap": 7.5, "max_gap": 25, "overdue": false}, {"number": 15, "current_gap": 11, "avg_gap": 9.9, "max_gap": 29, "overdue": false}, {"number": 43, "current_gap": 11, "avg_gap": 7.3, "max_gap": 21, "overdue": true}], "overdue_count": 8, "overdue_numbers": [11, 12, 13, 3, 18, 45, 43, 34]}, "patterns": {"odd_even": {"distribution": {"3:3": 95, "2:4": 83, "4:2": 63, "5:1": 33, "1:5": 21, "6:0": 3, "0:6": 2}, "most_common": [["3:3", 95], ["2:4", 83], ["4:2", 63]]}, "high_low": {"distribution": {"3:3": 97, "4:2": 71, "2:4": 67, "5:1": 31, "1:5": 23, "6:0": 9, "0:6": 2}, "most_common": [["3:3", 97], ["4:2", 71], ["2:4", 67]], "midpoint": 24}, "sum_range": {"min": 62, "max": 258, "avg": 151.6, "median": 149}, "consecutive": {"distribution": {"1": 144, "0": 129, "2": 25, "3": 2}, "has_consecutive_rate": 57.0}, "tail_digit": {"distribution": {"0": 165, "1": 187, "2": 175, "3": 180, "4": 169, "5": 175, "6": 188, "7": 196, "8": 196, "9": 169}}}, "special": {"name": "特別號", "range": 49, "total": 300, "ranking": [{"number": 36, "count": 12, "rate": 4.0}, {"number": 44, "count": 12, "rate": 4.0}, {"number": 20, "count": 11, "rate": 3.67}, {"number": 41, "count": 11, "rate": 3.67}, {"number": 3, "count": 10, "rate": 3.33}, {"number": 13, "count": 10, "rate": 3.33}, {"number": 23, "count": 10, "rate": 3.33}, {"number": 25, "count": 10, "rate": 3.33}, {"number": 46, "count": 10, "rate": 3.33}, {"number": 15, "count": 9, "rate": 3.0}, {"number": 21, "count": 8, "rate": 2.67}, {"number": 24, "count": 8, "rate": 2.67}, {"number": 2, "count": 7, "rate": 2.33}, {"number": 7, "count": 7, "rate": 2.33}, {"number": 11, "count": 7, "rate": 2.33}, {"number": 28, "count": 7, "rate": 2.33}, {"number": 32, "count": 7, "rate": 2.33}, {"number": 34, "count": 7, "rate": 2.33}, {"number": 35, "count": 7, "rate": 2.33}, {"number": 45, "count": 7, "rate": 2.33}, {"number": 49, "count": 7, "rate": 2.33}, {"number": 5, "count": 6, "rate": 2.0}, {"number": 14, "count": 6, "rate": 2.0}, {"number": 30, "count": 6, "rate": 2.0}, {"number": 39, "count": 6, "rate": 2.0}, {"number": 6, "count": 5, "rate": 1.67}, {"number": 8, "count": 5, "rate": 1.67}, {"number": 12, "count": 5, "rate": 1.67}, {"number": 17, "count": 5, "rate": 1.67}, {"number": 22, "count": 5, "rate": 1.67}, {"number": 31, "count": 5, "rate": 1.67}, {"number": 37, "count": 5, "rate": 1.67}, {"number": 43, "count": 5, "rate": 1.67}, {"number": 4, "count": 4, "rate": 1.33}, {"number": 9, "count": 4, "rate": 1.33}, {"number": 18, "count": 4, "rate": 1.33}, {"number": 26, "count": 4, "rate": 1.33}, {"number": 29, "count": 4, "rate": 1.33}, {"number": 33, "count": 4, "rate": 1.33}, {"number": 47, "count": 4, "rate": 1.33}, {"number": 48, "count": 4, "rate": 1.33}, {"number": 1, "count": 3, "rate": 1.0}, {"number": 19, "count": 3, "rate": 1.0}, {"number": 27, "count": 3, "rate": 1.0}, {"number": 42, "count": 3, "rate": 1.0}, {"number": 10, "count": 2, "rate": 0.67}, {"number": 16, "count": 2, "rate": 0.67}, {"number": 38, "count": 2, "rate": 0.67}, {"number": 40, "count": 2, "rate": 0.67}], "top5": [{"number": 36, "count": 12, "rate": 4.0}, {"number": 44, "count": 12, "rate": 4.0}, {"number": 20, "count": 11, "rate": 3.67}, {"number": 41, "count": 11, "rate": 3.67}, {"number": 3, "count": 10, "rate": 3.33}], "bottom5": [{"number": 42, "count": 3, "rate": 1.0}, {"number": 10, "count": 2, "rate": 0.67}, {"number": 16, "count": 2, "rate": 0.67}, {"number": 38, "count": 2, "rate": 0.67}, {"number": 40, "count": 2, "rate": 0.67}]}, "trends": {"rising": [{"number": 47, "recent": 3, "prev": 0, "diff": 3}, {"number": 8, "recent": 3, "prev": 1, "diff": 2}, {"number": 38, "recent": 2, "prev": 0, "diff": 2}, {"number": 39, "recent": 2, "prev": 0, "diff": 2}], "falling": [{"number": 31, "recent": 0, "prev": 4, "diff": -4}, {"number": 34, "recent": 0, "prev": 3, "diff": -3}, {"number": 3, "recent": 0, "prev": 2, "diff": -2}, {"number": 17, "recent": 1, "prev": 3, "diff": -2}, {"number": 30, "recent": 2, "prev": 4, "diff": -2}, {"number": 43, "recent": 0, "prev": 2, "diff": -2}, {"number": 45, "recent": 0, "prev": 2, "diff": -2}]}, "recommendations": {"hot_strategy": {"name": "熱號追蹤", "desc": "選擇近期出現頻率最高的號碼", "numbers": [30, 33]}, "cold_strategy": {"name": "冷號回歸", "desc": "選擇最久沒出現、即將回歸的號碼", "numbers": [3, 11, 12, 13, 18, 45]}, "balanced_strategy": {"name": "冷熱均衡", "desc": "3 個熱號 + 3 個冷號的均衡組合", "numbers": [15, 16, 20, 30, 33]}, "composite_strategy": {"name": "綜合評分", "desc": "結合頻率、遺漏、趨勢的綜合推薦", "numbers": [3, 11, 12, 18, 34, 43], "scores": {"34": 19.8, "18": 19.2, "12": 18.6, "43": 18.6, "3": 18.0, "11": 18.0, "13": 17.4, "45": 17.4, "47": 17.4, "8": 14.8}}, "smart_pick": {"name": "撞號迴避", "desc": "選別人不太會選的號碼，中獎時獎金不用跟太多人分", "numbers": [18, 32, 33, 34, 35, 43], "scores": {"18": 5.5, "32": 7.6, "33": 10.0, "34": 9.6, "35": 7.0, "43": 8.9}, "popularity_penalty": {"18": 3.5, "32": -2.0, "33": -2.0, "34": -2.0, "35": -1.0, "43": -3.5}, "reasons": ["包含 5 個大號（32, 33, 34, 35, 43）— 超過 31 的號碼較少人選（生日效應），撞號機率低", "含連號（32-33, 33-34, 34-35）— 多數人刻意避開連號，但連號出現率約 50%", "尾數避開了 0/5/7/8 等「好看」數字 — 減少與直覺選號者撞號", "6 個號碼不在常見幸運數字中 — 避開文化偏誤選號", "奇偶比 3:3 — 符合歷史常見分佈", "號碼總和 195 — 落在歷史合理區間"], "ev_analysis": {"avg_popularity_all": 2.6, "avg_popularity_pick": -1.2, "ev_advantage_pct": 144.3, "explanation": "一般人選號的平均人氣分 2.6，這組的人氣分 -1.2，預估撞號率比隨機選號低約 144%，等效期望獎金提升"}}, "special_top": [36, 44, 20], "disclaimer": "⚠️ 以上僅為統計分析參考，樂透開獎為隨機事件，不保證中獎。請理性購買，量力而為。"}}, "super_lotto": {"draw_type": "super_lotto", "config": {"name": "威力彩", "max_number": 38, "pick_count": 6, "has_special": false, "special_name": "第二區", "special_range": 8, "second_zone": true, "draw_days": "週一、週四"}, "total_draws": 300, "recent_n": 50, "date_range": {"from": "2024-01-02", "to": "2024-12-21"}, "frequency": {"total_draws": 300, "expected_rate": 15.79, "ranking": [{"number": 32, "count": 69, "rate": 23.0}, {"number": 3, "count": 59, "rate": 19.67}, {"number": 18, "count": 59, "rate": 19.67}, {"number": 22, "count": 57, "rate": 19.0}, {"number": 8, "count": 55, "rate": 18.33}, {"number": 21, "count": 55, "rate": 18.33}, {"number": 24, "count": 55, "rate": 18.33}, {"number": 9, "count": 54, "rate": 18.0}, {"number": 6, "count": 52, "rate": 17.33}, {"number": 7, "count": 52, "rate": 17.33}, {"number": 26, "count": 52, "rate": 17.33}, {"number": 11, "count": 51, "rate": 17.0}, {"number": 38, "count": 51, "rate": 17.0}, {"number": 37, "count": 50, "rate": 16.67}, {"number": 12, "count": 49, "rate": 16.33}, {"number": 27, "count": 49, "rate": 16.33}, {"number": 14, "count": 47, "rate": 15.67}, {"number": 19, "count": 47, "rate": 15.67}, {"number": 17, "count": 46, "rate": 15.33}, {"number": 31, "count": 46, "rate": 15.33}, {"number": 33, "count": 46, "rate": 15.33}, {"number": 2, "count": 45, "rate": 15.0}, {"number": 15, "count": 45, "rate": 15.0}, {"number": 25, "count": 45, "rate": 15.0}, {"number": 20, "count": 44, "rate": 14.67}, {"number": 5, "count": 43, "rate": 14.33}, {"number": 10, "count": 43, "rate": 14.33}, {"number": 34, "count": 43, "rate": 14.33}, {"number": 36, "count": 43, "rate": 14.33}, {"number": 4, "count": 42, "rate": 14.0}, {"number": 13, "count": 42, "rate": 14.0}, {"number": 30, "count": 41, "rate": 13.67}, {"number": 28, "count": 40, "rate": 13.33}, {"number": 1, "count": 39, "rate": 13.0}, {"number": 16, "count": 38, "rate": 12.67}, {"number": 35, "count": 37, "rate": 12.33}, {"number": 29, "count": 35, "rate": 11.67}, {"number": 23, "count": 34, "rate": 11.33}], "top10": [{"number": 32, "count": 69, "rate": 23.0}, {"number": 3, "count": 59, "rate": 19.67}, {"number": 18, "count": 59, "rate": 19.67}, {"number": 22, "count": 57, "rate": 19.0}, {"number": 8, "count": 55, "rate": 18.33}, {"number": 21, "count": 55, "rate": 18.33}, {"number": 24, "count": 55, "rate": 18.33}, {"number": 9, "count": 54, "rate": 18.0}, {"number": 6, "count": 52, "rate": 17.33}, {"number": 7, "count": 52, "rate": 17.33}], "bottom10": [{"number": 36, "count": 43, "rate": 14.33}, {"number": 4, "count": 42, "rate": 14.0}, {"number": 13, "count": 42, "rate": 14.0}, {"number": 30, "count": 41, "rate": 13.67}, {"number": 28, "count": 40, "rate": 13.33}, {"number": 1, "count": 39, "rate": 13.0}, {"number": 16, "count": 38, "rate": 12.67}, {"number": 35, "count": 37, "rate": 12.33}, {"number": 29, "count": 35, "rate": 11.67}, {"number": 23, "count": 34, "rate": 11.33}]}, "recent_frequency": {"total_draws": 50, "expected_rate": 15.79, "ranking": [{"number": 9, "count": 15, "rate": 30.0}, {"number": 26, "count": 14, "rate": 28.0}, {"number": 34, "count": 14, "rate": 28.0}, {"number": 32, "count": 12, "rate": 24.0}, {"number": 38, "count": 11, "rate": 22.0}, {"number": 2, "count": 10, "rate": 20.0}, {"number": 11, "count": 10, "rate": 20.0}, {"number": 17, "count": 10, "rate": 20.0}, {"number": 1, "count": 9, "rate": 18.0}, {"number": 4, "count": 9, "rate": 18.0}, {"number": 8, "count": 9, "rate": 18.0}, {"number": 15, "count": 9, "rate": 18.0}, {"number": 24, "count": 9, "rate": 18.0}, {"number": 27, "count": 9, "rate": 18.0}, {"number": 30, "count": 9, "rate": 18.0}, {"number": 7, "count": 8, "rate": 16.0}, {"number": 12, "count": 8, "rate": 16.0}, {"number": 14, "count": 8, "rate": 16.0}, {"number": 19, "count": 8, "rate": 16.0}, {"number": 22, "count": 8, "rate": 16.0}, {"number": 25, "count": 8, "rate": 16.0}, {"number": 3, "count": 7, "rate": 14.0}, {"number": 5, "count": 7, "rate": 14.0}, {"number": 18, "count": 7, "rate": 14.0}, {"number": 21, "count": 7, "rate": 14.0}, {"number": 6, "count": 6, "rate": 12.0}, {"number": 10, "count": 6, "rate": 12.0}, {"number": 28, "count": 6, "rate": 12.0}, {"number": 37, "count": 6, "rate": 12.0}, {"number": 13, "count": 5, "rate": 10.0}, {"number": 16, "count": 5, "rate": 10.0}, {"number": 33, "count": 5, "rate": 10.0}, {"number": 35, "count": 5, "rate": 10.0}, {"number": 36, "count": 5, "rate": 10.0}, {"number": 20, "count": 4, "rate": 8.0}, {"number": 23, "count": 4, "rate": 8.0}, {"number": 29, "count": 4, "rate": 8.0}, {"number": 31, "count": 4, "rate": 8.0}], "top10": [{"number": 9, "count": 15, "rate": 30.0}, {"number": 26, "count": 14, "rate": 28.0}, {"number": 34, "count": 14, "rate": 28.0}, {"number": 32, "count": 12, "rate": 24.0}, {"number": 38, "count": 11, "rate": 22.0}, {"number": 2, "count": 10, "rate": 20.0}, {"number": 11, "count": 10, "rate": 20.0}, {"number": 17, "count": 10, "rate": 20.0}, {"number": 1, "count": 9, "rate": 18.0}, {"number": 4, "count": 9, "rate": 18.0}], "bottom10": [{"number": 37, "count": 6, "rate": 12.0}, {"number": 13, "count": 5, "rate": 10.0}, {"number": 16, "count": 5, "rate": 10.0}, {"number": 33, "count": 5, "rate": 10.0}, {"number": 35, "count": 5, "rate": 10.0}, {"number": 36, "count": 5, "rate": 10.0}, {"number": 20, "count": 4, "rate": 8.0}, {"number": 23, "count": 4, "rate": 8.0}, {"number": 29, "count": 4, "rate": 8.0}, {"number": 31, "count": 4, "rate": 8.0}]}, "hot_cold": {"hot": [{"number": 9, "all_count": 54, "recent_count": 15, "all_ratio": 1.14, "recent_ratio": 1.9, "status": "hot"}, {"number": 26, "all_count": 52, "recent_count": 14, "all_ratio": 1.1, "recent_ratio": 1.77, "status": "hot"}, {"number": 34, "all_count": 43, "recent_count": 14, "all_ratio": 0.91, "recent_ratio": 1.77, "status": "hot"}, {"number": 32, "all_count": 69, "recent_count": 12, "all_ratio": 1.46, "recent_ratio": 1.52, "status": "hot"}], "cold": [], "warm": [{"number": 1, "all_count": 39, "recent_count": 9, "all_ratio": 0.82, "recent_ratio": 1.14, "status": "warm"}, {"number": 2, "all_count": 45, "recent_count": 10, "all_ratio": 0.95, "recent_ratio": 1.27, "status": "warm"}, {"number": 3, "all_count": 59, "recent_count": 7, "all_ratio": 1.25, "recent_ratio": 0.89, "status": "warm"}, {"number": 4, "all_count": 42, "recent_count": 9, "all_ratio": 0.89, "recent_ratio": 1.14, "status": "warm"}, {"number": 5, "all_count": 43, "recent_count": 7, "all_ratio": 0.91, "recent_ratio": 0.89, "status": "warm"}, {"number": 6, "all_count": 52, "recent_count": 6, "all_ratio": 1.1, "recent_ratio": 0.76, "status": "warm"}, {"number": 7, "all_count": 52, "recent_count": 8, "all_ratio": 1.1, "recent_ratio": 1.01, "status": "warm"}, {"number": 8, "all_count": 55, "recent_count": 9, "all_ratio": 1.16, "recent_ratio": 1.14, "status": "warm"}, {"number": 10, "all_count": 43, "recent_count": 6, "all_ratio": 0.91, "recent_ratio": 0.76, "status": "warm"}, {"number": 11, "all_count": 51, "recent_count": 10, "all_ratio": 1.08, "recent_ratio": 1.27, "status": "warm"}, {"number": 12, "all_count": 49, "recent_count": 8, "all_ratio": 1.03, "recent_ratio": 1.01, "status": "warm"}, {"number": 13, "all_count": 42, "recent_count": 5, "all_ratio": 0.89, "recent_ratio": 0.63, "status": "warm"}, {"number": 14, "all_count": 47, "recent_count": 8, "all_ratio": 0.99, "recent_ratio": 1.01, "status": "warm"}, {"number": 15, "all_count": 45, "recent_count": 9, "all_ratio": 0.95, "recent_ratio": 1.14, "status": "warm"}, {"number": 16, "all_count": 38, "recent_count": 5, "all_ratio": 0.8, "recent_ratio": 0.63, "status": "warm"}, {"number": 17, "all_count": 46, "recent_count": 10, "all_ratio": 0.97, "recent_ratio": 1.27, "status": "warm"}, {"number": 18, "all_count": 59, "recent_count": 7, "all_ratio": 1.25, "recent_ratio": 0.89, "status": "warm"}, {"number": 19, "all_count": 47, "recent_count": 8, "all_ratio": 0.99, "recent_ratio": 1.01, "status": "warm"}, {"number": 20, "all_count": 44, "recent_count": 4, "all_ratio": 0.93, "recent_ratio": 0.51, "status": "warm"}, {"number": 21, "all_count": 55, "recent_count": 7, "all_ratio": 1.16, "recent_ratio": 0.89, "status": "warm"}, {"number": 22, "all_count": 57, "recent_count": 8, "all_ratio": 1.2, "recent_ratio": 1.01, "status": "warm"}, {"number": 23, "all_count": 34, "recent_count": 4, "all_ratio": 0.72, "recent_ratio": 0.51, "status": "warm"}, {"number": 24, "all_count": 55, "recent_count": 9, "all_ratio": 1.16, "recent_ratio": 1.14, "status": "warm"}, {"number": 25, "all_count": 45, "recent_count": 8, "all_ratio": 0.95, "recent_ratio": 1.01, "status": "warm"}, {"number": 27, "all_count": 49, "recent_count": 9, "all_ratio": 1.03, "recent_ratio": 1.14, "status": "warm"}, {"number": 28, "all_count": 40, "recent_count": 6, "all_ratio": 0.84, "recent_ratio": 0.76, "status": "warm"}, {"number": 29, "all_count": 35, "recent_count": 4, "all_ratio": 0.74, "recent_ratio": 0.51, "status": "warm"}, {"number": 30, "all_count": 41, "recent_count": 9, "all_ratio": 0.87, "recent_ratio": 1.14, "status": "warm"}, {"number": 31, "all_count": 46, "recent_count": 4, "all_ratio": 0.97, "recent_ratio": 0.51, "status": "warm"}, {"number": 33, "all_count": 46, "recent_count": 5, "all_ratio": 0.97, "recent_ratio": 0.63, "status": "warm"}, {"number": 35, "all_count": 37, "recent_count": 5, "all_ratio": 0.78, "recent_ratio": 0.63, "status": "warm"}, {"number": 36, "all_count": 43, "recent_count": 5, "all_ratio": 0.91, "recent_ratio": 0.63, "status": "warm"}, {"number": 37, "all_count": 50, "recent_count": 6, "all_ratio": 1.06, "recent_ratio": 0.76, "status": "warm"}, {"number": 38, "all_count": 51, "recent_count": 11, "all_ratio": 1.08, "recent_ratio": 1.39, "status": "warm"}], "hot_count": 4, "cold_count": 0, "warm_count": 34}, "gap": {"details": [{"number": 1, "current_gap": 7, "avg_gap": 7.7, "max_gap": 24, "overdue": false}, {"number": 2, "current_gap": 2, "avg_gap": 6.7, "max_gap": 26, "overdue": false}, {"number": 3, "current_gap": 9, "avg_gap": 4.8, "max_gap": 13, "overdue": true}, {"number": 4, "current_gap": 0, "avg_gap": 7.1, "max_gap": 17, "overdue": false}, {"number": 5, "current_gap": 18, "avg_gap": 6.5, "max_gap": 22, "overdue": true}, {"number": 6, "current_gap": 5, "avg_gap": 5.7, "max_gap": 21, "overdue": false}, {"number": 7, "current_gap": 0, "avg_gap": 5.8, "max_gap": 25, "overdue": false}, {"number": 8, "current_gap": 1, "avg_gap": 5.3, "max_gap": 22, "overdue": false}, {"number": 9, "current_gap": 0, "avg_gap": 5.3, "max_gap": 15, "overdue": false}, {"number": 10, "current_gap": 4, "avg_gap": 7.0, "max_gap": 27, "overdue": false}, {"number": 11, "current_gap": 6, "avg_gap": 5.8, "max_gap": 22, "overdue": false}, {"number": 12, "current_gap": 7, "avg_gap": 6.1, "max_gap": 23, "overdue": false}, {"number": 13, "current_gap": 13, "avg_gap": 6.7, "max_gap": 41, "overdue": true}, {"number": 14, "current_gap": 16, "avg_gap": 6.0, "max_gap": 34, "overdue": true}, {"number": 15, "current_gap": 3, "avg_gap": 6.7, "max_gap": 25, "overdue": false}, {"number": 16, "current_gap": 20, "avg_gap": 7.1, "max_gap": 34, "overdue": true}, {"number": 17, "current_gap": 2, "avg_gap": 6.6, "max_gap": 36, "overdue": false}, {"number": 18, "current_gap": 5, "avg_gap": 5.1, "max_gap": 17, "overdue": false}, {"number": 19, "current_gap": 1, "avg_gap": 6.3, "max_gap": 25, "overdue": false}, {"number": 20, "current_gap": 32, "avg_gap": 6.2, "max_gap": 19, "overdue": true}, {"number": 21, "current_gap": 2, "avg_gap": 5.5, "max_gap": 18, "overdue": false}, {"number": 22, "current_gap": 2, "avg_gap": 5.2, "max_gap": 21, "overdue": false}, {"number": 23, "current_gap": 15, "avg_gap": 8.3, "max_gap": 22, "overdue": true}, {"number": 24, "current_gap": 1, "avg_gap": 5.4, "max_gap": 23, "overdue": false}, {"number": 25, "current_gap": 6, "avg_gap": 6.6, "max_gap": 26, "overdue": false}, {"number": 26, "current_gap": 2, "avg_gap": 5.5, "max_gap": 18, "overdue": false}, {"number": 27, "current_gap": 0, "avg_gap": 6.2, "max_gap": 22, "overdue": false}, {"number": 28, "current_gap": 3, "avg_gap": 7.4, "max_gap": 28, "overdue": false}, {"number": 29, "current_gap": 10, "avg_gap": 8.3, "max_gap": 56, "overdue": false}, {"number": 30, "current_gap": 4, "avg_gap": 7.3, "max_gap": 22, "overdue": false}, {"number": 31, "current_gap": 2, "avg_gap": 6.5, "max_gap": 39, "overdue": false}, {"number": 32, "current_gap": 0, "avg_gap": 4.3, "max_gap": 18, "overdue": false}, {"number": 33, "current_gap": 0, "avg_gap": 6.6, "max_gap": 28, "overdue": false}, {"number": 34, "current_gap": 4, "avg_gap": 6.9, "max_gap": 46, "overdue": false}, {"number": 35, "current_gap": 10, "avg_gap": 8.0, "max_gap": 35, "overdue": false}, {"number": 36, "current_gap": 1, "avg_gap": 7.1, "max_gap": 33, "overdue": false}, {"number": 37, "current_gap": 21, "avg_gap": 5.6, "max_gap": 22, "overdue": true}, {"number": 38, "current_gap": 8, "avg_gap": 5.8, "max_gap": 20, "overdue": false}], "most_overdue": [{"number": 20, "current_gap": 32, "avg_gap": 6.2, "max_gap": 19, "overdue": true}, {"number": 37, "current_gap": 21, "avg_gap": 5.6, "max_gap": 22, "overdue": true}, {"number": 16, "current_gap": 20, "avg_gap": 7.1, "max_gap": 34, "overdue": true}, {"number": 5, "current_gap": 18, "avg_gap": 6.5, "max_gap": 22, "overdue": true}, {"number": 14, "current_gap": 16, "avg_gap": 6.0, "max_gap": 34, "overdue": true}, {"number": 23, "current_gap": 15, "avg_gap": 8.3, "max_gap": 22, "overdue": true}, {"number": 13, "current_gap": 13, "avg_gap": 6.7, "max_gap": 41, "overdue": true}, {"number": 29, "current_gap": 10, "avg_gap": 8.3, "max_gap": 56, "overdue": false}, {"number": 35, "current_gap": 10, "avg_gap": 8.0, "max_gap": 35, "overdue": false}, {"number": 3, "current_gap": 9, "avg_gap": 4.8, "max_gap": 13, "overdue": true}], "overdue_count": 8, "overdue_numbers": [20, 37, 16, 5, 14, 23, 13, 3]}, "patterns": {"odd_even": {"distribution": {"3:3": 109, "2:4": 77, "4:2": 55, "5:1": 27, "1:5": 27, "0:6": 3, "6:0": 2}, "most_common": [["3:3", 109], ["2:4", 77], ["4:2", 55]]}, "high_low": {"distribution": {"3:3": 102, "4:2": 73, "2:4": 71, "1:5": 25, "5:1": 23, "0:6": 4, "6:0": 2}, "most_common": [["3:3", 102], ["4:2", 73], ["2:4", 71]], "midpoint": 19}, "sum_range": {"min": 37, "max": 183, "avg": 116.3, "median": 118}, "consecutive": {"distribution": {"0": 136, "1": 118, "2": 41, "3": 4, "4": 1}, "has_consecutive_rate": 54.7}, "tail_digit": {"distribution": {"0": 128, "1": 191, "2": 220, "3": 181, "4": 187, "5": 170, "6": 185, "7": 197, "8": 205, "9": 136}}}, "special": {"name": "第二區", "range": 8, "total": 300, "ranking": [{"number": 8, "count": 46, "rate": 15.33}, {"number": 1, "count": 44, "rate": 14.67}, {"number": 7, "count": 40, "rate": 13.33}, {"number": 5, "count": 38, "rate": 12.67}, {"number": 6, "count": 36, "rate": 12.0}, {"number": 2, "count": 35, "rate": 11.67}, {"number": 4, "count": 32, "rate": 10.67}, {"number": 3, "count": 29, "rate": 9.67}], "top5": [{"number": 8, "count": 46, "rate": 15.33}, {"number": 1, "count": 44, "rate": 14.67}, {"number": 7, "count": 40, "rate": 13.33}, {"number": 5, "count": 38, "rate": 12.67}, {"number": 6, "count": 36, "rate": 12.0}], "bottom5": [{"number": 5, "count": 38, "rate": 12.67}, {"number": 6, "count": 36, "rate": 12.0}, {"number": 2, "count": 35, "rate": 11.67}, {"number": 4, "count": 32, "rate": 10.67}, {"number": 3, "count": 29, "rate": 9.67}]}, "trends": {"rising": [{"number": 2, "recent": 4, "prev": 1, "diff": 3}, {"number": 27, "recent": 3, "prev": 0, "diff": 3}, {"number": 17, "recent": 3, "prev": 1, "diff": 2}], "falling": [{"number": 13, "recent": 0, "prev": 4, "diff": -4}, {"number": 4, "recent": 2, "prev": 4, "diff": -2}, {"number": 5, "recent": 0, "prev": 2, "diff": -2}, {"number": 14, "recent": 0, "prev": 2, "diff": -2}, {"number": 38, "recent": 1, "prev": 3, "diff": -2}]}, "recommendations": {"hot_strategy": {"name": "熱號追蹤", "desc": "選擇近期出現頻率最高的號碼", "numbers": [9, 26, 32, 34]}, "cold_strategy": {"name": "冷號回歸", "desc": "選擇最久沒出現、即將回歸的號碼", "numbers": [5, 14, 16, 20, 23, 37]}, "balanced_strategy": {"name": "冷熱均衡", "desc": "3 個熱號 + 3 個冷號的均衡組合", "numbers": [9, 26, 34]}, "composite_strategy": {"name": "綜合評分", "desc": "結合頻率、遺漏、趨勢的綜合推薦", "numbers": [2, 3, 5, 14, 27, 37], "scores": {"2": 21.0, "27": 20.4, "14": 19.8, "3": 19.2, "5": 19.2, "37": 18.6, "13": 18.0, "16": 18.0, "20": 17.4, "23": 17.4}}, "smart_pick": {"name": "撞號迴避", "desc": "選別人不太會選的號碼，中獎時獎金不用跟太多人分", "numbers": [9, 11, 14, 22, 32, 33], "scores": {"9": 6.9, "11": 4.7, "14": 6.3, "22": 4.6, "32": 10.8, "33": 5.2}, "popularity_penalty": {"9": 8.5, "11": 5.5, "14": 3.5, "22": 3.0, "32": -2.0, "33": -2.0}, "reasons": ["包含 2 個大號（32, 33）— 超過 31 的號碼較少人選（生日效應），撞號機率低", "含連號（32-33）— 多數人刻意避開連號，但連號出現率約 50%", "尾數避開了 0/5/7/8 等「好看」數字 — 減少與直覺選號者撞號", "5 個號碼不在常見幸運數字中 — 避開文化偏誤選號", "奇偶比 3:3 — 符合歷史常見分佈", "號碼總和 121 — 落在歷史合理區間"], "ev_analysis": {"avg_popularity_all": 4.0, "avg_popularity_pick": 2.8, "ev_advantage_pct": 31.0, "explanation": "一般人選號的平均人氣分 4.0，這組的人氣分 2.8，預估撞號率比隨機選號低約 31%，等效期望獎金提升"}}, "special_top": [8, 1, 7], "disclaimer": "⚠️ 以上僅為統計分析參考，樂透開獎為隨機事件，不保證中獎。請理性購買，量力而為。"}}};
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
