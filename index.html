@@ -366,7 +366,7 @@
 
 <div class="header">
   <h1>Angela AI — 低價潛力股推薦 <span class="badge" id="badgeCount">0 支</span></h1>
-  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 06:18 ｜ Powered by Angela Personal Cognitive Butler</div>
+  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 06:19 ｜ Powered by Angela Personal Cognitive Butler</div>
 </div>
 
 <!-- ★ 互動式篩選條件 -->
@@ -595,224 +595,7 @@ applyConditions();
 </script>
 
 <script>
-// ====== Angela 即時股價查詢 widget (v2 完整版) ======
-const STOCK_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2603": "長榮", "2002": "中鋼", "8454": "富邦媒", "0050": "元大台灣50", "0056": "元大高股息", "2382": "廣達", "1216": "統一", "2207": "和泰車"};
-const STOCK_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2603": "TWSE", "2002": "TWSE", "8454": "TWSE", "0050": "TWSE", "0056": "TWSE", "2382": "TWSE", "1216": "TWSE", "2207": "TWSE"};
 
-// 反向 mapping(中文名 → 代號)
-const NAME_TO_CODE = {};
-for (const [code, name] of Object.entries(STOCK_NAMES)) {
-  if (name) NAME_TO_CODE[name] = code;
-}
-
-let _qrChart = null;
-
-function _lookupCode(input) {
-  if (/^\d{4,6}$/.test(input)) return input;
-  if (NAME_TO_CODE[input]) return NAME_TO_CODE[input];
-  const matches = Object.entries(STOCK_NAMES)
-    .filter(([c, n]) => n && n.includes(input))
-    .slice(0, 8);
-  return matches.length === 1 ? matches[0][0] : null;
-}
-
-function _suggestNames(input) {
-  if (!input || /^\d/.test(input)) return [];
-  return Object.entries(STOCK_NAMES)
-    .filter(([c, n]) => n && n.includes(input))
-    .slice(0, 8);
-}
-
-function _showToast(msg, ms) {
-  const t = document.getElementById('qrToast');
-  if (!t) return;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), ms || 2200);
-}
-
-function _copyAngelaCmd(cmd) {
-  navigator.clipboard.writeText(cmd).then(
-    () => _showToast('已複製 '' + cmd + '' 到剪貼簿,貼到 Discord 給 Angela'),
-    () => _showToast('複製失敗,請手動打: ' + cmd)
-  );
-}
-
-function _calcMA(closes, n) {
-  if (!closes || closes.length < n) return null;
-  const slice = closes.slice(-n).filter(c => c != null && !isNaN(c));
-  if (slice.length === 0) return null;
-  return slice.reduce((a, b) => a + b, 0) / slice.length;
-}
-
-async function lookupQuote() {
-  const inp = document.getElementById('quoteInput');
-  const btn = document.getElementById('quoteBtn');
-  const resultDiv = document.getElementById('quoteResult');
-  const suggestDiv = document.getElementById('quoteSuggest');
-  const q = (inp.value || '').trim();
-
-  suggestDiv.style.display = 'none';
-  if (!q) {
-    resultDiv.style.display = 'block';
-    resultDiv.innerHTML = '<div class="qr-err">請輸入代號或中文名</div>';
-    return;
-  }
-
-  if (!/^\d/.test(q)) {
-    const matches = _suggestNames(q);
-    if (matches.length > 1) {
-      suggestDiv.style.display = 'block';
-      suggestDiv.innerHTML = matches.map(([c, n]) =>
-        '<div class="quote-suggest-item" onclick="document.getElementById('quoteInput').value=''+c+'';lookupQuote();">' + c + ' ' + n + '</div>'
-      ).join('');
-      resultDiv.style.display = 'none';
-      return;
-    } else if (matches.length === 0) {
-      resultDiv.style.display = 'block';
-      resultDiv.innerHTML = '<div class="qr-err">找不到「' + q + '」,確認名稱或改用代號</div>';
-      return;
-    }
-  }
-
-  const code = _lookupCode(q);
-  if (!code) {
-    resultDiv.style.display = 'block';
-    resultDiv.innerHTML = '<div class="qr-err">無法識別「' + q + '」</div>';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = '查詢中...';
-  resultDiv.style.display = 'block';
-  resultDiv.innerHTML = '<div style="color:var(--text2);">⏳ 抓 Yahoo Finance 即時報價 + 3 個月走勢...</div>';
-
-  let data = null;
-  let timestamps = null;
-  let closes = null;
-  let actualSymbol = null;
-  for (const suffix of ['.TW', '.TWO']) {
-    const symbol = code + suffix;
-    try {
-      const resp = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/' + symbol + '?interval=1d&range=3mo');
-      if (!resp.ok) continue;
-      const j = await resp.json();
-      const r = j && j.chart && j.chart.result && j.chart.result[0];
-      if (r && r.meta && r.meta.regularMarketPrice) {
-        data = r.meta;
-        timestamps = r.timestamp || [];
-        closes = (r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close) || [];
-        actualSymbol = symbol;
-        break;
-      }
-    } catch (e) { /* try next */ }
-  }
-
-  btn.disabled = false;
-  btn.textContent = '查詢';
-
-  if (!data) {
-    resultDiv.innerHTML = '<div class="qr-err">找不到 ' + code + ' 的即時報價(可能停牌/興櫃/Yahoo 無資料)</div>';
-    return;
-  }
-
-  const name = STOCK_NAMES[code] || '(無名稱)';
-  const marketLabel = ({ TWSE: '上市', TPEX: '上櫃', ESB: '興櫃' })[STOCK_MARKET[code]] || '';
-  const price = data.regularMarketPrice;
-  const prevClose = (data.chartPreviousClose != null ? data.chartPreviousClose : (data.previousClose != null ? data.previousClose : price));
-  const change = price - prevClose;
-  const changePct = (change / prevClose) * 100;
-  const upDown = change >= 0 ? 'up' : 'down';
-  const sign = change >= 0 ? '+' : '';
-  const dayHi = data.regularMarketDayHigh != null ? data.regularMarketDayHigh : '-';
-  const dayLo = data.regularMarketDayLow != null ? data.regularMarketDayLow : '-';
-  const vol = data.regularMarketVolume != null ? data.regularMarketVolume : '-';
-  const w52Hi = data.fiftyTwoWeekHigh != null ? data.fiftyTwoWeekHigh : '-';
-  const w52Lo = data.fiftyTwoWeekLow != null ? data.fiftyTwoWeekLow : '-';
-  const fmt = function(v) { return (typeof v === 'number') ? v.toLocaleString('zh-TW', {maximumFractionDigits: 2}) : v; };
-
-  const ma20 = _calcMA(closes, 20);
-  const ma60 = _calcMA(closes, 60);
-  const ma20Disp = ma20 != null ? fmt(ma20) : '-';
-  const ma60Disp = ma60 != null ? fmt(ma60) : '-';
-  const ma20Cls = (ma20 != null) ? (price > ma20 ? 'up' : 'down') : '';
-  const ma60Cls = (ma60 != null) ? (price > ma60 ? 'up' : 'down') : '';
-  let pos52 = '-';
-  if (typeof w52Hi === 'number' && typeof w52Lo === 'number' && w52Hi > w52Lo) {
-    const ratio = ((price - w52Lo) / (w52Hi - w52Lo)) * 100;
-    pos52 = ratio.toFixed(1) + '%';
-  }
-
-  resultDiv.innerHTML =
-    '<div class="qr-head">' +
-      '<div>' +
-        '<span class="qr-name">' + name + '</span>' +
-        '<span class="qr-code">' + actualSymbol + (marketLabel ? ' · ' + marketLabel : '') + '</span>' +
-      '</div>' +
-      '<div class="qr-price qr-change-' + upDown + '">' +
-        fmt(price) + ' <span style="font-size:1rem;">(' + sign + fmt(change) + ' ' + sign + changePct.toFixed(2) + '%)</span>' +
-      '</div>' +
-    '</div>' +
-    '<div class="qr-stats">' +
-      '<div class="qr-stat"><div class="lbl">前收</div><div class="val">' + fmt(prevClose) + '</div></div>' +
-      '<div class="qr-stat"><div class="lbl">日高</div><div class="val">' + fmt(dayHi) + '</div></div>' +
-      '<div class="qr-stat"><div class="lbl">日低</div><div class="val">' + fmt(dayLo) + '</div></div>' +
-      '<div class="qr-stat"><div class="lbl">成交量</div><div class="val">' + (typeof vol === 'number' ? Math.round(vol/1000).toLocaleString()+' 張' : vol) + '</div></div>' +
-      '<div class="qr-stat"><div class="lbl">52w 高</div><div class="val">' + fmt(w52Hi) + '</div></div>' +
-      '<div class="qr-stat"><div class="lbl">52w 低</div><div class="val">' + fmt(w52Lo) + '</div></div>' +
-    '</div>' +
-    '<div class="qr-tech">' +
-      '<div class="qr-tech-item"><div class="lbl">MA20(月均)</div><div class="val ' + ma20Cls + '">' + ma20Disp + '</div></div>' +
-      '<div class="qr-tech-item"><div class="lbl">MA60(季均)</div><div class="val ' + ma60Cls + '">' + ma60Disp + '</div></div>' +
-      '<div class="qr-tech-item"><div class="lbl">52 週位階</div><div class="val">' + pos52 + '</div></div>' +
-    '</div>' +
-    '<div class="qr-chart-wrap"><canvas id="qrChartCanvas"></canvas></div>' +
-    '<div class="qr-actions">' +
-      '<button class="qr-action-btn" onclick="_copyAngelaCmd('!angela 基本面 ' + code + '')">📊 基本面分析(複製)</button>' +
-      '<button class="qr-action-btn" onclick="_copyAngelaCmd('!angela 籌碼 ' + code + '')">💰 籌碼分析(複製)</button>' +
-      '<button class="qr-action-btn" onclick="_copyAngelaCmd('!angela 深度分析 ' + code + '')">🔬 深度分析(複製)</button>' +
-    '</div>';
-
-  setTimeout(() => {
-    const canvas = document.getElementById('qrChartCanvas');
-    if (!canvas || !window.Chart) return;
-    if (_qrChart) { _qrChart.destroy(); _qrChart = null; }
-    const labels = timestamps.map(t => new Date(t * 1000).toLocaleDateString('zh-TW', {month: 'numeric', day: 'numeric'}));
-    const validCloses = closes.map(c => c == null ? null : c);
-    _qrChart = new Chart(canvas, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: name + ' 收盤',
-          data: validCloses,
-          borderColor: change >= 0 ? '#d63031' : '#00b894',
-          backgroundColor: change >= 0 ? 'rgba(214,48,49,0.1)' : 'rgba(0,184,148,0.1)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 0,
-          borderWidth: 2,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { display: true, ticks: { color: '#8b8fa3', font: { size: 10 }, maxTicksLimit: 6 }, grid: { display: false } },
-          y: { display: true, ticks: { color: '#8b8fa3', font: { size: 10 } }, grid: { color: 'rgba(139,143,163,0.1)' } }
-        }
-      }
-    });
-  }, 50);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  const inp = document.getElementById('quoteInput');
-  if (inp) {
-    inp.addEventListener('keyup', function(e) {
-      if (e.key === 'Enter') lookupQuote();
-    });
     const params = new URLSearchParams(window.location.search);
     const preset = params.get('stock');
     if (preset) {
@@ -825,8 +608,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <script>
 // ====== 📊 個股查詢工具 (sl- 獨立區塊) ======
-const SL_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2603": "長榮", "2002": "中鋼", "8454": "富邦媒", "0050": "元大台灣50", "0056": "元大高股息", "2382": "廣達", "1216": "統一", "2207": "和泰車"};
-const SL_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2603": "TWSE", "2002": "TWSE", "8454": "TWSE", "0050": "TWSE", "0056": "TWSE", "2382": "TWSE", "1216": "TWSE", "2207": "TWSE"};
+const SL_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2603": "長榮", "2002": "中鋼", "8454": "富邦媒", "0050": "元大台灣50", "0056": "元大高股息", "2382": "廣達", "1216": "統一"};
+const SL_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2603": "TWSE", "2002": "TWSE", "8454": "TWSE", "0050": "TWSE", "0056": "TWSE", "2382": "TWSE", "1216": "TWSE"};
 const SL_NAME2CODE = {};
 for (const [c, n] of Object.entries(SL_NAMES)) { if (n) SL_NAME2CODE[n] = c; }
 let _slChart = null;
