@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angela AI — 個股查詢(等下次掃描刷新候選股清單)</title>
+<title>Angela AI — 個股查詢 + 潛力股推薦</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -365,7 +365,7 @@
 
 <div class="header">
   <h1>Angela AI — 低價潛力股推薦 <span class="badge" id="badgeCount">0 支</span></h1>
-  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 01:10 ｜ Powered by Angela Personal Cognitive Butler</div>
+  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 01:24 ｜ Powered by Angela Personal Cognitive Butler</div>
 </div>
 
 <!-- ★ 即時股價查詢 widget(代號或中文名) -->
@@ -452,12 +452,26 @@
   </div>
 </div>
 
-<!-- 結果計數(舊 filter-bar 已砍,改用上方 quote widget 查任一台股) -->
-<div class="filter-bar" style="justify-content: center;">
-  <span class="result-count" id="resultCount" style="color: var(--text2);">本批掃描結果如下</span>
-  <input type="hidden" id="searchBox" value="">
-  <input type="hidden" id="gradeFilter" value="">
-  <select id="sortSelect" onchange="sortBySelect()" style="display:none;"><option value=""></option></select>
+<!-- 搜尋 + 排序(篩選下方掃描結果表用) -->
+<div class="filter-bar">
+  <input type="text" id="searchBox" placeholder="搜尋代碼或名稱..." onkeyup="applyConditions()">
+  <select id="gradeFilter" onchange="applyConditions()">
+    <option value="">全部評級</option>
+    <option value="A">A 優良</option>
+    <option value="B">B 合格</option>
+  </select>
+  <select id="sortSelect" onchange="sortBySelect()">
+    <option value="">排序方式</option>
+    <option value="price_asc">股價 低→高</option>
+    <option value="price_desc">股價 高→低</option>
+    <option value="mult_desc">倍率 高→低</option>
+    <option value="drop_desc">跌幅 大→小</option>
+    <option value="vol_desc">日均量 多→少</option>
+    <option value="peaks_desc">高點次數 多→少</option>
+    <option value="wave_desc">月振幅 高→低</option>
+    <option value="vtr_desc">量增比 高→低</option>
+  </select>
+  <span class="result-count" id="resultCount"></span>
 </div>
 
 <div class="disclaimer">
@@ -592,8 +606,8 @@ applyConditions();
 
 <script>
 // ====== Angela 即時股價查詢 widget (v2 完整版) ======
-const STOCK_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2891": "中信金", "2884": "玉山金", "2885": "元大金", "2603": "長榮", "2609": "陽明", "2615": "萬海", "2002": "中鋼", "1301": "台塑", "1303": "南亞", "2207": "和泰車", "2912": "統一超", "1216": "統一", "2357": "華碩", "2382": "廣達", "2376": "技嘉", "3008": "大立光", "2379": "瑞昱", "3034": "聯詠", "3711": "日月光投控", "2303": "聯電", "6505": "台塑化", "8454": "富邦媒", "2474": "可成", "2105": "正新", "1101": "台泥", "1102": "亞泥", "2880": "華南金", "2886": "兆豐金", "2887": "台新金", "2890": "永豐金", "2892": "第一金", "5880": "合庫金", "2823": "中壽", "0050": "元大台灣50", "0056": "元大高股息", "006208": "富邦台50", "00878": "國泰永續高股息", "00713": "元大台灣高息低波", "00919": "群益台灣精選高息", "9911": "櫻花", "2618": "長榮航", "2610": "華航", "1605": "華新", "2356": "英業達"};
-const STOCK_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2891": "TWSE", "2884": "TWSE", "2885": "TWSE", "2603": "TWSE", "2609": "TWSE", "2615": "TWSE", "2002": "TWSE", "1301": "TWSE", "1303": "TWSE", "2207": "TWSE", "2912": "TWSE", "1216": "TWSE", "2357": "TWSE", "2382": "TWSE", "2376": "TWSE", "3008": "TWSE", "2379": "TWSE", "3034": "TWSE", "3711": "TWSE", "2303": "TWSE", "6505": "TWSE", "8454": "TWSE", "2474": "TWSE", "2105": "TWSE", "1101": "TWSE", "1102": "TWSE", "2880": "TWSE", "2886": "TWSE", "2887": "TWSE", "2890": "TWSE", "2892": "TWSE", "5880": "TWSE", "2823": "TWSE", "0050": "TWSE", "0056": "TWSE", "006208": "TWSE", "00878": "TWSE", "00713": "TWSE", "00919": "TWSE", "9911": "TWSE", "2618": "TWSE", "2610": "TWSE", "1605": "TWSE", "2356": "TWSE"};
+const STOCK_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2891": "中信金", "2884": "玉山金", "2885": "元大金", "2603": "長榮", "2609": "陽明", "2615": "萬海", "2002": "中鋼", "1301": "台塑", "1303": "南亞", "2207": "和泰車", "2912": "統一超", "1216": "統一", "2357": "華碩", "2382": "廣達", "2376": "技嘉", "3008": "大立光", "2379": "瑞昱", "3034": "聯詠", "3711": "日月光投控", "2303": "聯電", "6505": "台塑化", "8454": "富邦媒", "2474": "可成", "2105": "正新", "1101": "台泥", "1102": "亞泥", "2880": "華南金", "2886": "兆豐金", "2887": "台新金", "2890": "永豐金", "2892": "第一金", "5880": "合庫金", "2823": "中壽", "0050": "元大台灣50", "0056": "元大高股息", "006208": "富邦台50", "00878": "國泰永續高股息", "00713": "元大台灣高息低波", "00919": "群益台灣精選高息", "2618": "長榮航", "2610": "華航", "1605": "華新", "2356": "英業達"};
+const STOCK_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2891": "TWSE", "2884": "TWSE", "2885": "TWSE", "2603": "TWSE", "2609": "TWSE", "2615": "TWSE", "2002": "TWSE", "1301": "TWSE", "1303": "TWSE", "2207": "TWSE", "2912": "TWSE", "1216": "TWSE", "2357": "TWSE", "2382": "TWSE", "2376": "TWSE", "3008": "TWSE", "2379": "TWSE", "3034": "TWSE", "3711": "TWSE", "2303": "TWSE", "6505": "TWSE", "8454": "TWSE", "2474": "TWSE", "2105": "TWSE", "1101": "TWSE", "1102": "TWSE", "2880": "TWSE", "2886": "TWSE", "2887": "TWSE", "2890": "TWSE", "2892": "TWSE", "5880": "TWSE", "2823": "TWSE", "0050": "TWSE", "0056": "TWSE", "006208": "TWSE", "00878": "TWSE", "00713": "TWSE", "00919": "TWSE", "2618": "TWSE", "2610": "TWSE", "1605": "TWSE", "2356": "TWSE"};
 
 // 反向 mapping(中文名 → 代號)
 const NAME_TO_CODE = {};
