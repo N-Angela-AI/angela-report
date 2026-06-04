@@ -366,7 +366,7 @@
 
 <div class="header">
   <h1>Angela AI — 低價潛力股推薦 <span class="badge" id="badgeCount">0 支</span></h1>
-  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 06:19 ｜ Powered by Angela Personal Cognitive Butler</div>
+  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 06:20 ｜ Powered by Angela Personal Cognitive Butler</div>
 </div>
 
 <!-- ★ 互動式篩選條件 -->
@@ -594,22 +594,11 @@ function reindex() {
 applyConditions();
 </script>
 
-<script>
 
-    const params = new URLSearchParams(window.location.search);
-    const preset = params.get('stock');
-    if (preset) {
-      inp.value = preset;
-      lookupQuote();
-      inp.scrollIntoView({behavior: 'smooth'});
-    }
-  }
-});
-</script>
 <script>
 // ====== 📊 個股查詢工具 (sl- 獨立區塊) ======
-const SL_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2603": "長榮", "2002": "中鋼", "8454": "富邦媒", "0050": "元大台灣50", "0056": "元大高股息", "2382": "廣達", "1216": "統一"};
-const SL_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2603": "TWSE", "2002": "TWSE", "8454": "TWSE", "0050": "TWSE", "0056": "TWSE", "2382": "TWSE", "1216": "TWSE"};
+const SL_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "8454": "富邦媒", "0050": "元大台灣50"};
+const SL_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "8454": "TWSE", "0050": "TWSE"};
 const SL_NAME2CODE = {};
 for (const [c, n] of Object.entries(SL_NAMES)) { if (n) SL_NAME2CODE[n] = c; }
 let _slChart = null;
