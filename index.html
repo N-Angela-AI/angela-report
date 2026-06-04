@@ -229,96 +229,6 @@
     text-decoration: underline;
   }
 
-  /* ============================================================ */
-  /* 📊 獨立區塊:個股查詢工具 (sl- prefix,不污染上方) */
-  /* ============================================================ */
-  .sl-divider {
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    margin: 3rem 1.5rem 2rem;
-    opacity: 0.6;
-  }
-  .sl-section {
-    background: linear-gradient(135deg, #131520 0%, #1a1530 100%);
-    margin: 0 1.5rem 2rem;
-    padding: 2rem 1.5rem;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-  }
-  .sl-section-header { margin-bottom: 1.5rem; text-align: center; }
-  .sl-section-header h2 { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem; }
-  .sl-section-sub { color: var(--text2); font-size: 0.85rem; }
-  .sl-search { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
-  .sl-search input {
-    flex: 1; padding: 0.7rem 1rem; background: var(--bg);
-    border: 1px solid var(--border); border-radius: 8px;
-    color: var(--text); font-size: 0.95rem;
-  }
-  .sl-search input:focus { outline: none; border-color: var(--accent); }
-  .sl-search button {
-    padding: 0.7rem 1.6rem; background: var(--accent); color: white;
-    border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
-  }
-  .sl-search button:hover { opacity: 0.85; }
-  .sl-search button:disabled { opacity: 0.5; cursor: wait; }
-  .sl-suggest {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 8px; max-height: 220px; overflow-y: auto; margin-bottom: 0.5rem;
-  }
-  .sl-suggest-item { padding: 0.5rem 0.9rem; cursor: pointer; border-bottom: 1px solid var(--border); }
-  .sl-suggest-item:hover { background: var(--card); }
-  .sl-suggest-item:last-child { border-bottom: none; }
-  .sl-result {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 10px; padding: 1.2rem; margin-top: 1rem;
-  }
-  .sl-result .sl-head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem;
-    padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
-  }
-  .sl-result .sl-name { font-size: 1.3rem; font-weight: 700; }
-  .sl-result .sl-code { color: var(--text2); margin-left: 0.5rem; font-size: 0.95rem; }
-  .sl-result .sl-price { font-size: 2rem; font-weight: 700; }
-  .sl-result .sl-up { color: var(--red); }
-  .sl-result .sl-down { color: var(--green); }
-  .sl-result .sl-stats {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.6rem; margin-bottom: 1rem;
-  }
-  .sl-result .sl-stat { background: var(--card); padding: 0.6rem 0.8rem; border-radius: 6px; }
-  .sl-result .sl-stat .lbl { color: var(--text2); font-size: 0.78rem; }
-  .sl-result .sl-stat .val { font-size: 1rem; font-weight: 600; margin-top: 0.2rem; }
-  .sl-result .sl-tech {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.5rem; margin-bottom: 1rem;
-  }
-  .sl-result .sl-tech-item {
-    background: rgba(108, 92, 231, 0.1); padding: 0.5rem 0.8rem;
-    border-radius: 6px; border-left: 3px solid var(--accent);
-  }
-  .sl-result .sl-tech-item .lbl { color: var(--text2); font-size: 0.78rem; }
-  .sl-result .sl-tech-item .val { font-size: 1rem; font-weight: 600; margin-top: 0.15rem; }
-  .sl-result .sl-chart-wrap {
-    background: var(--card); padding: 0.7rem; border-radius: 8px;
-    height: 200px; margin-bottom: 1rem;
-  }
-  .sl-result .sl-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .sl-result .sl-action-btn {
-    padding: 0.5rem 1rem; background: var(--card);
-    border: 1px solid var(--accent); color: var(--accent);
-    border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
-  }
-  .sl-result .sl-action-btn:hover { background: var(--accent); color: white; }
-  .sl-result .sl-err { color: var(--orange); font-size: 0.95rem; padding: 0.5rem; }
-  .sl-toast {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-    background: var(--green); color: white; padding: 0.6rem 1.4rem;
-    border-radius: 999px; font-size: 0.9rem; opacity: 0;
-    transition: opacity 0.3s; pointer-events: none; z-index: 9999;
-  }
-  .sl-toast.show { opacity: 1; }
-
   /* ---- Footer & Disclaimer ---- */
   .footer {
     text-align: center;
@@ -359,14 +269,10 @@
 </style>
 </head>
 <body>
-<!-- Chart.js for mini 走勢圖 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<!-- Toast 元素 -->
-<div id="qrToast" class="qr-toast"></div>
 
 <div class="header">
-  <h1>Angela AI — 低價潛力股推薦 <span class="badge" id="badgeCount">0 支</span></h1>
-  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 06:45 ｜ Powered by Angela Personal Cognitive Butler</div>
+  <h1>Angela AI — 低價潛力股推薦 <span class="badge" id="badgeCount">104 支</span></h1>
+  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-05-23 03:34 ｜ Powered by Angela Personal Cognitive Butler</div>
 </div>
 
 <!-- ★ 互動式篩選條件 -->
@@ -442,7 +348,7 @@
   </div>
 </div>
 
-<!-- 搜尋 + 排序(篩選下方掃描結果表用) -->
+<!-- 搜尋 + 排序 -->
 <div class="filter-bar">
   <input type="text" id="searchBox" placeholder="搜尋代碼或名稱..." onkeyup="applyConditions()">
   <select id="gradeFilter" onchange="applyConditions()">
@@ -469,7 +375,1688 @@
 </div>
 
 <div class="table-wrap">
-<div class="no-data">掃描完成，無符合條件的個股。</div>
+<table>
+<thead><tr>
+  <th onclick="headerSort(0)">#</th>
+  <th onclick="headerSort(1)">代碼</th>
+  <th onclick="headerSort(2)">名稱</th>
+  <th onclick="headerSort(3)">現價<span class="arrow">▼</span></th>
+  <th onclick="headerSort(4)">歷史高</th>
+  <th onclick="headerSort(5)">跌幅</th>
+  <th onclick="headerSort(6)">倍率</th>
+  <th onclick="headerSort(7)">高點次數</th>
+  <th onclick="headerSort(8)">日均量(張)</th>
+  <th onclick="headerSort(9)">中位量</th>
+  <th>流動性</th>
+  <th onclick="headerSort(11)">月振幅%</th>
+  <th onclick="headerSort(12)">量增比</th>
+  <th>週期</th>
+</tr></thead>
+<tbody id="tableBody"><tr data-grade="A">
+  <td>1</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=00686R" target="_blank" rel="noopener" class="stock-link">00686R</a></td>
+  <td class="stock-name">群益臺灣加權反1</td>
+  <td data-v="1.12">1.1</td>
+  <td data-v="3.38">3.4</td>
+  <td data-v="66.9" class="drop">66.9%</td>
+  <td data-v="3.0" class="multiplier">3.0x</td>
+  <td data-v="25">25</td>
+  <td data-v="7344">7,344</td>
+  <td data-v="6133">6,133</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="9.1">9.1%</td>
+  <td data-v="0.86">0.86</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>2</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=00664R" target="_blank" rel="noopener" class="stock-link">00664R</a></td>
+  <td class="stock-name">國泰臺灣加權反1</td>
+  <td data-v="1.84">1.8</td>
+  <td data-v="5.67">5.7</td>
+  <td data-v="67.5" class="drop">67.5%</td>
+  <td data-v="3.1" class="multiplier">3.1x</td>
+  <td data-v="25">25</td>
+  <td data-v="28654">28,654</td>
+  <td data-v="24459">24,459</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="9.0">9.0%</td>
+  <td data-v="0.94">0.94</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>3</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=00671R" target="_blank" rel="noopener" class="stock-link">00671R</a></td>
+  <td class="stock-name">富邦NASDAQ反1</td>
+  <td data-v="2.47">2.5</td>
+  <td data-v="5.15">5.2</td>
+  <td data-v="52.0" class="drop">52.0%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="5">5</td>
+  <td data-v="7171">7,171</td>
+  <td data-v="5236">5,236</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="6.2">6.2%</td>
+  <td data-v="0.75">0.75</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>4</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=00641R" target="_blank" rel="noopener" class="stock-link">00641R</a></td>
+  <td class="stock-name">富邦日本反1</td>
+  <td data-v="3.93">3.9</td>
+  <td data-v="8.64">8.6</td>
+  <td data-v="54.5" class="drop">54.5%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="6">6</td>
+  <td data-v="2059">2,059</td>
+  <td data-v="1442">1,442</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="6.2">6.2%</td>
+  <td data-v="0.94">0.94</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>5</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=5907" target="_blank" rel="noopener" class="stock-link">5907</a></td>
+  <td class="stock-name">大洋-KY</td>
+  <td data-v="4.71">4.7</td>
+  <td data-v="16.6">16.6</td>
+  <td data-v="71.6" class="drop">71.6%</td>
+  <td data-v="3.5" class="multiplier">3.5x</td>
+  <td data-v="18">18</td>
+  <td data-v="281">281</td>
+  <td data-v="225">225</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="10.2">10.2%</td>
+  <td data-v="1.19">1.19</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>6</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1340" target="_blank" rel="noopener" class="stock-link">1340</a></td>
+  <td class="stock-name">勝悅-KY</td>
+  <td data-v="5.5">5.5</td>
+  <td data-v="14.5">14.5</td>
+  <td data-v="62.1" class="drop">62.1%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="13">13</td>
+  <td data-v="256">256</td>
+  <td data-v="229">229</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="16.0" class="multiplier">16.0%</td>
+  <td data-v="0.9">0.90</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>7</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2929" target="_blank" rel="noopener" class="stock-link">2929</a></td>
+  <td class="stock-name">淘帝-KY</td>
+  <td data-v="5.68">5.7</td>
+  <td data-v="16.7">16.7</td>
+  <td data-v="66.0" class="drop">66.0%</td>
+  <td data-v="2.9" class="multiplier">2.9x</td>
+  <td data-v="16">16</td>
+  <td data-v="369">369</td>
+  <td data-v="305">305</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="10.9">10.9%</td>
+  <td data-v="1.12">1.12</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>8</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=8429" target="_blank" rel="noopener" class="stock-link">8429</a></td>
+  <td class="stock-name">金麗-KY</td>
+  <td data-v="6.14">6.1</td>
+  <td data-v="14.45">14.4</td>
+  <td data-v="57.5" class="drop">57.5%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="4">4</td>
+  <td data-v="262">262</td>
+  <td data-v="276">276</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="9.0">9.0%</td>
+  <td data-v="1.21">1.21</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>9</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=00676R" target="_blank" rel="noopener" class="stock-link">00676R</a></td>
+  <td class="stock-name">富邦臺灣加權反1</td>
+  <td data-v="6.24">6.2</td>
+  <td data-v="16.19">16.2</td>
+  <td data-v="61.5" class="drop">61.5%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="5">5</td>
+  <td data-v="7461">7,461</td>
+  <td data-v="6850">6,850</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="8.8">8.8%</td>
+  <td data-v="1.05">1.05</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>10</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1512" target="_blank" rel="noopener" class="stock-link">1512</a></td>
+  <td class="stock-name">瑞利</td>
+  <td data-v="6.96">7.0</td>
+  <td data-v="15.4">15.4</td>
+  <td data-v="54.8" class="drop">54.8%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="3">3</td>
+  <td data-v="129">129</td>
+  <td data-v="95">95</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="14.8">14.8%</td>
+  <td data-v="0.71">0.71</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>11</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=4426" target="_blank" rel="noopener" class="stock-link">4426</a></td>
+  <td class="stock-name">利勤</td>
+  <td data-v="7.71">7.7</td>
+  <td data-v="23.75">23.8</td>
+  <td data-v="67.5" class="drop">67.5%</td>
+  <td data-v="3.1" class="multiplier">3.1x</td>
+  <td data-v="17">17</td>
+  <td data-v="205">205</td>
+  <td data-v="138">138</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="13.9">13.9%</td>
+  <td data-v="0.8">0.80</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>12</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3494" target="_blank" rel="noopener" class="stock-link">3494</a></td>
+  <td class="stock-name">誠研</td>
+  <td data-v="7.74">7.7</td>
+  <td data-v="20.6">20.6</td>
+  <td data-v="62.4" class="drop">62.4%</td>
+  <td data-v="2.7" class="multiplier">2.7x</td>
+  <td data-v="6">6</td>
+  <td data-v="132">132</td>
+  <td data-v="108">108</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="17.3" class="multiplier">17.3%</td>
+  <td data-v="0.98">0.98</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>13</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1310" target="_blank" rel="noopener" class="stock-link">1310</a></td>
+  <td class="stock-name">台苯</td>
+  <td data-v="8.07">8.1</td>
+  <td data-v="17.7">17.7</td>
+  <td data-v="54.4" class="drop">54.4%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="7">7</td>
+  <td data-v="11550">11,550</td>
+  <td data-v="3803">3,803</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="20.1" class="multiplier">20.1%</td>
+  <td data-v="0.31">0.31</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>14</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3058" target="_blank" rel="noopener" class="stock-link">3058</a></td>
+  <td class="stock-name">立德</td>
+  <td data-v="8.24">8.2</td>
+  <td data-v="32.1">32.1</td>
+  <td data-v="74.3" class="drop">74.3%</td>
+  <td data-v="3.9" class="multiplier">3.9x</td>
+  <td data-v="20">20</td>
+  <td data-v="1114">1,114</td>
+  <td data-v="737">737</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="18.8" class="multiplier">18.8%</td>
+  <td data-v="0.68">0.68</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>15</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2017" target="_blank" rel="noopener" class="stock-link">2017</a></td>
+  <td class="stock-name">官田鋼</td>
+  <td data-v="8.55">8.6</td>
+  <td data-v="18.2">18.2</td>
+  <td data-v="53.0" class="drop">53.0%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="3">3</td>
+  <td data-v="1253">1,253</td>
+  <td data-v="643">643</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="10.9">10.9%</td>
+  <td data-v="0.53">0.53</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>16</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2538" target="_blank" rel="noopener" class="stock-link">2538</a></td>
+  <td class="stock-name">基泰</td>
+  <td data-v="9.46">9.5</td>
+  <td data-v="23.25">23.2</td>
+  <td data-v="59.3" class="drop">59.3%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="4">4</td>
+  <td data-v="404">404</td>
+  <td data-v="542">542</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="8.8">8.8%</td>
+  <td data-v="1.27">1.27</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>17</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=9934" target="_blank" rel="noopener" class="stock-link">9934</a></td>
+  <td class="stock-name">成霖</td>
+  <td data-v="9.82">9.8</td>
+  <td data-v="20.65">20.6</td>
+  <td data-v="52.4" class="drop">52.4%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="5">5</td>
+  <td data-v="643">643</td>
+  <td data-v="575">575</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="8.6">8.6%</td>
+  <td data-v="1.16">1.16</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>18</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2537" target="_blank" rel="noopener" class="stock-link">2537</a></td>
+  <td class="stock-name">聯上發</td>
+  <td data-v="9.83">9.8</td>
+  <td data-v="29.75">29.8</td>
+  <td data-v="67.0" class="drop">67.0%</td>
+  <td data-v="3.0" class="multiplier">3.0x</td>
+  <td data-v="5">5</td>
+  <td data-v="917">917</td>
+  <td data-v="819">819</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="14.4">14.4%</td>
+  <td data-v="1.1">1.10</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>19</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1805" target="_blank" rel="noopener" class="stock-link">1805</a></td>
+  <td class="stock-name">寶徠</td>
+  <td data-v="10.1">10.1</td>
+  <td data-v="25.3">25.3</td>
+  <td data-v="60.1" class="drop">60.1%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="9">9</td>
+  <td data-v="174">174</td>
+  <td data-v="120">120</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="15.7" class="multiplier">15.7%</td>
+  <td data-v="0.78">0.78</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>20</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2104" target="_blank" rel="noopener" class="stock-link">2104</a></td>
+  <td class="stock-name">國際中橡</td>
+  <td data-v="10.1">10.1</td>
+  <td data-v="24.25">24.2</td>
+  <td data-v="58.4" class="drop">58.4%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="5">5</td>
+  <td data-v="5149">5,149</td>
+  <td data-v="2855">2,855</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="16.4" class="multiplier">16.4%</td>
+  <td data-v="0.63">0.63</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>21</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1324" target="_blank" rel="noopener" class="stock-link">1324</a></td>
+  <td class="stock-name">地球</td>
+  <td data-v="10.2">10.2</td>
+  <td data-v="21.45">21.4</td>
+  <td data-v="52.4" class="drop">52.4%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="3">3</td>
+  <td data-v="239">239</td>
+  <td data-v="76">76</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="12.2">12.2%</td>
+  <td data-v="0.42">0.42</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>22</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6806" target="_blank" rel="noopener" class="stock-link">6806</a></td>
+  <td class="stock-name">森崴能源</td>
+  <td data-v="10.3">10.3</td>
+  <td data-v="192.0">192.0</td>
+  <td data-v="94.6" class="drop">94.6%</td>
+  <td data-v="18.6" class="multiplier">18.6x</td>
+  <td data-v="36">36</td>
+  <td data-v="1496">1,496</td>
+  <td data-v="580">580</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="26.7" class="multiplier">26.7%</td>
+  <td data-v="0.57">0.57</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>23</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1316" target="_blank" rel="noopener" class="stock-link">1316</a></td>
+  <td class="stock-name">上曜</td>
+  <td data-v="10.75">10.8</td>
+  <td data-v="28.8">28.8</td>
+  <td data-v="62.7" class="drop">62.7%</td>
+  <td data-v="2.7" class="multiplier">2.7x</td>
+  <td data-v="5">5</td>
+  <td data-v="2126">2,126</td>
+  <td data-v="2380">2,380</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="16.4" class="multiplier">16.4%</td>
+  <td data-v="1.23">1.23</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>24</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=5521" target="_blank" rel="noopener" class="stock-link">5521</a></td>
+  <td class="stock-name">工信</td>
+  <td data-v="10.95">10.9</td>
+  <td data-v="28.0">28.0</td>
+  <td data-v="60.9" class="drop">60.9%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="4">4</td>
+  <td data-v="8179">8,179</td>
+  <td data-v="5286">5,286</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="23.7" class="multiplier">23.7%</td>
+  <td data-v="0.72">0.72</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>25</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2913" target="_blank" rel="noopener" class="stock-link">2913</a></td>
+  <td class="stock-name">農林</td>
+  <td data-v="11.0">11.0</td>
+  <td data-v="33.0">33.0</td>
+  <td data-v="66.7" class="drop">66.7%</td>
+  <td data-v="3.0" class="multiplier">3.0x</td>
+  <td data-v="12">12</td>
+  <td data-v="1852">1,852</td>
+  <td data-v="1645">1,645</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="9.2">9.2%</td>
+  <td data-v="1.0">1.00</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>26</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=00632R" target="_blank" rel="noopener" class="stock-link">00632R</a></td>
+  <td class="stock-name">元大台灣50反1</td>
+  <td data-v="11.29">11.3</td>
+  <td data-v="29.72">29.7</td>
+  <td data-v="62.0" class="drop">62.0%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="7">7</td>
+  <td data-v="124340">124,340</td>
+  <td data-v="124759">124,759</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="8.7">8.7%</td>
+  <td data-v="1.08">1.08</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>27</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1453" target="_blank" rel="noopener" class="stock-link">1453</a></td>
+  <td class="stock-name">大將</td>
+  <td data-v="11.35">11.3</td>
+  <td data-v="33.3">33.3</td>
+  <td data-v="65.9" class="drop">65.9%</td>
+  <td data-v="2.9" class="multiplier">2.9x</td>
+  <td data-v="5">5</td>
+  <td data-v="101">101</td>
+  <td data-v="77">77</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="10.6">10.6%</td>
+  <td data-v="0.92">0.92</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>28</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=00673R" target="_blank" rel="noopener" class="stock-link">00673R</a></td>
+  <td class="stock-name">期元大S&amp;P原油反1</td>
+  <td data-v="11.66">11.7</td>
+  <td data-v="29.57">29.6</td>
+  <td data-v="60.6" class="drop">60.6%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="5">5</td>
+  <td data-v="29220">29,220</td>
+  <td data-v="21670">21,670</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="13.2">13.2%</td>
+  <td data-v="1.01">1.01</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>29</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=4108" target="_blank" rel="noopener" class="stock-link">4108</a></td>
+  <td class="stock-name">懷特</td>
+  <td data-v="12.0">12.0</td>
+  <td data-v="27.3">27.3</td>
+  <td data-v="56.0" class="drop">56.0%</td>
+  <td data-v="2.3" class="multiplier">2.3x</td>
+  <td data-v="4">4</td>
+  <td data-v="224">224</td>
+  <td data-v="213">213</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="11.1">11.1%</td>
+  <td data-v="1.18">1.18</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>30</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1905" target="_blank" rel="noopener" class="stock-link">1905</a></td>
+  <td class="stock-name">華紙</td>
+  <td data-v="12.1">12.1</td>
+  <td data-v="33.9">33.9</td>
+  <td data-v="64.3" class="drop">64.3%</td>
+  <td data-v="2.8" class="multiplier">2.8x</td>
+  <td data-v="9">9</td>
+  <td data-v="7007">7,007</td>
+  <td data-v="3145">3,145</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="15.1" class="multiplier">15.1%</td>
+  <td data-v="0.57">0.57</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>31</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3050" target="_blank" rel="noopener" class="stock-link">3050</a></td>
+  <td class="stock-name">鈺德</td>
+  <td data-v="12.15">12.2</td>
+  <td data-v="29.75">29.8</td>
+  <td data-v="59.2" class="drop">59.2%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="4">4</td>
+  <td data-v="962">962</td>
+  <td data-v="663">663</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="12.7">12.7%</td>
+  <td data-v="0.67">0.67</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>32</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1449" target="_blank" rel="noopener" class="stock-link">1449</a></td>
+  <td class="stock-name">佳和</td>
+  <td data-v="12.45">12.4</td>
+  <td data-v="29.3">29.3</td>
+  <td data-v="57.5" class="drop">57.5%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="3">3</td>
+  <td data-v="2507">2,507</td>
+  <td data-v="1174">1,174</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="18.6" class="multiplier">18.6%</td>
+  <td data-v="0.55">0.55</td>
+  <td style="text-align:center">🔄</td>
+</tr>
+<tr data-grade="B">
+  <td>33</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2509" target="_blank" rel="noopener" class="stock-link">2509</a></td>
+  <td class="stock-name">全坤建</td>
+  <td data-v="12.75">12.8</td>
+  <td data-v="27.65">27.6</td>
+  <td data-v="53.9" class="drop">53.9%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="4">4</td>
+  <td data-v="213">213</td>
+  <td data-v="296">296</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="13.5">13.5%</td>
+  <td data-v="1.23">1.23</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>34</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2611" target="_blank" rel="noopener" class="stock-link">2611</a></td>
+  <td class="stock-name">志信</td>
+  <td data-v="13.05">13.1</td>
+  <td data-v="35.85">35.9</td>
+  <td data-v="63.6" class="drop">63.6%</td>
+  <td data-v="2.7" class="multiplier">2.7x</td>
+  <td data-v="5">5</td>
+  <td data-v="520">520</td>
+  <td data-v="413">413</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="11.0">11.0%</td>
+  <td data-v="0.79">0.79</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>35</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3011" target="_blank" rel="noopener" class="stock-link">3011</a></td>
+  <td class="stock-name">今皓</td>
+  <td data-v="13.45">13.4</td>
+  <td data-v="43.1">43.1</td>
+  <td data-v="68.8" class="drop">68.8%</td>
+  <td data-v="3.2" class="multiplier">3.2x</td>
+  <td data-v="19">19</td>
+  <td data-v="1101">1,101</td>
+  <td data-v="1138">1,138</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="20.8" class="multiplier">20.8%</td>
+  <td data-v="1.04">1.04</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>36</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3056" target="_blank" rel="noopener" class="stock-link">3056</a></td>
+  <td class="stock-name">富華新</td>
+  <td data-v="13.9">13.9</td>
+  <td data-v="58.5">58.5</td>
+  <td data-v="76.2" class="drop">76.2%</td>
+  <td data-v="4.2" class="multiplier">4.2x</td>
+  <td data-v="27">27</td>
+  <td data-v="1558">1,558</td>
+  <td data-v="1307">1,307</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="9.8">9.8%</td>
+  <td data-v="0.91">0.91</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>37</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6901" target="_blank" rel="noopener" class="stock-link">6901</a></td>
+  <td class="stock-name">鑽石投資</td>
+  <td data-v="14.1">14.1</td>
+  <td data-v="57.2">57.2</td>
+  <td data-v="75.3" class="drop">75.3%</td>
+  <td data-v="4.1" class="multiplier">4.1x</td>
+  <td data-v="19">19</td>
+  <td data-v="975">975</td>
+  <td data-v="948">948</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="13.4">13.4%</td>
+  <td data-v="1.65" class="multiplier">1.65</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>38</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1526" target="_blank" rel="noopener" class="stock-link">1526</a></td>
+  <td class="stock-name">日馳</td>
+  <td data-v="14.6">14.6</td>
+  <td data-v="42.1">42.1</td>
+  <td data-v="65.3" class="drop">65.3%</td>
+  <td data-v="2.9" class="multiplier">2.9x</td>
+  <td data-v="17">17</td>
+  <td data-v="153">153</td>
+  <td data-v="139">139</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="14.2">14.2%</td>
+  <td data-v="0.99">0.99</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>39</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3047" target="_blank" rel="noopener" class="stock-link">3047</a></td>
+  <td class="stock-name">訊舟</td>
+  <td data-v="14.65">14.7</td>
+  <td data-v="48.5">48.5</td>
+  <td data-v="69.8" class="drop">69.8%</td>
+  <td data-v="3.3" class="multiplier">3.3x</td>
+  <td data-v="9">9</td>
+  <td data-v="1295">1,295</td>
+  <td data-v="1103">1,103</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="19.8" class="multiplier">19.8%</td>
+  <td data-v="0.96">0.96</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>40</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=4155" target="_blank" rel="noopener" class="stock-link">4155</a></td>
+  <td class="stock-name">訊映</td>
+  <td data-v="15.3">15.3</td>
+  <td data-v="45.6">45.6</td>
+  <td data-v="66.4" class="drop">66.4%</td>
+  <td data-v="3.0" class="multiplier">3.0x</td>
+  <td data-v="4">4</td>
+  <td data-v="325">325</td>
+  <td data-v="320">320</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="9.2">9.2%</td>
+  <td data-v="1.57" class="multiplier">1.57</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>41</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1446" target="_blank" rel="noopener" class="stock-link">1446</a></td>
+  <td class="stock-name">宏和</td>
+  <td data-v="15.55">15.6</td>
+  <td data-v="62.0">62.0</td>
+  <td data-v="74.9" class="drop">74.9%</td>
+  <td data-v="4.0" class="multiplier">4.0x</td>
+  <td data-v="23">23</td>
+  <td data-v="243">243</td>
+  <td data-v="155">155</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="11.8">11.8%</td>
+  <td data-v="0.85">0.85</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>42</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3712" target="_blank" rel="noopener" class="stock-link">3712</a></td>
+  <td class="stock-name">永崴投控</td>
+  <td data-v="15.7">15.7</td>
+  <td data-v="76.5">76.5</td>
+  <td data-v="79.5" class="drop">79.5%</td>
+  <td data-v="4.9" class="multiplier">4.9x</td>
+  <td data-v="30">30</td>
+  <td data-v="1172">1,172</td>
+  <td data-v="941">941</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="22.2" class="multiplier">22.2%</td>
+  <td data-v="1.32" class="multiplier">1.32</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>43</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1338" target="_blank" rel="noopener" class="stock-link">1338</a></td>
+  <td class="stock-name">廣華-KY</td>
+  <td data-v="15.95">15.9</td>
+  <td data-v="46.35">46.4</td>
+  <td data-v="65.6" class="drop">65.6%</td>
+  <td data-v="2.9" class="multiplier">2.9x</td>
+  <td data-v="18">18</td>
+  <td data-v="234">234</td>
+  <td data-v="145">145</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="11.3">11.3%</td>
+  <td data-v="0.7">0.70</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>44</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2314" target="_blank" rel="noopener" class="stock-link">2314</a></td>
+  <td class="stock-name">台揚</td>
+  <td data-v="16.05">16.1</td>
+  <td data-v="50.0">50.0</td>
+  <td data-v="67.9" class="drop">67.9%</td>
+  <td data-v="3.1" class="multiplier">3.1x</td>
+  <td data-v="20">20</td>
+  <td data-v="555">555</td>
+  <td data-v="348">348</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="38.0" class="multiplier">38.0%</td>
+  <td data-v="1.01">1.01</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>45</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6550" target="_blank" rel="noopener" class="stock-link">6550</a></td>
+  <td class="stock-name">北極星藥業-KY</td>
+  <td data-v="16.1">16.1</td>
+  <td data-v="93.1">93.1</td>
+  <td data-v="82.7" class="drop">82.7%</td>
+  <td data-v="5.8" class="multiplier">5.8x</td>
+  <td data-v="34">34</td>
+  <td data-v="1658">1,658</td>
+  <td data-v="1219">1,219</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="18.2" class="multiplier">18.2%</td>
+  <td data-v="0.77">0.77</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>46</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=8476" target="_blank" rel="noopener" class="stock-link">8476</a></td>
+  <td class="stock-name">台境*</td>
+  <td data-v="16.1">16.1</td>
+  <td data-v="67.0">67.0</td>
+  <td data-v="76.0" class="drop">76.0%</td>
+  <td data-v="4.2" class="multiplier">4.2x</td>
+  <td data-v="13">13</td>
+  <td data-v="610">610</td>
+  <td data-v="354">354</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="15.1" class="multiplier">15.1%</td>
+  <td data-v="0.87">0.87</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>47</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3346" target="_blank" rel="noopener" class="stock-link">3346</a></td>
+  <td class="stock-name">麗清</td>
+  <td data-v="16.15">16.1</td>
+  <td data-v="57.5">57.5</td>
+  <td data-v="71.9" class="drop">71.9%</td>
+  <td data-v="3.6" class="multiplier">3.6x</td>
+  <td data-v="23">23</td>
+  <td data-v="388">388</td>
+  <td data-v="462">462</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="15.8" class="multiplier">15.8%</td>
+  <td data-v="1.32" class="multiplier">1.32</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>48</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2424" target="_blank" rel="noopener" class="stock-link">2424</a></td>
+  <td class="stock-name">隴華</td>
+  <td data-v="16.2">16.2</td>
+  <td data-v="111.0">111.0</td>
+  <td data-v="85.4" class="drop">85.4%</td>
+  <td data-v="6.9" class="multiplier">6.9x</td>
+  <td data-v="29">29</td>
+  <td data-v="192">192</td>
+  <td data-v="250">250</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="41.0" class="multiplier">41.0%</td>
+  <td data-v="1.63" class="multiplier">1.63</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>49</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2482" target="_blank" rel="noopener" class="stock-link">2482</a></td>
+  <td class="stock-name">連宇</td>
+  <td data-v="16.3">16.3</td>
+  <td data-v="79.8">79.8</td>
+  <td data-v="79.6" class="drop">79.6%</td>
+  <td data-v="4.9" class="multiplier">4.9x</td>
+  <td data-v="18">18</td>
+  <td data-v="209">209</td>
+  <td data-v="173">173</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="13.2">13.2%</td>
+  <td data-v="0.82">0.82</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>50</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=9946" target="_blank" rel="noopener" class="stock-link">9946</a></td>
+  <td class="stock-name">三發地產</td>
+  <td data-v="16.8">16.8</td>
+  <td data-v="49.55">49.5</td>
+  <td data-v="66.1" class="drop">66.1%</td>
+  <td data-v="2.9" class="multiplier">2.9x</td>
+  <td data-v="6">6</td>
+  <td data-v="483">483</td>
+  <td data-v="500">500</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="12.0">12.0%</td>
+  <td data-v="1.24">1.24</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>51</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2106" target="_blank" rel="noopener" class="stock-link">2106</a></td>
+  <td class="stock-name">建大</td>
+  <td data-v="16.85">16.9</td>
+  <td data-v="35.7">35.7</td>
+  <td data-v="52.8" class="drop">52.8%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="4">4</td>
+  <td data-v="862">862</td>
+  <td data-v="711">711</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="9.1">9.1%</td>
+  <td data-v="0.84">0.84</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>52</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=4934" target="_blank" rel="noopener" class="stock-link">4934</a></td>
+  <td class="stock-name">太極</td>
+  <td data-v="16.95">16.9</td>
+  <td data-v="42.2">42.2</td>
+  <td data-v="59.8" class="drop">59.8%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="3">3</td>
+  <td data-v="2134">2,134</td>
+  <td data-v="1205">1,205</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="29.2" class="multiplier">29.2%</td>
+  <td data-v="0.81">0.81</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>53</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3021" target="_blank" rel="noopener" class="stock-link">3021</a></td>
+  <td class="stock-name">鴻名</td>
+  <td data-v="17.1">17.1</td>
+  <td data-v="40.45">40.5</td>
+  <td data-v="57.7" class="drop">57.7%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="3">3</td>
+  <td data-v="165">165</td>
+  <td data-v="133">133</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="11.7">11.7%</td>
+  <td data-v="1.68" class="multiplier">1.68</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>54</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3027" target="_blank" rel="noopener" class="stock-link">3027</a></td>
+  <td class="stock-name">盛達</td>
+  <td data-v="17.6">17.6</td>
+  <td data-v="58.4">58.4</td>
+  <td data-v="69.9" class="drop">69.9%</td>
+  <td data-v="3.3" class="multiplier">3.3x</td>
+  <td data-v="22">22</td>
+  <td data-v="383">383</td>
+  <td data-v="349">349</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="15.9" class="multiplier">15.9%</td>
+  <td data-v="1.0">1.00</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>55</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=4142" target="_blank" rel="noopener" class="stock-link">4142</a></td>
+  <td class="stock-name">國光生</td>
+  <td data-v="17.6">17.6</td>
+  <td data-v="38.85">38.9</td>
+  <td data-v="54.7" class="drop">54.7%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="4">4</td>
+  <td data-v="1370">1,370</td>
+  <td data-v="1028">1,028</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="10.3">10.3%</td>
+  <td data-v="0.82">0.82</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>56</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2430" target="_blank" rel="noopener" class="stock-link">2430</a></td>
+  <td class="stock-name">燦坤</td>
+  <td data-v="18.3">18.3</td>
+  <td data-v="44.3">44.3</td>
+  <td data-v="58.7" class="drop">58.7%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="13">13</td>
+  <td data-v="116">116</td>
+  <td data-v="129">129</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="5.8">5.8%</td>
+  <td data-v="1.35" class="multiplier">1.35</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>57</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=7780" target="_blank" rel="noopener" class="stock-link">7780</a></td>
+  <td class="stock-name">大研生醫*</td>
+  <td data-v="18.5">18.5</td>
+  <td data-v="240.0">240.0</td>
+  <td data-v="92.3" class="drop">92.3%</td>
+  <td data-v="13.0" class="multiplier">13.0x</td>
+  <td data-v="5">5</td>
+  <td data-v="3593">3,593</td>
+  <td data-v="1982">1,982</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="20.3" class="multiplier">20.3%</td>
+  <td data-v="0.55">0.55</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>58</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2062" target="_blank" rel="noopener" class="stock-link">2062</a></td>
+  <td class="stock-name">橋椿</td>
+  <td data-v="18.6">18.6</td>
+  <td data-v="43.45">43.5</td>
+  <td data-v="57.2" class="drop">57.2%</td>
+  <td data-v="2.3" class="multiplier">2.3x</td>
+  <td data-v="4">4</td>
+  <td data-v="380">380</td>
+  <td data-v="490">490</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="15.2" class="multiplier">15.2%</td>
+  <td data-v="1.23">1.23</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>59</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6128" target="_blank" rel="noopener" class="stock-link">6128</a></td>
+  <td class="stock-name">上福</td>
+  <td data-v="19.2">19.2</td>
+  <td data-v="43.65">43.6</td>
+  <td data-v="56.0" class="drop">56.0%</td>
+  <td data-v="2.3" class="multiplier">2.3x</td>
+  <td data-v="5">5</td>
+  <td data-v="146">146</td>
+  <td data-v="141">141</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="6.4">6.4%</td>
+  <td data-v="1.06">1.06</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>60</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2331" target="_blank" rel="noopener" class="stock-link">2331</a></td>
+  <td class="stock-name">精英</td>
+  <td data-v="19.6">19.6</td>
+  <td data-v="41.45">41.5</td>
+  <td data-v="52.7" class="drop">52.7%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="3">3</td>
+  <td data-v="2866">2,866</td>
+  <td data-v="2042">2,042</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="17.6" class="multiplier">17.6%</td>
+  <td data-v="0.81">0.81</td>
+  <td style="text-align:center">🔄</td>
+</tr>
+<tr data-grade="B">
+  <td>61</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3150" target="_blank" rel="noopener" class="stock-link">3150</a></td>
+  <td class="stock-name">鈺寶-創</td>
+  <td data-v="19.75">19.8</td>
+  <td data-v="46.8">46.8</td>
+  <td data-v="57.8" class="drop">57.8%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="3">3</td>
+  <td data-v="109">109</td>
+  <td data-v="69">69</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="19.7" class="multiplier">19.7%</td>
+  <td data-v="0.86">0.86</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>62</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3308" target="_blank" rel="noopener" class="stock-link">3308</a></td>
+  <td class="stock-name">聯德</td>
+  <td data-v="20.3">20.3</td>
+  <td data-v="67.9">67.9</td>
+  <td data-v="70.1" class="drop">70.1%</td>
+  <td data-v="3.3" class="multiplier">3.3x</td>
+  <td data-v="8">8</td>
+  <td data-v="349">349</td>
+  <td data-v="151">151</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="19.8" class="multiplier">19.8%</td>
+  <td data-v="0.44">0.44</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>63</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1473" target="_blank" rel="noopener" class="stock-link">1473</a></td>
+  <td class="stock-name">台南</td>
+  <td data-v="20.4">20.4</td>
+  <td data-v="57.0">57.0</td>
+  <td data-v="64.2" class="drop">64.2%</td>
+  <td data-v="2.8" class="multiplier">2.8x</td>
+  <td data-v="3">3</td>
+  <td data-v="126">126</td>
+  <td data-v="120">120</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="12.3">12.3%</td>
+  <td data-v="1.11">1.11</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>64</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2462" target="_blank" rel="noopener" class="stock-link">2462</a></td>
+  <td class="stock-name">良得電</td>
+  <td data-v="20.5">20.5</td>
+  <td data-v="44.25">44.2</td>
+  <td data-v="53.7" class="drop">53.7%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="5">5</td>
+  <td data-v="393">393</td>
+  <td data-v="391">391</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="16.2" class="multiplier">16.2%</td>
+  <td data-v="1.15">1.15</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>65</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1532" target="_blank" rel="noopener" class="stock-link">1532</a></td>
+  <td class="stock-name">勤美</td>
+  <td data-v="20.7">20.7</td>
+  <td data-v="58.3">58.3</td>
+  <td data-v="64.5" class="drop">64.5%</td>
+  <td data-v="2.8" class="multiplier">2.8x</td>
+  <td data-v="6">6</td>
+  <td data-v="744">744</td>
+  <td data-v="878">878</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="8.5">8.5%</td>
+  <td data-v="1.17">1.17</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>66</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2530" target="_blank" rel="noopener" class="stock-link">2530</a></td>
+  <td class="stock-name">華建</td>
+  <td data-v="20.85">20.9</td>
+  <td data-v="60.7">60.7</td>
+  <td data-v="65.7" class="drop">65.7%</td>
+  <td data-v="2.9" class="multiplier">2.9x</td>
+  <td data-v="12">12</td>
+  <td data-v="1102">1,102</td>
+  <td data-v="1450">1,450</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="12.9">12.9%</td>
+  <td data-v="1.47" class="multiplier">1.47</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>67</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1540" target="_blank" rel="noopener" class="stock-link">1540</a></td>
+  <td class="stock-name">喬福</td>
+  <td data-v="20.95">20.9</td>
+  <td data-v="51.8">51.8</td>
+  <td data-v="59.6" class="drop">59.6%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="7">7</td>
+  <td data-v="283">283</td>
+  <td data-v="285">285</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="14.9">14.9%</td>
+  <td data-v="1.03">1.03</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>68</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3043" target="_blank" rel="noopener" class="stock-link">3043</a></td>
+  <td class="stock-name">科風</td>
+  <td data-v="21.25">21.2</td>
+  <td data-v="69.9">69.9</td>
+  <td data-v="69.6" class="drop">69.6%</td>
+  <td data-v="3.3" class="multiplier">3.3x</td>
+  <td data-v="7">7</td>
+  <td data-v="154">154</td>
+  <td data-v="160">160</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="22.4" class="multiplier">22.4%</td>
+  <td data-v="1.57" class="multiplier">1.57</td>
+  <td style="text-align:center">🔄</td>
+</tr>
+<tr data-grade="B">
+  <td>69</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2438" target="_blank" rel="noopener" class="stock-link">2438</a></td>
+  <td class="stock-name">翔耀</td>
+  <td data-v="22.0">22.0</td>
+  <td data-v="86.1">86.1</td>
+  <td data-v="74.4" class="drop">74.4%</td>
+  <td data-v="3.9" class="multiplier">3.9x</td>
+  <td data-v="6">6</td>
+  <td data-v="216">216</td>
+  <td data-v="161">161</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="18.5" class="multiplier">18.5%</td>
+  <td data-v="0.9">0.90</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>70</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2528" target="_blank" rel="noopener" class="stock-link">2528</a></td>
+  <td class="stock-name">皇普</td>
+  <td data-v="22.1">22.1</td>
+  <td data-v="57.0">57.0</td>
+  <td data-v="61.2" class="drop">61.2%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="10">10</td>
+  <td data-v="839">839</td>
+  <td data-v="477">477</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="12.6">12.6%</td>
+  <td data-v="0.77">0.77</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>71</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1515" target="_blank" rel="noopener" class="stock-link">1515</a></td>
+  <td class="stock-name">力山</td>
+  <td data-v="22.15">22.1</td>
+  <td data-v="61.2">61.2</td>
+  <td data-v="63.8" class="drop">63.8%</td>
+  <td data-v="2.8" class="multiplier">2.8x</td>
+  <td data-v="11">11</td>
+  <td data-v="348">348</td>
+  <td data-v="344">344</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="13.7">13.7%</td>
+  <td data-v="1.31" class="multiplier">1.31</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>72</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2239" target="_blank" rel="noopener" class="stock-link">2239</a></td>
+  <td class="stock-name">英利-KY</td>
+  <td data-v="22.5">22.5</td>
+  <td data-v="85.3">85.3</td>
+  <td data-v="73.6" class="drop">73.6%</td>
+  <td data-v="3.8" class="multiplier">3.8x</td>
+  <td data-v="17">17</td>
+  <td data-v="103">103</td>
+  <td data-v="74">74</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="18.4" class="multiplier">18.4%</td>
+  <td data-v="0.8">0.80</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>73</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6216" target="_blank" rel="noopener" class="stock-link">6216</a></td>
+  <td class="stock-name">居易</td>
+  <td data-v="22.55">22.6</td>
+  <td data-v="53.9">53.9</td>
+  <td data-v="58.2" class="drop">58.2%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="6">6</td>
+  <td data-v="176">176</td>
+  <td data-v="226">226</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="9.4">9.4%</td>
+  <td data-v="1.46" class="multiplier">1.46</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>74</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=9945" target="_blank" rel="noopener" class="stock-link">9945</a></td>
+  <td class="stock-name">潤泰新</td>
+  <td data-v="23.4">23.4</td>
+  <td data-v="53.8">53.8</td>
+  <td data-v="56.5" class="drop">56.5%</td>
+  <td data-v="2.3" class="multiplier">2.3x</td>
+  <td data-v="7">7</td>
+  <td data-v="7010">7,010</td>
+  <td data-v="6967">6,967</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="7.8">7.8%</td>
+  <td data-v="1.05">1.05</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>75</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3557" target="_blank" rel="noopener" class="stock-link">3557</a></td>
+  <td class="stock-name">嘉威</td>
+  <td data-v="24.5">24.5</td>
+  <td data-v="81.9">81.9</td>
+  <td data-v="70.1" class="drop">70.1%</td>
+  <td data-v="3.3" class="multiplier">3.3x</td>
+  <td data-v="26">26</td>
+  <td data-v="106">106</td>
+  <td data-v="124">124</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="13.2">13.2%</td>
+  <td data-v="1.67" class="multiplier">1.67</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>76</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2457" target="_blank" rel="noopener" class="stock-link">2457</a></td>
+  <td class="stock-name">飛宏</td>
+  <td data-v="25.05">25.1</td>
+  <td data-v="87.0">87.0</td>
+  <td data-v="71.2" class="drop">71.2%</td>
+  <td data-v="3.5" class="multiplier">3.5x</td>
+  <td data-v="13">13</td>
+  <td data-v="2948">2,948</td>
+  <td data-v="2694">2,694</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="17.8" class="multiplier">17.8%</td>
+  <td data-v="0.9">0.90</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>77</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1442" target="_blank" rel="noopener" class="stock-link">1442</a></td>
+  <td class="stock-name">名軒</td>
+  <td data-v="26.15">26.1</td>
+  <td data-v="88.0">88.0</td>
+  <td data-v="70.3" class="drop">70.3%</td>
+  <td data-v="3.4" class="multiplier">3.4x</td>
+  <td data-v="18">18</td>
+  <td data-v="670">670</td>
+  <td data-v="455">455</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="17.5" class="multiplier">17.5%</td>
+  <td data-v="0.82">0.82</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>78</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=8422" target="_blank" rel="noopener" class="stock-link">8422</a></td>
+  <td class="stock-name">可寧衛*</td>
+  <td data-v="26.3">26.3</td>
+  <td data-v="256.0">256.0</td>
+  <td data-v="89.7" class="drop">89.7%</td>
+  <td data-v="9.7" class="multiplier">9.7x</td>
+  <td data-v="30">30</td>
+  <td data-v="13419">13,419</td>
+  <td data-v="7711">7,711</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="13.4">13.4%</td>
+  <td data-v="0.65">0.65</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>79</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2201" target="_blank" rel="noopener" class="stock-link">2201</a></td>
+  <td class="stock-name">裕隆</td>
+  <td data-v="26.8">26.8</td>
+  <td data-v="94.5">94.5</td>
+  <td data-v="71.6" class="drop">71.6%</td>
+  <td data-v="3.5" class="multiplier">3.5x</td>
+  <td data-v="19">19</td>
+  <td data-v="3490">3,490</td>
+  <td data-v="2612">2,612</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="14.2">14.2%</td>
+  <td data-v="0.79">0.79</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>80</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1587" target="_blank" rel="noopener" class="stock-link">1587</a></td>
+  <td class="stock-name">吉茂</td>
+  <td data-v="28.3">28.3</td>
+  <td data-v="81.8">81.8</td>
+  <td data-v="65.4" class="drop">65.4%</td>
+  <td data-v="2.9" class="multiplier">2.9x</td>
+  <td data-v="6">6</td>
+  <td data-v="491">491</td>
+  <td data-v="383">383</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="22.9" class="multiplier">22.9%</td>
+  <td data-v="0.8">0.80</td>
+  <td style="text-align:center">🔄</td>
+</tr>
+<tr data-grade="A">
+  <td>81</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2371" target="_blank" rel="noopener" class="stock-link">2371</a></td>
+  <td class="stock-name">大同</td>
+  <td data-v="28.4">28.4</td>
+  <td data-v="68.0">68.0</td>
+  <td data-v="58.2" class="drop">58.2%</td>
+  <td data-v="2.4" class="multiplier">2.4x</td>
+  <td data-v="5">5</td>
+  <td data-v="16645">16,645</td>
+  <td data-v="16916">16,916</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="18.5" class="multiplier">18.5%</td>
+  <td data-v="1.0">1.00</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>82</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=4164" target="_blank" rel="noopener" class="stock-link">4164</a></td>
+  <td class="stock-name">承業醫</td>
+  <td data-v="28.6">28.6</td>
+  <td data-v="72.3">72.3</td>
+  <td data-v="60.4" class="drop">60.4%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="13">13</td>
+  <td data-v="994">994</td>
+  <td data-v="848">848</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="14.2">14.2%</td>
+  <td data-v="0.93">0.93</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>83</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6743" target="_blank" rel="noopener" class="stock-link">6743</a></td>
+  <td class="stock-name">安普新</td>
+  <td data-v="28.9">28.9</td>
+  <td data-v="81.8">81.8</td>
+  <td data-v="64.7" class="drop">64.7%</td>
+  <td data-v="2.8" class="multiplier">2.8x</td>
+  <td data-v="9">9</td>
+  <td data-v="445">445</td>
+  <td data-v="458">458</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="14.2">14.2%</td>
+  <td data-v="1.96" class="multiplier">1.96</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>84</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1225" target="_blank" rel="noopener" class="stock-link">1225</a></td>
+  <td class="stock-name">福懋油</td>
+  <td data-v="29.2">29.2</td>
+  <td data-v="183.5">183.5</td>
+  <td data-v="84.1" class="drop">84.1%</td>
+  <td data-v="6.3" class="multiplier">6.3x</td>
+  <td data-v="9">9</td>
+  <td data-v="413">413</td>
+  <td data-v="220">220</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="11.2">11.2%</td>
+  <td data-v="0.83">0.83</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>85</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1808" target="_blank" rel="noopener" class="stock-link">1808</a></td>
+  <td class="stock-name">潤隆</td>
+  <td data-v="29.45">29.4</td>
+  <td data-v="139.0">139.0</td>
+  <td data-v="78.8" class="drop">78.8%</td>
+  <td data-v="4.7" class="multiplier">4.7x</td>
+  <td data-v="17">17</td>
+  <td data-v="1369">1,369</td>
+  <td data-v="1385">1,385</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="12.7">12.7%</td>
+  <td data-v="1.11">1.11</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>86</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1522" target="_blank" rel="noopener" class="stock-link">1522</a></td>
+  <td class="stock-name">堤維西</td>
+  <td data-v="29.65">29.6</td>
+  <td data-v="74.9">74.9</td>
+  <td data-v="60.4" class="drop">60.4%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="12">12</td>
+  <td data-v="1136">1,136</td>
+  <td data-v="1013">1,013</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="13.7">13.7%</td>
+  <td data-v="1.19">1.19</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>87</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2520" target="_blank" rel="noopener" class="stock-link">2520</a></td>
+  <td class="stock-name">冠德</td>
+  <td data-v="30.75">30.8</td>
+  <td data-v="68.6">68.6</td>
+  <td data-v="55.2" class="drop">55.2%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="5">5</td>
+  <td data-v="1759">1,759</td>
+  <td data-v="1501">1,501</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="10.9">10.9%</td>
+  <td data-v="0.86">0.86</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>88</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6582" target="_blank" rel="noopener" class="stock-link">6582</a></td>
+  <td class="stock-name">申豐</td>
+  <td data-v="30.8">30.8</td>
+  <td data-v="76.5">76.5</td>
+  <td data-v="59.7" class="drop">59.7%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="7">7</td>
+  <td data-v="117">117</td>
+  <td data-v="65">65</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="14.8">14.8%</td>
+  <td data-v="0.56">0.56</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>89</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=00631L" target="_blank" rel="noopener" class="stock-link">00631L</a></td>
+  <td class="stock-name">元大台灣50正2</td>
+  <td data-v="31.58">31.6</td>
+  <td data-v="542.0">542.0</td>
+  <td data-v="94.2" class="drop">94.2%</td>
+  <td data-v="17.2" class="multiplier">17.2x</td>
+  <td data-v="35">35</td>
+  <td data-v="134588">134,588</td>
+  <td data-v="206250">206,250</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="16.7" class="multiplier">16.7%</td>
+  <td data-v="1.58" class="multiplier">1.58</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>90</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=4545" target="_blank" rel="noopener" class="stock-link">4545</a></td>
+  <td class="stock-name">銘鈺</td>
+  <td data-v="31.75">31.8</td>
+  <td data-v="78.0">78.0</td>
+  <td data-v="59.3" class="drop">59.3%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="4">4</td>
+  <td data-v="240">240</td>
+  <td data-v="146">146</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="19.9" class="multiplier">19.9%</td>
+  <td data-v="0.66">0.66</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>91</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2468" target="_blank" rel="noopener" class="stock-link">2468</a></td>
+  <td class="stock-name">華經</td>
+  <td data-v="33.5">33.5</td>
+  <td data-v="86.2">86.2</td>
+  <td data-v="61.1" class="drop">61.1%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="4">4</td>
+  <td data-v="784">784</td>
+  <td data-v="259">259</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="20.5" class="multiplier">20.5%</td>
+  <td data-v="0.44">0.44</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>92</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2524" target="_blank" rel="noopener" class="stock-link">2524</a></td>
+  <td class="stock-name">京城</td>
+  <td data-v="34.2">34.2</td>
+  <td data-v="139.5">139.5</td>
+  <td data-v="75.5" class="drop">75.5%</td>
+  <td data-v="4.1" class="multiplier">4.1x</td>
+  <td data-v="7">7</td>
+  <td data-v="118">118</td>
+  <td data-v="80">80</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="12.8">12.8%</td>
+  <td data-v="0.91">0.91</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>93</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6243" target="_blank" rel="noopener" class="stock-link">6243</a></td>
+  <td class="stock-name">迅杰</td>
+  <td data-v="34.35">34.4</td>
+  <td data-v="90.4">90.4</td>
+  <td data-v="62.0" class="drop">62.0%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="7">7</td>
+  <td data-v="376">376</td>
+  <td data-v="378">378</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="16.7" class="multiplier">16.7%</td>
+  <td data-v="1.45" class="multiplier">1.45</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>94</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=9906" target="_blank" rel="noopener" class="stock-link">9906</a></td>
+  <td class="stock-name">欣巴巴</td>
+  <td data-v="35.0">35.0</td>
+  <td data-v="237.0">237.0</td>
+  <td data-v="85.2" class="drop">85.2%</td>
+  <td data-v="6.8" class="multiplier">6.8x</td>
+  <td data-v="20">20</td>
+  <td data-v="213">213</td>
+  <td data-v="244">244</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="17.0" class="multiplier">17.0%</td>
+  <td data-v="1.03">1.03</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>95</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=8163" target="_blank" rel="noopener" class="stock-link">8163</a></td>
+  <td class="stock-name">達方</td>
+  <td data-v="35.55">35.5</td>
+  <td data-v="74.6">74.6</td>
+  <td data-v="52.3" class="drop">52.3%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="3">3</td>
+  <td data-v="1865">1,865</td>
+  <td data-v="1634">1,634</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="10.4">10.4%</td>
+  <td data-v="2.15" class="multiplier">2.15</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>96</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=4935" target="_blank" rel="noopener" class="stock-link">4935</a></td>
+  <td class="stock-name">茂林-KY</td>
+  <td data-v="36.6">36.6</td>
+  <td data-v="79.5">79.5</td>
+  <td data-v="54.0" class="drop">54.0%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="3">3</td>
+  <td data-v="106">106</td>
+  <td data-v="88">88</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="11.8">11.8%</td>
+  <td data-v="0.83">0.83</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="A">
+  <td>97</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2392" target="_blank" rel="noopener" class="stock-link">2392</a></td>
+  <td class="stock-name">正崴</td>
+  <td data-v="36.9">36.9</td>
+  <td data-v="95.4">95.4</td>
+  <td data-v="61.3" class="drop">61.3%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="8">8</td>
+  <td data-v="2541">2,541</td>
+  <td data-v="2743">2,743</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="17.2" class="multiplier">17.2%</td>
+  <td data-v="1.3" class="multiplier">1.30</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>98</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2545" target="_blank" rel="noopener" class="stock-link">2545</a></td>
+  <td class="stock-name">皇翔</td>
+  <td data-v="37.3">37.3</td>
+  <td data-v="79.4">79.4</td>
+  <td data-v="53.0" class="drop">53.0%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="4">4</td>
+  <td data-v="337">337</td>
+  <td data-v="326">326</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="8.5">8.5%</td>
+  <td data-v="0.99">0.99</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>99</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=1762" target="_blank" rel="noopener" class="stock-link">1762</a></td>
+  <td class="stock-name">中化生</td>
+  <td data-v="37.75">37.8</td>
+  <td data-v="97.9">97.9</td>
+  <td data-v="61.4" class="drop">61.4%</td>
+  <td data-v="2.6" class="multiplier">2.6x</td>
+  <td data-v="3">3</td>
+  <td data-v="362">362</td>
+  <td data-v="546">546</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="12.1">12.1%</td>
+  <td data-v="1.88" class="multiplier">1.88</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>100</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3447" target="_blank" rel="noopener" class="stock-link">3447</a></td>
+  <td class="stock-name">展達</td>
+  <td data-v="37.9">37.9</td>
+  <td data-v="107.0">107.0</td>
+  <td data-v="64.6" class="drop">64.6%</td>
+  <td data-v="2.8" class="multiplier">2.8x</td>
+  <td data-v="4">4</td>
+  <td data-v="226">226</td>
+  <td data-v="211">211</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="23.2" class="multiplier">23.2%</td>
+  <td data-v="0.95">0.95</td>
+  <td style="text-align:center">🔄</td>
+</tr>
+<tr data-grade="A">
+  <td>101</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2539" target="_blank" rel="noopener" class="stock-link">2539</a></td>
+  <td class="stock-name">櫻花建</td>
+  <td data-v="38.4">38.4</td>
+  <td data-v="84.9">84.9</td>
+  <td data-v="54.8" class="drop">54.8%</td>
+  <td data-v="2.2" class="multiplier">2.2x</td>
+  <td data-v="3">3</td>
+  <td data-v="1015">1,015</td>
+  <td data-v="1430">1,430</td>
+  <td><span class="grade grade-A">A</span></td>
+  <td data-v="10.5">10.5%</td>
+  <td data-v="1.36" class="multiplier">1.36</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>102</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6541" target="_blank" rel="noopener" class="stock-link">6541</a></td>
+  <td class="stock-name">泰福-KY</td>
+  <td data-v="38.95">39.0</td>
+  <td data-v="82.0">82.0</td>
+  <td data-v="52.5" class="drop">52.5%</td>
+  <td data-v="2.1" class="multiplier">2.1x</td>
+  <td data-v="6">6</td>
+  <td data-v="427">427</td>
+  <td data-v="345">345</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="17.4" class="multiplier">17.4%</td>
+  <td data-v="0.96">0.96</td>
+  <td style="text-align:center">🔄</td>
+</tr>
+<tr data-grade="B">
+  <td>103</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=2748" target="_blank" rel="noopener" class="stock-link">2748</a></td>
+  <td class="stock-name">雲品</td>
+  <td data-v="39.3">39.3</td>
+  <td data-v="130.0">130.0</td>
+  <td data-v="69.8" class="drop">69.8%</td>
+  <td data-v="3.3" class="multiplier">3.3x</td>
+  <td data-v="9">9</td>
+  <td data-v="165">165</td>
+  <td data-v="138">138</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="8.6">8.6%</td>
+  <td data-v="0.89">0.89</td>
+  <td style="text-align:center">—</td>
+</tr>
+<tr data-grade="B">
+  <td>104</td>
+  <td><a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6657" target="_blank" rel="noopener" class="stock-link">6657</a></td>
+  <td class="stock-name">華安</td>
+  <td data-v="39.85">39.9</td>
+  <td data-v="99.5">99.5</td>
+  <td data-v="59.9" class="drop">59.9%</td>
+  <td data-v="2.5" class="multiplier">2.5x</td>
+  <td data-v="4">4</td>
+  <td data-v="299">299</td>
+  <td data-v="191">191</td>
+  <td><span class="grade grade-B">B</span></td>
+  <td data-v="17.9" class="multiplier">17.9%</td>
+  <td data-v="0.69">0.69</td>
+  <td style="text-align:center">🔄</td>
+</tr>
+</tbody></table>
 </div>
 
 <div class="footer">
@@ -479,7 +2066,7 @@
 
 <script>
 // 全量資料（嵌入 JSON）
-const allData = [];
+const allData = [{"symbol": "00686R", "stock_name": "群益臺灣加權反1", "market": "TWSE", "current_price": 1.12, "all_time_high": 3.38, "drop_from_high_pct": 66.9, "peak_months": 25, "highest_peak": 3.38, "multiplier_actual": 3.0, "avg_volume": 7344910, "avg_volume_lots": 7344, "median_volume_lots": 6133, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.86, "wave_median_pct": 9.1, "wave_max_pct": 23.3, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "00664R", "stock_name": "國泰臺灣加權反1", "market": "TWSE", "current_price": 1.84, "all_time_high": 5.67, "drop_from_high_pct": 67.5, "peak_months": 25, "highest_peak": 5.67, "multiplier_actual": 3.1, "avg_volume": 28654367, "avg_volume_lots": 28654, "median_volume_lots": 24459, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.94, "wave_median_pct": 9.0, "wave_max_pct": 23.6, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "00671R", "stock_name": "富邦NASDAQ反1", "market": "TWSE", "current_price": 2.47, "all_time_high": 5.15, "drop_from_high_pct": 52.0, "peak_months": 5, "highest_peak": 5.15, "multiplier_actual": 2.1, "avg_volume": 7171763, "avg_volume_lots": 7171, "median_volume_lots": 5236, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.75, "wave_median_pct": 6.2, "wave_max_pct": 18.0, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.2, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "00641R", "stock_name": "富邦日本反1", "market": "TWSE", "current_price": 3.93, "all_time_high": 8.64, "drop_from_high_pct": 54.5, "peak_months": 6, "highest_peak": 8.64, "multiplier_actual": 2.2, "avg_volume": 2059559, "avg_volume_lots": 2059, "median_volume_lots": 1442, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.94, "wave_median_pct": 6.2, "wave_max_pct": 12.3, "wave_active_months": 0, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "5907", "stock_name": "大洋-KY", "market": "TWSE", "current_price": 4.71, "all_time_high": 16.6, "drop_from_high_pct": 71.6, "peak_months": 18, "highest_peak": 16.6, "multiplier_actual": 3.5, "avg_volume": 281497, "avg_volume_lots": 281, "median_volume_lots": 225, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.19, "wave_median_pct": 10.2, "wave_max_pct": 21.5, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.2, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "1340", "stock_name": "勝悅-KY", "market": "TWSE", "current_price": 5.5, "all_time_high": 14.5, "drop_from_high_pct": 62.1, "peak_months": 13, "highest_peak": 14.5, "multiplier_actual": 2.6, "avg_volume": 256417, "avg_volume_lots": 256, "median_volume_lots": 229, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.9, "wave_median_pct": 16.0, "wave_max_pct": 51.8, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 1.3, "peak_max_gap": 4, "peak_is_spread": false}, {"symbol": "2929", "stock_name": "淘帝-KY", "market": "TWSE", "current_price": 5.68, "all_time_high": 16.7, "drop_from_high_pct": 66.0, "peak_months": 16, "highest_peak": 16.7, "multiplier_actual": 2.9, "avg_volume": 369849, "avg_volume_lots": 369, "median_volume_lots": 305, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.12, "wave_median_pct": 10.9, "wave_max_pct": 27.5, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.5, "peak_max_gap": 8, "peak_is_spread": false}, {"symbol": "8429", "stock_name": "金麗-KY", "market": "TWSE", "current_price": 6.14, "all_time_high": 14.45, "drop_from_high_pct": 57.5, "peak_months": 4, "highest_peak": 14.45, "multiplier_actual": 2.4, "avg_volume": 262764, "avg_volume_lots": 262, "median_volume_lots": 276, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.21, "wave_median_pct": 9.0, "wave_max_pct": 13.0, "wave_active_months": 0, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "00676R", "stock_name": "富邦臺灣加權反1", "market": "TWSE", "current_price": 6.24, "all_time_high": 16.19, "drop_from_high_pct": 61.5, "peak_months": 5, "highest_peak": 16.19, "multiplier_actual": 2.6, "avg_volume": 7461139, "avg_volume_lots": 7461, "median_volume_lots": 6850, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.05, "wave_median_pct": 8.8, "wave_max_pct": 22.5, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1512", "stock_name": "瑞利", "market": "TWSE", "current_price": 6.96, "all_time_high": 15.4, "drop_from_high_pct": 54.8, "peak_months": 3, "highest_peak": 15.4, "multiplier_actual": 2.2, "avg_volume": 129587, "avg_volume_lots": 129, "median_volume_lots": 95, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.71, "wave_median_pct": 14.8, "wave_max_pct": 32.8, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 2.0, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "4426", "stock_name": "利勤", "market": "TWSE", "current_price": 7.71, "all_time_high": 23.75, "drop_from_high_pct": 67.5, "peak_months": 17, "highest_peak": 23.75, "multiplier_actual": 3.1, "avg_volume": 205948, "avg_volume_lots": 205, "median_volume_lots": 138, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.8, "wave_median_pct": 13.9, "wave_max_pct": 28.1, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.3, "peak_max_gap": 6, "peak_is_spread": false}, {"symbol": "3494", "stock_name": "誠研", "market": "TWSE", "current_price": 7.74, "all_time_high": 20.6, "drop_from_high_pct": 62.4, "peak_months": 6, "highest_peak": 20.6, "multiplier_actual": 2.7, "avg_volume": 132801, "avg_volume_lots": 132, "median_volume_lots": 108, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.98, "wave_median_pct": 17.3, "wave_max_pct": 41.0, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 1.2, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "1310", "stock_name": "台苯", "market": "TWSE", "current_price": 8.07, "all_time_high": 17.7, "drop_from_high_pct": 54.4, "peak_months": 7, "highest_peak": 17.7, "multiplier_actual": 2.2, "avg_volume": 11550051, "avg_volume_lots": 11550, "median_volume_lots": 3803, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.31, "wave_median_pct": 20.1, "wave_max_pct": 47.2, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3058", "stock_name": "立德", "market": "TWSE", "current_price": 8.24, "all_time_high": 32.1, "drop_from_high_pct": 74.3, "peak_months": 20, "highest_peak": 32.1, "multiplier_actual": 3.9, "avg_volume": 1114500, "avg_volume_lots": 1114, "median_volume_lots": 737, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.68, "wave_median_pct": 18.8, "wave_max_pct": 50.7, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2017", "stock_name": "官田鋼", "market": "TWSE", "current_price": 8.55, "all_time_high": 18.2, "drop_from_high_pct": 53.0, "peak_months": 3, "highest_peak": 18.2, "multiplier_actual": 2.1, "avg_volume": 1253821, "avg_volume_lots": 1253, "median_volume_lots": 643, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.53, "wave_median_pct": 10.9, "wave_max_pct": 24.9, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2538", "stock_name": "基泰", "market": "TWSE", "current_price": 9.46, "all_time_high": 23.25, "drop_from_high_pct": 59.3, "peak_months": 4, "highest_peak": 23.25, "multiplier_actual": 2.5, "avg_volume": 404240, "avg_volume_lots": 404, "median_volume_lots": 542, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.27, "wave_median_pct": 8.8, "wave_max_pct": 19.5, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "9934", "stock_name": "成霖", "market": "TWSE", "current_price": 9.82, "all_time_high": 20.65, "drop_from_high_pct": 52.4, "peak_months": 5, "highest_peak": 20.65, "multiplier_actual": 2.1, "avg_volume": 643037, "avg_volume_lots": 643, "median_volume_lots": 575, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.16, "wave_median_pct": 8.6, "wave_max_pct": 16.8, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2537", "stock_name": "聯上發", "market": "TWSE", "current_price": 9.83, "all_time_high": 29.75, "drop_from_high_pct": 67.0, "peak_months": 5, "highest_peak": 29.75, "multiplier_actual": 3.0, "avg_volume": 917571, "avg_volume_lots": 917, "median_volume_lots": 819, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.1, "wave_median_pct": 14.4, "wave_max_pct": 28.8, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1805", "stock_name": "寶徠", "market": "TWSE", "current_price": 10.1, "all_time_high": 25.3, "drop_from_high_pct": 60.1, "peak_months": 9, "highest_peak": 25.3, "multiplier_actual": 2.5, "avg_volume": 174834, "avg_volume_lots": 174, "median_volume_lots": 120, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.78, "wave_median_pct": 15.7, "wave_max_pct": 34.8, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2104", "stock_name": "國際中橡", "market": "TWSE", "current_price": 10.1, "all_time_high": 24.25, "drop_from_high_pct": 58.4, "peak_months": 5, "highest_peak": 24.25, "multiplier_actual": 2.4, "avg_volume": 5149681, "avg_volume_lots": 5149, "median_volume_lots": 2855, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.63, "wave_median_pct": 16.4, "wave_max_pct": 27.5, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1324", "stock_name": "地球", "market": "TWSE", "current_price": 10.2, "all_time_high": 21.45, "drop_from_high_pct": 52.4, "peak_months": 3, "highest_peak": 21.45, "multiplier_actual": 2.1, "avg_volume": 239918, "avg_volume_lots": 239, "median_volume_lots": 76, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.42, "wave_median_pct": 12.2, "wave_max_pct": 28.0, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "6806", "stock_name": "森崴能源", "market": "TWSE", "current_price": 10.3, "all_time_high": 192.0, "drop_from_high_pct": 94.6, "peak_months": 36, "highest_peak": 192.0, "multiplier_actual": 18.6, "avg_volume": 1496629, "avg_volume_lots": 1496, "median_volume_lots": 580, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.57, "wave_median_pct": 26.7, "wave_max_pct": 169.7, "wave_active_months": 12, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1316", "stock_name": "上曜", "market": "TWSE", "current_price": 10.75, "all_time_high": 28.8, "drop_from_high_pct": 62.7, "peak_months": 5, "highest_peak": 28.8, "multiplier_actual": 2.7, "avg_volume": 2126569, "avg_volume_lots": 2126, "median_volume_lots": 2380, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.23, "wave_median_pct": 16.4, "wave_max_pct": 23.8, "wave_active_months": 7, "wave_total_months": 12, "peak_avg_gap": 1.2, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "5521", "stock_name": "工信", "market": "TWSE", "current_price": 10.95, "all_time_high": 28.0, "drop_from_high_pct": 60.9, "peak_months": 4, "highest_peak": 28.0, "multiplier_actual": 2.6, "avg_volume": 8179780, "avg_volume_lots": 8179, "median_volume_lots": 5286, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.72, "wave_median_pct": 23.7, "wave_max_pct": 143.5, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2913", "stock_name": "農林", "market": "TWSE", "current_price": 11.0, "all_time_high": 33.0, "drop_from_high_pct": 66.7, "peak_months": 12, "highest_peak": 33.0, "multiplier_actual": 3.0, "avg_volume": 1852065, "avg_volume_lots": 1852, "median_volume_lots": 1645, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.0, "wave_median_pct": 9.2, "wave_max_pct": 16.4, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.5, "peak_max_gap": 4, "peak_is_spread": false}, {"symbol": "00632R", "stock_name": "元大台灣50反1", "market": "TWSE", "current_price": 11.29, "all_time_high": 29.72, "drop_from_high_pct": 62.0, "peak_months": 7, "highest_peak": 29.72, "multiplier_actual": 2.6, "avg_volume": 124340385, "avg_volume_lots": 124340, "median_volume_lots": 124759, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.08, "wave_median_pct": 8.7, "wave_max_pct": 23.0, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1453", "stock_name": "大將", "market": "TWSE", "current_price": 11.35, "all_time_high": 33.3, "drop_from_high_pct": 65.9, "peak_months": 5, "highest_peak": 33.3, "multiplier_actual": 2.9, "avg_volume": 101518, "avg_volume_lots": 101, "median_volume_lots": 77, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.92, "wave_median_pct": 10.6, "wave_max_pct": 20.2, "wave_active_months": 2, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "00673R", "stock_name": "期元大S&P原油反1", "market": "TWSE", "current_price": 11.66, "all_time_high": 29.57, "drop_from_high_pct": 60.6, "peak_months": 5, "highest_peak": 29.57, "multiplier_actual": 2.5, "avg_volume": 29220225, "avg_volume_lots": 29220, "median_volume_lots": 21670, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.01, "wave_median_pct": 13.2, "wave_max_pct": 314.9, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "4108", "stock_name": "懷特", "market": "TWSE", "current_price": 12.0, "all_time_high": 27.3, "drop_from_high_pct": 56.0, "peak_months": 4, "highest_peak": 27.3, "multiplier_actual": 2.3, "avg_volume": 224129, "avg_volume_lots": 224, "median_volume_lots": 213, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.18, "wave_median_pct": 11.1, "wave_max_pct": 38.2, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 2.0, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "1905", "stock_name": "華紙", "market": "TWSE", "current_price": 12.1, "all_time_high": 33.9, "drop_from_high_pct": 64.3, "peak_months": 9, "highest_peak": 33.9, "multiplier_actual": 2.8, "avg_volume": 7007265, "avg_volume_lots": 7007, "median_volume_lots": 3145, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.57, "wave_median_pct": 15.1, "wave_max_pct": 52.0, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.4, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "3050", "stock_name": "鈺德", "market": "TWSE", "current_price": 12.15, "all_time_high": 29.75, "drop_from_high_pct": 59.2, "peak_months": 4, "highest_peak": 29.75, "multiplier_actual": 2.4, "avg_volume": 962166, "avg_volume_lots": 962, "median_volume_lots": 663, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.67, "wave_median_pct": 12.7, "wave_max_pct": 36.4, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.7, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "1449", "stock_name": "佳和", "market": "TWSE", "current_price": 12.45, "all_time_high": 29.3, "drop_from_high_pct": 57.5, "peak_months": 3, "highest_peak": 29.3, "multiplier_actual": 2.4, "avg_volume": 2507691, "avg_volume_lots": 2507, "median_volume_lots": 1174, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.55, "wave_median_pct": 18.6, "wave_max_pct": 55.0, "wave_active_months": 10, "wave_total_months": 12, "peak_avg_gap": 6.0, "peak_max_gap": 11, "peak_is_spread": true}, {"symbol": "2509", "stock_name": "全坤建", "market": "TWSE", "current_price": 12.75, "all_time_high": 27.65, "drop_from_high_pct": 53.9, "peak_months": 4, "highest_peak": 27.65, "multiplier_actual": 2.2, "avg_volume": 213577, "avg_volume_lots": 213, "median_volume_lots": 296, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.23, "wave_median_pct": 13.5, "wave_max_pct": 31.8, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.3, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "2611", "stock_name": "志信", "market": "TWSE", "current_price": 13.05, "all_time_high": 35.85, "drop_from_high_pct": 63.6, "peak_months": 5, "highest_peak": 35.85, "multiplier_actual": 2.7, "avg_volume": 520041, "avg_volume_lots": 520, "median_volume_lots": 413, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.79, "wave_median_pct": 11.0, "wave_max_pct": 25.9, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3011", "stock_name": "今皓", "market": "TWSE", "current_price": 13.45, "all_time_high": 43.1, "drop_from_high_pct": 68.8, "peak_months": 19, "highest_peak": 43.1, "multiplier_actual": 3.2, "avg_volume": 1101758, "avg_volume_lots": 1101, "median_volume_lots": 1138, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.04, "wave_median_pct": 20.8, "wave_max_pct": 37.2, "wave_active_months": 11, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3056", "stock_name": "富華新", "market": "TWSE", "current_price": 13.9, "all_time_high": 58.5, "drop_from_high_pct": 76.2, "peak_months": 27, "highest_peak": 58.5, "multiplier_actual": 4.2, "avg_volume": 1558044, "avg_volume_lots": 1558, "median_volume_lots": 1307, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.91, "wave_median_pct": 9.8, "wave_max_pct": 69.9, "wave_active_months": 2, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "6901", "stock_name": "鑽石投資", "market": "TWSE", "current_price": 14.1, "all_time_high": 57.2, "drop_from_high_pct": 75.3, "peak_months": 19, "highest_peak": 57.2, "multiplier_actual": 4.1, "avg_volume": 975370, "avg_volume_lots": 975, "median_volume_lots": 948, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.65, "wave_median_pct": 13.4, "wave_max_pct": 33.1, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1526", "stock_name": "日馳", "market": "TWSE", "current_price": 14.6, "all_time_high": 42.1, "drop_from_high_pct": 65.3, "peak_months": 17, "highest_peak": 42.1, "multiplier_actual": 2.9, "avg_volume": 153431, "avg_volume_lots": 153, "median_volume_lots": 139, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.99, "wave_median_pct": 14.2, "wave_max_pct": 41.9, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3047", "stock_name": "訊舟", "market": "TWSE", "current_price": 14.65, "all_time_high": 48.5, "drop_from_high_pct": 69.8, "peak_months": 9, "highest_peak": 48.5, "multiplier_actual": 3.3, "avg_volume": 1295556, "avg_volume_lots": 1295, "median_volume_lots": 1103, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.96, "wave_median_pct": 19.8, "wave_max_pct": 39.0, "wave_active_months": 11, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "4155", "stock_name": "訊映", "market": "TWSE", "current_price": 15.3, "all_time_high": 45.6, "drop_from_high_pct": 66.4, "peak_months": 4, "highest_peak": 45.6, "multiplier_actual": 3.0, "avg_volume": 325749, "avg_volume_lots": 325, "median_volume_lots": 320, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.57, "wave_median_pct": 9.2, "wave_max_pct": 22.8, "wave_active_months": 2, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1446", "stock_name": "宏和", "market": "TWSE", "current_price": 15.55, "all_time_high": 62.0, "drop_from_high_pct": 74.9, "peak_months": 23, "highest_peak": 62.0, "multiplier_actual": 4.0, "avg_volume": 243003, "avg_volume_lots": 243, "median_volume_lots": 155, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.85, "wave_median_pct": 11.8, "wave_max_pct": 29.6, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3712", "stock_name": "永崴投控", "market": "TWSE", "current_price": 15.7, "all_time_high": 76.5, "drop_from_high_pct": 79.5, "peak_months": 30, "highest_peak": 76.5, "multiplier_actual": 4.9, "avg_volume": 1172082, "avg_volume_lots": 1172, "median_volume_lots": 941, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.32, "wave_median_pct": 22.2, "wave_max_pct": 51.7, "wave_active_months": 10, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1338", "stock_name": "廣華-KY", "market": "TWSE", "current_price": 15.95, "all_time_high": 46.35, "drop_from_high_pct": 65.6, "peak_months": 18, "highest_peak": 46.35, "multiplier_actual": 2.9, "avg_volume": 234069, "avg_volume_lots": 234, "median_volume_lots": 145, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.7, "wave_median_pct": 11.3, "wave_max_pct": 34.9, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2314", "stock_name": "台揚", "market": "TWSE", "current_price": 16.05, "all_time_high": 50.0, "drop_from_high_pct": 67.9, "peak_months": 20, "highest_peak": 50.0, "multiplier_actual": 3.1, "avg_volume": 555870, "avg_volume_lots": 555, "median_volume_lots": 348, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.01, "wave_median_pct": 38.0, "wave_max_pct": 181.5, "wave_active_months": 11, "wave_total_months": 12, "peak_avg_gap": 1.1, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "6550", "stock_name": "北極星藥業-KY", "market": "TWSE", "current_price": 16.1, "all_time_high": 93.1, "drop_from_high_pct": 82.7, "peak_months": 34, "highest_peak": 93.1, "multiplier_actual": 5.8, "avg_volume": 1658746, "avg_volume_lots": 1658, "median_volume_lots": 1219, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.77, "wave_median_pct": 18.2, "wave_max_pct": 93.8, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "8476", "stock_name": "台境*", "market": "TWSE", "current_price": 16.1, "all_time_high": 67.0, "drop_from_high_pct": 76.0, "peak_months": 13, "highest_peak": 67.0, "multiplier_actual": 4.2, "avg_volume": 610963, "avg_volume_lots": 610, "median_volume_lots": 354, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.87, "wave_median_pct": 15.1, "wave_max_pct": 50.3, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3346", "stock_name": "麗清", "market": "TWSE", "current_price": 16.15, "all_time_high": 57.5, "drop_from_high_pct": 71.9, "peak_months": 23, "highest_peak": 57.5, "multiplier_actual": 3.6, "avg_volume": 388552, "avg_volume_lots": 388, "median_volume_lots": 462, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.32, "wave_median_pct": 15.8, "wave_max_pct": 20.4, "wave_active_months": 7, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2424", "stock_name": "隴華", "market": "TWSE", "current_price": 16.2, "all_time_high": 111.0, "drop_from_high_pct": 85.4, "peak_months": 29, "highest_peak": 111.0, "multiplier_actual": 6.9, "avg_volume": 192449, "avg_volume_lots": 192, "median_volume_lots": 250, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.63, "wave_median_pct": 41.0, "wave_max_pct": 89.4, "wave_active_months": 12, "wave_total_months": 12, "peak_avg_gap": 1.2, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "2482", "stock_name": "連宇", "market": "TWSE", "current_price": 16.3, "all_time_high": 79.8, "drop_from_high_pct": 79.6, "peak_months": 18, "highest_peak": 79.8, "multiplier_actual": 4.9, "avg_volume": 209044, "avg_volume_lots": 209, "median_volume_lots": 173, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.82, "wave_median_pct": 13.2, "wave_max_pct": 25.3, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "9946", "stock_name": "三發地產", "market": "TWSE", "current_price": 16.8, "all_time_high": 49.55, "drop_from_high_pct": 66.1, "peak_months": 6, "highest_peak": 49.55, "multiplier_actual": 2.9, "avg_volume": 483105, "avg_volume_lots": 483, "median_volume_lots": 500, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.24, "wave_median_pct": 12.0, "wave_max_pct": 19.0, "wave_active_months": 2, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2106", "stock_name": "建大", "market": "TWSE", "current_price": 16.85, "all_time_high": 35.7, "drop_from_high_pct": 52.8, "peak_months": 4, "highest_peak": 35.7, "multiplier_actual": 2.1, "avg_volume": 862695, "avg_volume_lots": 862, "median_volume_lots": 711, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.84, "wave_median_pct": 9.1, "wave_max_pct": 21.6, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "4934", "stock_name": "太極", "market": "TWSE", "current_price": 16.95, "all_time_high": 42.2, "drop_from_high_pct": 59.8, "peak_months": 3, "highest_peak": 42.2, "multiplier_actual": 2.5, "avg_volume": 2134463, "avg_volume_lots": 2134, "median_volume_lots": 1205, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.81, "wave_median_pct": 29.2, "wave_max_pct": 45.1, "wave_active_months": 12, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3021", "stock_name": "鴻名", "market": "TWSE", "current_price": 17.1, "all_time_high": 40.45, "drop_from_high_pct": 57.7, "peak_months": 3, "highest_peak": 40.45, "multiplier_actual": 2.4, "avg_volume": 165842, "avg_volume_lots": 165, "median_volume_lots": 133, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.68, "wave_median_pct": 11.7, "wave_max_pct": 19.0, "wave_active_months": 2, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3027", "stock_name": "盛達", "market": "TWSE", "current_price": 17.6, "all_time_high": 58.4, "drop_from_high_pct": 69.9, "peak_months": 22, "highest_peak": 58.4, "multiplier_actual": 3.3, "avg_volume": 383627, "avg_volume_lots": 383, "median_volume_lots": 349, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.0, "wave_median_pct": 15.9, "wave_max_pct": 29.0, "wave_active_months": 7, "wave_total_months": 12, "peak_avg_gap": 1.1, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "4142", "stock_name": "國光生", "market": "TWSE", "current_price": 17.6, "all_time_high": 38.85, "drop_from_high_pct": 54.7, "peak_months": 4, "highest_peak": 38.85, "multiplier_actual": 2.2, "avg_volume": 1370960, "avg_volume_lots": 1370, "median_volume_lots": 1028, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.82, "wave_median_pct": 10.3, "wave_max_pct": 27.1, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 2.0, "peak_max_gap": 4, "peak_is_spread": false}, {"symbol": "2430", "stock_name": "燦坤", "market": "TWSE", "current_price": 18.3, "all_time_high": 44.3, "drop_from_high_pct": 58.7, "peak_months": 13, "highest_peak": 44.3, "multiplier_actual": 2.4, "avg_volume": 116858, "avg_volume_lots": 116, "median_volume_lots": 129, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.35, "wave_median_pct": 5.8, "wave_max_pct": 18.3, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "7780", "stock_name": "大研生醫*", "market": "TWSE", "current_price": 18.5, "all_time_high": 240.0, "drop_from_high_pct": 92.3, "peak_months": 5, "highest_peak": 240.0, "multiplier_actual": 13.0, "avg_volume": 3593428, "avg_volume_lots": 3593, "median_volume_lots": 1982, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.55, "wave_median_pct": 20.3, "wave_max_pct": 849.1, "wave_active_months": 6, "wave_total_months": 9, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2062", "stock_name": "橋椿", "market": "TWSE", "current_price": 18.6, "all_time_high": 43.45, "drop_from_high_pct": 57.2, "peak_months": 4, "highest_peak": 43.45, "multiplier_actual": 2.3, "avg_volume": 380501, "avg_volume_lots": 380, "median_volume_lots": 490, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.23, "wave_median_pct": 15.2, "wave_max_pct": 22.6, "wave_active_months": 7, "wave_total_months": 12, "peak_avg_gap": 1.3, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "6128", "stock_name": "上福", "market": "TWSE", "current_price": 19.2, "all_time_high": 43.65, "drop_from_high_pct": 56.0, "peak_months": 5, "highest_peak": 43.65, "multiplier_actual": 2.3, "avg_volume": 146609, "avg_volume_lots": 146, "median_volume_lots": 141, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.06, "wave_median_pct": 6.4, "wave_max_pct": 32.9, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2331", "stock_name": "精英", "market": "TWSE", "current_price": 19.6, "all_time_high": 41.45, "drop_from_high_pct": 52.7, "peak_months": 3, "highest_peak": 41.45, "multiplier_actual": 2.1, "avg_volume": 2866644, "avg_volume_lots": 2866, "median_volume_lots": 2042, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.81, "wave_median_pct": 17.6, "wave_max_pct": 37.3, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 4.5, "peak_max_gap": 8, "peak_is_spread": true}, {"symbol": "3150", "stock_name": "鈺寶-創", "market": "TWSE", "current_price": 19.75, "all_time_high": 46.8, "drop_from_high_pct": 57.8, "peak_months": 3, "highest_peak": 46.8, "multiplier_actual": 2.4, "avg_volume": 109508, "avg_volume_lots": 109, "median_volume_lots": 69, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.86, "wave_median_pct": 19.7, "wave_max_pct": 43.8, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3308", "stock_name": "聯德", "market": "TWSE", "current_price": 20.3, "all_time_high": 67.9, "drop_from_high_pct": 70.1, "peak_months": 8, "highest_peak": 67.9, "multiplier_actual": 3.3, "avg_volume": 349378, "avg_volume_lots": 349, "median_volume_lots": 151, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.44, "wave_median_pct": 19.8, "wave_max_pct": 51.8, "wave_active_months": 7, "wave_total_months": 12, "peak_avg_gap": 1.3, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "1473", "stock_name": "台南", "market": "TWSE", "current_price": 20.4, "all_time_high": 57.0, "drop_from_high_pct": 64.2, "peak_months": 3, "highest_peak": 57.0, "multiplier_actual": 2.8, "avg_volume": 126706, "avg_volume_lots": 126, "median_volume_lots": 120, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.11, "wave_median_pct": 12.3, "wave_max_pct": 36.7, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2462", "stock_name": "良得電", "market": "TWSE", "current_price": 20.5, "all_time_high": 44.25, "drop_from_high_pct": 53.7, "peak_months": 5, "highest_peak": 44.25, "multiplier_actual": 2.2, "avg_volume": 393964, "avg_volume_lots": 393, "median_volume_lots": 391, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.15, "wave_median_pct": 16.2, "wave_max_pct": 24.3, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 1.5, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "1532", "stock_name": "勤美", "market": "TWSE", "current_price": 20.7, "all_time_high": 58.3, "drop_from_high_pct": 64.5, "peak_months": 6, "highest_peak": 58.3, "multiplier_actual": 2.8, "avg_volume": 744432, "avg_volume_lots": 744, "median_volume_lots": 878, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.17, "wave_median_pct": 8.5, "wave_max_pct": 15.4, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.4, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "2530", "stock_name": "華建", "market": "TWSE", "current_price": 20.85, "all_time_high": 60.7, "drop_from_high_pct": 65.7, "peak_months": 12, "highest_peak": 60.7, "multiplier_actual": 2.9, "avg_volume": 1102969, "avg_volume_lots": 1102, "median_volume_lots": 1450, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.47, "wave_median_pct": 12.9, "wave_max_pct": 19.3, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.1, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "1540", "stock_name": "喬福", "market": "TWSE", "current_price": 20.95, "all_time_high": 51.8, "drop_from_high_pct": 59.6, "peak_months": 7, "highest_peak": 51.8, "multiplier_actual": 2.5, "avg_volume": 283026, "avg_volume_lots": 283, "median_volume_lots": 285, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.03, "wave_median_pct": 14.9, "wave_max_pct": 22.3, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.2, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "3043", "stock_name": "科風", "market": "TWSE", "current_price": 21.25, "all_time_high": 69.9, "drop_from_high_pct": 69.6, "peak_months": 7, "highest_peak": 69.9, "multiplier_actual": 3.3, "avg_volume": 154021, "avg_volume_lots": 154, "median_volume_lots": 160, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.57, "wave_median_pct": 22.4, "wave_max_pct": 27.0, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 3.2, "peak_max_gap": 13, "peak_is_spread": true}, {"symbol": "2438", "stock_name": "翔耀", "market": "TWSE", "current_price": 22.0, "all_time_high": 86.1, "drop_from_high_pct": 74.4, "peak_months": 6, "highest_peak": 86.1, "multiplier_actual": 3.9, "avg_volume": 216647, "avg_volume_lots": 216, "median_volume_lots": 161, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.9, "wave_median_pct": 18.5, "wave_max_pct": 23.5, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2528", "stock_name": "皇普", "market": "TWSE", "current_price": 22.1, "all_time_high": 57.0, "drop_from_high_pct": 61.2, "peak_months": 10, "highest_peak": 57.0, "multiplier_actual": 2.6, "avg_volume": 839458, "avg_volume_lots": 839, "median_volume_lots": 477, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.77, "wave_median_pct": 12.6, "wave_max_pct": 23.0, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.3, "peak_max_gap": 4, "peak_is_spread": false}, {"symbol": "1515", "stock_name": "力山", "market": "TWSE", "current_price": 22.15, "all_time_high": 61.2, "drop_from_high_pct": 63.8, "peak_months": 11, "highest_peak": 61.2, "multiplier_actual": 2.8, "avg_volume": 348498, "avg_volume_lots": 348, "median_volume_lots": 344, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.31, "wave_median_pct": 13.7, "wave_max_pct": 25.9, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2239", "stock_name": "英利-KY", "market": "TWSE", "current_price": 22.5, "all_time_high": 85.3, "drop_from_high_pct": 73.6, "peak_months": 17, "highest_peak": 85.3, "multiplier_actual": 3.8, "avg_volume": 103983, "avg_volume_lots": 103, "median_volume_lots": 74, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.8, "wave_median_pct": 18.4, "wave_max_pct": 38.5, "wave_active_months": 10, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "6216", "stock_name": "居易", "market": "TWSE", "current_price": 22.55, "all_time_high": 53.9, "drop_from_high_pct": 58.2, "peak_months": 6, "highest_peak": 53.9, "multiplier_actual": 2.4, "avg_volume": 176542, "avg_volume_lots": 176, "median_volume_lots": 226, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.46, "wave_median_pct": 9.4, "wave_max_pct": 19.6, "wave_active_months": 2, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "9945", "stock_name": "潤泰新", "market": "TWSE", "current_price": 23.4, "all_time_high": 53.8, "drop_from_high_pct": 56.5, "peak_months": 7, "highest_peak": 53.8, "multiplier_actual": 2.3, "avg_volume": 7010811, "avg_volume_lots": 7010, "median_volume_lots": 6967, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.05, "wave_median_pct": 7.8, "wave_max_pct": 21.8, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3557", "stock_name": "嘉威", "market": "TWSE", "current_price": 24.5, "all_time_high": 81.9, "drop_from_high_pct": 70.1, "peak_months": 26, "highest_peak": 81.9, "multiplier_actual": 3.3, "avg_volume": 106654, "avg_volume_lots": 106, "median_volume_lots": 124, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.67, "wave_median_pct": 13.2, "wave_max_pct": 30.1, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2457", "stock_name": "飛宏", "market": "TWSE", "current_price": 25.05, "all_time_high": 87.0, "drop_from_high_pct": 71.2, "peak_months": 13, "highest_peak": 87.0, "multiplier_actual": 3.5, "avg_volume": 2948118, "avg_volume_lots": 2948, "median_volume_lots": 2694, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.9, "wave_median_pct": 17.8, "wave_max_pct": 47.6, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1442", "stock_name": "名軒", "market": "TWSE", "current_price": 26.15, "all_time_high": 88.0, "drop_from_high_pct": 70.3, "peak_months": 18, "highest_peak": 88.0, "multiplier_actual": 3.4, "avg_volume": 670315, "avg_volume_lots": 670, "median_volume_lots": 455, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.82, "wave_median_pct": 17.5, "wave_max_pct": 41.3, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "8422", "stock_name": "可寧衛*", "market": "TWSE", "current_price": 26.3, "all_time_high": 256.0, "drop_from_high_pct": 89.7, "peak_months": 30, "highest_peak": 256.0, "multiplier_actual": 9.7, "avg_volume": 13419900, "avg_volume_lots": 13419, "median_volume_lots": 7711, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.65, "wave_median_pct": 13.4, "wave_max_pct": 1050.6, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2201", "stock_name": "裕隆", "market": "TWSE", "current_price": 26.8, "all_time_high": 94.5, "drop_from_high_pct": 71.6, "peak_months": 19, "highest_peak": 94.5, "multiplier_actual": 3.5, "avg_volume": 3490221, "avg_volume_lots": 3490, "median_volume_lots": 2612, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.79, "wave_median_pct": 14.2, "wave_max_pct": 40.3, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1587", "stock_name": "吉茂", "market": "TWSE", "current_price": 28.3, "all_time_high": 81.8, "drop_from_high_pct": 65.4, "peak_months": 6, "highest_peak": 81.8, "multiplier_actual": 2.9, "avg_volume": 491687, "avg_volume_lots": 491, "median_volume_lots": 383, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.8, "wave_median_pct": 22.9, "wave_max_pct": 38.4, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 4.2, "peak_max_gap": 16, "peak_is_spread": true}, {"symbol": "2371", "stock_name": "大同", "market": "TWSE", "current_price": 28.4, "all_time_high": 68.0, "drop_from_high_pct": 58.2, "peak_months": 5, "highest_peak": 68.0, "multiplier_actual": 2.4, "avg_volume": 16645508, "avg_volume_lots": 16645, "median_volume_lots": 16916, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.0, "wave_median_pct": 18.5, "wave_max_pct": 32.8, "wave_active_months": 7, "wave_total_months": 12, "peak_avg_gap": 2.8, "peak_max_gap": 8, "peak_is_spread": false}, {"symbol": "4164", "stock_name": "承業醫", "market": "TWSE", "current_price": 28.6, "all_time_high": 72.3, "drop_from_high_pct": 60.4, "peak_months": 13, "highest_peak": 72.3, "multiplier_actual": 2.5, "avg_volume": 994854, "avg_volume_lots": 994, "median_volume_lots": 848, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.93, "wave_median_pct": 14.2, "wave_max_pct": 19.8, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.8, "peak_max_gap": 10, "peak_is_spread": false}, {"symbol": "6743", "stock_name": "安普新", "market": "TWSE", "current_price": 28.9, "all_time_high": 81.8, "drop_from_high_pct": 64.7, "peak_months": 9, "highest_peak": 81.8, "multiplier_actual": 2.8, "avg_volume": 445817, "avg_volume_lots": 445, "median_volume_lots": 458, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.96, "wave_median_pct": 14.2, "wave_max_pct": 25.3, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 2.0, "peak_max_gap": 9, "peak_is_spread": false}, {"symbol": "1225", "stock_name": "福懋油", "market": "TWSE", "current_price": 29.2, "all_time_high": 183.5, "drop_from_high_pct": 84.1, "peak_months": 9, "highest_peak": 183.5, "multiplier_actual": 6.3, "avg_volume": 413591, "avg_volume_lots": 413, "median_volume_lots": 220, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.83, "wave_median_pct": 11.2, "wave_max_pct": 65.0, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1808", "stock_name": "潤隆", "market": "TWSE", "current_price": 29.45, "all_time_high": 139.0, "drop_from_high_pct": 78.8, "peak_months": 17, "highest_peak": 139.0, "multiplier_actual": 4.7, "avg_volume": 1369071, "avg_volume_lots": 1369, "median_volume_lots": 1385, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.11, "wave_median_pct": 12.7, "wave_max_pct": 43.8, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "1522", "stock_name": "堤維西", "market": "TWSE", "current_price": 29.65, "all_time_high": 74.9, "drop_from_high_pct": 60.4, "peak_months": 12, "highest_peak": 74.9, "multiplier_actual": 2.5, "avg_volume": 1136296, "avg_volume_lots": 1136, "median_volume_lots": 1013, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.19, "wave_median_pct": 13.7, "wave_max_pct": 38.8, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2520", "stock_name": "冠德", "market": "TWSE", "current_price": 30.75, "all_time_high": 68.6, "drop_from_high_pct": 55.2, "peak_months": 5, "highest_peak": 68.6, "multiplier_actual": 2.2, "avg_volume": 1759758, "avg_volume_lots": 1759, "median_volume_lots": 1501, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.86, "wave_median_pct": 10.9, "wave_max_pct": 46.3, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.8, "peak_max_gap": 4, "peak_is_spread": false}, {"symbol": "6582", "stock_name": "申豐", "market": "TWSE", "current_price": 30.8, "all_time_high": 76.5, "drop_from_high_pct": 59.7, "peak_months": 7, "highest_peak": 76.5, "multiplier_actual": 2.5, "avg_volume": 117871, "avg_volume_lots": 117, "median_volume_lots": 65, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.56, "wave_median_pct": 14.8, "wave_max_pct": 39.9, "wave_active_months": 6, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "00631L", "stock_name": "元大台灣50正2", "market": "TWSE", "current_price": 31.58, "all_time_high": 542.0, "drop_from_high_pct": 94.2, "peak_months": 35, "highest_peak": 542.0, "multiplier_actual": 17.2, "avg_volume": 134588274, "avg_volume_lots": 134588, "median_volume_lots": 206250, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.58, "wave_median_pct": 16.7, "wave_max_pct": 2431.9, "wave_active_months": 10, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "4545", "stock_name": "銘鈺", "market": "TWSE", "current_price": 31.75, "all_time_high": 78.0, "drop_from_high_pct": 59.3, "peak_months": 4, "highest_peak": 78.0, "multiplier_actual": 2.5, "avg_volume": 240267, "avg_volume_lots": 240, "median_volume_lots": 146, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.66, "wave_median_pct": 19.9, "wave_max_pct": 41.2, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 1.7, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "2468", "stock_name": "華經", "market": "TWSE", "current_price": 33.5, "all_time_high": 86.2, "drop_from_high_pct": 61.1, "peak_months": 4, "highest_peak": 86.2, "multiplier_actual": 2.6, "avg_volume": 784994, "avg_volume_lots": 784, "median_volume_lots": 259, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 0.44, "wave_median_pct": 20.5, "wave_max_pct": 39.5, "wave_active_months": 11, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2524", "stock_name": "京城", "market": "TWSE", "current_price": 34.2, "all_time_high": 139.5, "drop_from_high_pct": 75.5, "peak_months": 7, "highest_peak": 139.5, "multiplier_actual": 4.1, "avg_volume": 118470, "avg_volume_lots": 118, "median_volume_lots": 80, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.91, "wave_median_pct": 12.8, "wave_max_pct": 33.5, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "6243", "stock_name": "迅杰", "market": "TWSE", "current_price": 34.35, "all_time_high": 90.4, "drop_from_high_pct": 62.0, "peak_months": 7, "highest_peak": 90.4, "multiplier_actual": 2.6, "avg_volume": 376687, "avg_volume_lots": 376, "median_volume_lots": 378, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.45, "wave_median_pct": 16.7, "wave_max_pct": 48.6, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 1.2, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "9906", "stock_name": "欣巴巴", "market": "TWSE", "current_price": 35.0, "all_time_high": 237.0, "drop_from_high_pct": 85.2, "peak_months": 20, "highest_peak": 237.0, "multiplier_actual": 6.8, "avg_volume": 213098, "avg_volume_lots": 213, "median_volume_lots": 244, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.03, "wave_median_pct": 17.0, "wave_max_pct": 32.0, "wave_active_months": 10, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "8163", "stock_name": "達方", "market": "TWSE", "current_price": 35.55, "all_time_high": 74.6, "drop_from_high_pct": 52.3, "peak_months": 3, "highest_peak": 74.6, "multiplier_actual": 2.1, "avg_volume": 1865742, "avg_volume_lots": 1865, "median_volume_lots": 1634, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 2.15, "wave_median_pct": 10.4, "wave_max_pct": 38.9, "wave_active_months": 5, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "4935", "stock_name": "茂林-KY", "market": "TWSE", "current_price": 36.6, "all_time_high": 79.5, "drop_from_high_pct": 54.0, "peak_months": 3, "highest_peak": 79.5, "multiplier_actual": 2.2, "avg_volume": 106814, "avg_volume_lots": 106, "median_volume_lots": 88, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.83, "wave_median_pct": 11.8, "wave_max_pct": 34.8, "wave_active_months": 3, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "2392", "stock_name": "正崴", "market": "TWSE", "current_price": 36.9, "all_time_high": 95.4, "drop_from_high_pct": 61.3, "peak_months": 8, "highest_peak": 95.4, "multiplier_actual": 2.6, "avg_volume": 2541292, "avg_volume_lots": 2541, "median_volume_lots": 2743, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.3, "wave_median_pct": 17.2, "wave_max_pct": 37.9, "wave_active_months": 7, "wave_total_months": 12, "peak_avg_gap": 1.1, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "2545", "stock_name": "皇翔", "market": "TWSE", "current_price": 37.3, "all_time_high": 79.4, "drop_from_high_pct": 53.0, "peak_months": 4, "highest_peak": 79.4, "multiplier_actual": 2.1, "avg_volume": 337561, "avg_volume_lots": 337, "median_volume_lots": 326, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.99, "wave_median_pct": 8.5, "wave_max_pct": 35.3, "wave_active_months": 2, "wave_total_months": 12, "peak_avg_gap": 1.3, "peak_max_gap": 2, "peak_is_spread": false}, {"symbol": "1762", "stock_name": "中化生", "market": "TWSE", "current_price": 37.75, "all_time_high": 97.9, "drop_from_high_pct": 61.4, "peak_months": 3, "highest_peak": 97.9, "multiplier_actual": 2.6, "avg_volume": 362965, "avg_volume_lots": 362, "median_volume_lots": 546, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 1.88, "wave_median_pct": 12.1, "wave_max_pct": 48.5, "wave_active_months": 4, "wave_total_months": 12, "peak_avg_gap": 1.0, "peak_max_gap": 1, "peak_is_spread": false}, {"symbol": "3447", "stock_name": "展達", "market": "TWSE", "current_price": 37.9, "all_time_high": 107.0, "drop_from_high_pct": 64.6, "peak_months": 4, "highest_peak": 107.0, "multiplier_actual": 2.8, "avg_volume": 226844, "avg_volume_lots": 226, "median_volume_lots": 211, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.95, "wave_median_pct": 23.2, "wave_max_pct": 42.2, "wave_active_months": 10, "wave_total_months": 12, "peak_avg_gap": 3.3, "peak_max_gap": 6, "peak_is_spread": true}, {"symbol": "2539", "stock_name": "櫻花建", "market": "TWSE", "current_price": 38.4, "all_time_high": 84.9, "drop_from_high_pct": 54.8, "peak_months": 3, "highest_peak": 84.9, "multiplier_actual": 2.2, "avg_volume": 1015335, "avg_volume_lots": 1015, "median_volume_lots": 1430, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "A", "liquidity_issues": [], "volume_trend_ratio": 1.36, "wave_median_pct": 10.5, "wave_max_pct": 40.2, "wave_active_months": 2, "wave_total_months": 12, "peak_avg_gap": 2.0, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "6541", "stock_name": "泰福-KY", "market": "TWSE", "current_price": 38.95, "all_time_high": 82.0, "drop_from_high_pct": 52.5, "peak_months": 6, "highest_peak": 82.0, "multiplier_actual": 2.1, "avg_volume": 427649, "avg_volume_lots": 427, "median_volume_lots": 345, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.96, "wave_median_pct": 17.4, "wave_max_pct": 40.1, "wave_active_months": 9, "wave_total_months": 12, "peak_avg_gap": 4.2, "peak_max_gap": 10, "peak_is_spread": true}, {"symbol": "2748", "stock_name": "雲品", "market": "TWSE", "current_price": 39.3, "all_time_high": 130.0, "drop_from_high_pct": 69.8, "peak_months": 9, "highest_peak": 130.0, "multiplier_actual": 3.3, "avg_volume": 165323, "avg_volume_lots": 165, "median_volume_lots": 138, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.89, "wave_median_pct": 8.6, "wave_max_pct": 16.6, "wave_active_months": 1, "wave_total_months": 12, "peak_avg_gap": 1.2, "peak_max_gap": 3, "peak_is_spread": false}, {"symbol": "6657", "stock_name": "華安", "market": "TWSE", "current_price": 39.85, "all_time_high": 99.5, "drop_from_high_pct": 59.9, "peak_months": 4, "highest_peak": 99.5, "multiplier_actual": 2.5, "avg_volume": 299467, "avg_volume_lots": 299, "median_volume_lots": 191, "zero_volume_days_20d": 0, "zero_volume_days_5d": 0, "liquidity_grade": "B", "liquidity_issues": [], "volume_trend_ratio": 0.69, "wave_median_pct": 17.9, "wave_max_pct": 41.1, "wave_active_months": 8, "wave_total_months": 12, "peak_avg_gap": 7.0, "peak_max_gap": 19, "peak_is_spread": true}];
 
 const tbody = document.getElementById('tableBody');
 const allRows = tbody ? Array.from(tbody.rows) : [];
@@ -592,187 +2179,6 @@ function reindex() {
 
 // 頁面載入時初始化
 applyConditions();
-</script>
-
-
-<script>
-// ====== 📊 個股查詢工具 (sl- 獨立區塊) ======
-const SL_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "8454": "富邦媒", "0050": "元大台灣50", "2882": "國泰金", "2881": "富邦金", "2603": "長榮", "2002": "中鋼", "2412": "中華電"};
-const SL_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "8454": "TWSE", "0050": "TWSE", "2882": "TWSE", "2881": "TWSE", "2603": "TWSE", "2002": "TWSE", "2412": "TWSE"};
-const SL_NAME2CODE = {};
-for (const [c, n] of Object.entries(SL_NAMES)) { if (n) SL_NAME2CODE[n] = c; }
-let _slChart = null;
-
-function _slCalcMA(closes, n) {
-  if (!closes || closes.length < n) return null;
-  const slice = closes.slice(-n).filter(c => c != null && !isNaN(c));
-  if (slice.length === 0) return null;
-  return slice.reduce((a, b) => a + b, 0) / slice.length;
-}
-
-function _slToast(msg) {
-  const t = document.getElementById('slToast');
-  if (!t) return;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-function _slCopy(cmd) {
-  navigator.clipboard.writeText(cmd).then(
-    () => _slToast('已複製「' + cmd + '」貼到 Discord'),
-    () => _slToast('複製失敗,請手動打: ' + cmd)
-  );
-}
-
-function _slLookupCode(input) {
-  if (/^\d{4,6}$/.test(input)) return input;
-  if (SL_NAME2CODE[input]) return SL_NAME2CODE[input];
-  const matches = Object.entries(SL_NAMES).filter(([c, n]) => n && n.includes(input)).slice(0, 8);
-  return matches.length === 1 ? matches[0][0] : null;
-}
-
-function _slSuggestNames(input) {
-  if (!input || /^\d/.test(input)) return [];
-  return Object.entries(SL_NAMES).filter(([c, n]) => n && n.includes(input)).slice(0, 8);
-}
-
-async function slLookup() {
-  const inp = document.getElementById('slInput');
-  const btn = document.getElementById('slBtn');
-  const resultDiv = document.getElementById('slResult');
-  const suggestDiv = document.getElementById('slSuggest');
-  const q = (inp.value || '').trim();
-  suggestDiv.style.display = 'none';
-  if (!q) { resultDiv.style.display = 'block'; resultDiv.innerHTML = '<div class="sl-err">請輸入代號或中文名</div>'; return; }
-
-  if (!/^\d/.test(q)) {
-    const matches = _slSuggestNames(q);
-    if (matches.length > 1) {
-      suggestDiv.style.display = 'block';
-      suggestDiv.innerHTML = matches.map(([c, n]) =>
-        '<div class="sl-suggest-item" onclick="document.getElementById('slInput').value=''+c+'';slLookup();">' + c + ' ' + n + '</div>'
-      ).join('');
-      resultDiv.style.display = 'none';
-      return;
-    } else if (matches.length === 0) {
-      resultDiv.style.display = 'block';
-      resultDiv.innerHTML = '<div class="sl-err">找不到「' + q + '」,確認名稱或改用代號</div>';
-      return;
-    }
-  }
-
-  const code = _slLookupCode(q);
-  if (!code) { resultDiv.style.display = 'block'; resultDiv.innerHTML = '<div class="sl-err">無法識別「' + q + '」</div>'; return; }
-
-  btn.disabled = true;
-  btn.textContent = '查詢中...';
-  resultDiv.style.display = 'block';
-  resultDiv.innerHTML = '<div style="color:var(--text2);">⏳ 抓 Yahoo Finance 即時報價 + 3 個月走勢...</div>';
-
-  let data = null, timestamps = null, closes = null, actualSymbol = null;
-  for (const suffix of ['.TW', '.TWO']) {
-    const symbol = code + suffix;
-    try {
-      const resp = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/' + symbol + '?interval=1d&range=3mo');
-      if (!resp.ok) continue;
-      const j = await resp.json();
-      const r = j && j.chart && j.chart.result && j.chart.result[0];
-      if (r && r.meta && r.meta.regularMarketPrice) {
-        data = r.meta;
-        timestamps = r.timestamp || [];
-        closes = (r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close) || [];
-        actualSymbol = symbol;
-        break;
-      }
-    } catch (e) { /* try next */ }
-  }
-  btn.disabled = false;
-  btn.textContent = '查詢';
-
-  if (!data) {
-    resultDiv.innerHTML = '<div class="sl-err">找不到 ' + code + ' 的即時報價(可能停牌/興櫃/Yahoo 無資料)</div>';
-    return;
-  }
-
-  const name = SL_NAMES[code] || '(無名稱)';
-  const marketLbl = ({ TWSE: '上市', TPEX: '上櫃', ESB: '興櫃' })[SL_MARKET[code]] || '';
-  const price = data.regularMarketPrice;
-  const prevClose = (data.chartPreviousClose != null ? data.chartPreviousClose : (data.previousClose != null ? data.previousClose : price));
-  const change = price - prevClose;
-  const changePct = (change / prevClose) * 100;
-  const upDown = change >= 0 ? 'sl-up' : 'sl-down';
-  const sign = change >= 0 ? '+' : '';
-  const dayHi = data.regularMarketDayHigh != null ? data.regularMarketDayHigh : '-';
-  const dayLo = data.regularMarketDayLow != null ? data.regularMarketDayLow : '-';
-  const vol = data.regularMarketVolume != null ? data.regularMarketVolume : '-';
-  const w52Hi = data.fiftyTwoWeekHigh != null ? data.fiftyTwoWeekHigh : '-';
-  const w52Lo = data.fiftyTwoWeekLow != null ? data.fiftyTwoWeekLow : '-';
-  const fmt = function(v) { return (typeof v === 'number') ? v.toLocaleString('zh-TW', {maximumFractionDigits: 2}) : v; };
-
-  const ma20 = _slCalcMA(closes, 20);
-  const ma60 = _slCalcMA(closes, 60);
-  const ma20D = ma20 != null ? fmt(ma20) : '-';
-  const ma60D = ma60 != null ? fmt(ma60) : '-';
-  const ma20C = (ma20 != null) ? (price > ma20 ? 'sl-up' : 'sl-down') : '';
-  const ma60C = (ma60 != null) ? (price > ma60 ? 'sl-up' : 'sl-down') : '';
-  let pos52 = '-';
-  if (typeof w52Hi === 'number' && typeof w52Lo === 'number' && w52Hi > w52Lo) {
-    pos52 = (((price - w52Lo) / (w52Hi - w52Lo)) * 100).toFixed(1) + '%';
-  }
-
-  resultDiv.innerHTML =
-    '<div class="sl-head">' +
-      '<div><span class="sl-name">' + name + '</span><span class="sl-code">' + actualSymbol + (marketLbl ? ' · ' + marketLbl : '') + '</span></div>' +
-      '<div class="sl-price ' + upDown + '">' + fmt(price) + ' <span style="font-size:1.1rem;">(' + sign + fmt(change) + ' ' + sign + changePct.toFixed(2) + '%)</span></div>' +
-    '</div>' +
-    '<div class="sl-stats">' +
-      '<div class="sl-stat"><div class="lbl">前收</div><div class="val">' + fmt(prevClose) + '</div></div>' +
-      '<div class="sl-stat"><div class="lbl">日高</div><div class="val">' + fmt(dayHi) + '</div></div>' +
-      '<div class="sl-stat"><div class="lbl">日低</div><div class="val">' + fmt(dayLo) + '</div></div>' +
-      '<div class="sl-stat"><div class="lbl">成交量</div><div class="val">' + (typeof vol === 'number' ? Math.round(vol/1000).toLocaleString()+' 張' : vol) + '</div></div>' +
-      '<div class="sl-stat"><div class="lbl">52w 高</div><div class="val">' + fmt(w52Hi) + '</div></div>' +
-      '<div class="sl-stat"><div class="lbl">52w 低</div><div class="val">' + fmt(w52Lo) + '</div></div>' +
-    '</div>' +
-    '<div class="sl-tech">' +
-      '<div class="sl-tech-item"><div class="lbl">MA20(月均)</div><div class="val ' + ma20C + '">' + ma20D + '</div></div>' +
-      '<div class="sl-tech-item"><div class="lbl">MA60(季均)</div><div class="val ' + ma60C + '">' + ma60D + '</div></div>' +
-      '<div class="sl-tech-item"><div class="lbl">52 週位階</div><div class="val">' + pos52 + '</div></div>' +
-    '</div>' +
-    '<div class="sl-chart-wrap"><canvas id="slChartCanvas"></canvas></div>' +
-    '<div class="sl-actions">' +
-      '<button class="sl-action-btn" onclick="_slCopy('!angela 基本面 ' + code + '')">📊 基本面分析(複製)</button>' +
-      '<button class="sl-action-btn" onclick="_slCopy('!angela 籌碼 ' + code + '')">💰 籌碼分析(複製)</button>' +
-      '<button class="sl-action-btn" onclick="_slCopy('!angela 深度分析 ' + code + '')">🔬 深度分析(複製)</button>' +
-    '</div>';
-
-  setTimeout(() => {
-    const canvas = document.getElementById('slChartCanvas');
-    if (!canvas || !window.Chart) return;
-    if (_slChart) { _slChart.destroy(); _slChart = null; }
-    const labels = timestamps.map(t => new Date(t * 1000).toLocaleDateString('zh-TW', {month: 'numeric', day: 'numeric'}));
-    _slChart = new Chart(canvas, {
-      type: 'line',
-      data: { labels: labels, datasets: [{ label: name, data: closes.map(c => c == null ? null : c),
-        borderColor: change >= 0 ? '#d63031' : '#00b894',
-        backgroundColor: change >= 0 ? 'rgba(214,48,49,0.1)' : 'rgba(0,184,148,0.1)',
-        fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-        scales: { x: { ticks: { color: '#8b8fa3', font: { size: 10 }, maxTicksLimit: 6 }, grid: { display: false } },
-                  y: { ticks: { color: '#8b8fa3', font: { size: 10 } }, grid: { color: 'rgba(139,143,163,0.1)' } } } }
-    });
-  }, 50);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  const inp = document.getElementById('slInput');
-  if (inp) {
-    inp.addEventListener('keyup', function(e) { if (e.key === 'Enter') slLookup(); });
-    const params = new URLSearchParams(window.location.search);
-    const preset = params.get('stock');
-    if (preset) { inp.value = preset; slLookup(); inp.scrollIntoView({behavior: 'smooth'}); }
-  }
-});
 </script>
 </body>
 </html>
