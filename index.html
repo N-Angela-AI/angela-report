@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angela AI — 個股查詢 + 潛力股推薦</title>
+<title>Angela AI — 低價潛力股推薦</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -26,95 +26,6 @@
     line-height: 1.6;
     padding: 0;
   }
-
-  /* ---- Quote Widget(即時股價查詢) ---- */
-  .quote-widget {
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 1.5rem;
-  }
-  .quote-row {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .quote-row input {
-    flex: 1;
-    min-width: 250px;
-    padding: 0.6rem 0.9rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 0.95rem;
-  }
-  .quote-row input:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-  .quote-row button {
-    padding: 0.6rem 1.4rem;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: opacity 0.2s;
-  }
-  .quote-row button:hover { opacity: 0.85; }
-  .quote-row button:disabled { opacity: 0.5; cursor: wait; }
-  .quote-hint { color: var(--text2); font-size: 0.85rem; }
-  .quote-suggest {
-    margin-top: 0.5rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    max-height: 220px;
-    overflow-y: auto;
-  }
-  .quote-suggest-item {
-    padding: 0.5rem 0.9rem;
-    cursor: pointer;
-    border-bottom: 1px solid var(--border);
-  }
-  .quote-suggest-item:last-child { border-bottom: none; }
-  .quote-suggest-item:hover { background: var(--card); }
-  .quote-result {
-    margin-top: 0.8rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem 1.2rem;
-  }
-  .quote-result .qr-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.6rem;
-  }
-  .quote-result .qr-name { font-size: 1.2rem; font-weight: 700; }
-  .quote-result .qr-code { color: var(--text2); margin-left: 0.5rem; font-size: 0.95rem; }
-  .quote-result .qr-price { font-size: 1.8rem; font-weight: 700; }
-  .quote-result .qr-change-up { color: var(--red); }
-  .quote-result .qr-change-down { color: var(--green); }
-  .quote-result .qr-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.6rem;
-    margin-top: 0.8rem;
-  }
-  .quote-result .qr-stat {
-    background: var(--card);
-    padding: 0.5rem 0.7rem;
-    border-radius: 6px;
-  }
-  .quote-result .qr-stat .lbl { color: var(--text2); font-size: 0.78rem; }
-  .quote-result .qr-stat .val { font-size: 0.95rem; font-weight: 600; margin-top: 0.15rem; }
-  .quote-result .qr-err { color: var(--orange); font-size: 0.9rem; }
 
   /* ---- Header ---- */
   .header {
@@ -318,6 +229,96 @@
     text-decoration: underline;
   }
 
+  /* ============================================================ */
+  /* 📊 獨立區塊:個股查詢工具 (sl- prefix,不污染上方) */
+  /* ============================================================ */
+  .sl-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 3rem 1.5rem 2rem;
+    opacity: 0.6;
+  }
+  .sl-section {
+    background: linear-gradient(135deg, #131520 0%, #1a1530 100%);
+    margin: 0 1.5rem 2rem;
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .sl-section-header { margin-bottom: 1.5rem; text-align: center; }
+  .sl-section-header h2 { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem; }
+  .sl-section-sub { color: var(--text2); font-size: 0.85rem; }
+  .sl-search { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .sl-search input {
+    flex: 1; padding: 0.7rem 1rem; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-size: 0.95rem;
+  }
+  .sl-search input:focus { outline: none; border-color: var(--accent); }
+  .sl-search button {
+    padding: 0.7rem 1.6rem; background: var(--accent); color: white;
+    border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
+  }
+  .sl-search button:hover { opacity: 0.85; }
+  .sl-search button:disabled { opacity: 0.5; cursor: wait; }
+  .sl-suggest {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; max-height: 220px; overflow-y: auto; margin-bottom: 0.5rem;
+  }
+  .sl-suggest-item { padding: 0.5rem 0.9rem; cursor: pointer; border-bottom: 1px solid var(--border); }
+  .sl-suggest-item:hover { background: var(--card); }
+  .sl-suggest-item:last-child { border-bottom: none; }
+  .sl-result {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.2rem; margin-top: 1rem;
+  }
+  .sl-result .sl-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem;
+    padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+  }
+  .sl-result .sl-name { font-size: 1.3rem; font-weight: 700; }
+  .sl-result .sl-code { color: var(--text2); margin-left: 0.5rem; font-size: 0.95rem; }
+  .sl-result .sl-price { font-size: 2rem; font-weight: 700; }
+  .sl-result .sl-up { color: var(--red); }
+  .sl-result .sl-down { color: var(--green); }
+  .sl-result .sl-stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.6rem; margin-bottom: 1rem;
+  }
+  .sl-result .sl-stat { background: var(--card); padding: 0.6rem 0.8rem; border-radius: 6px; }
+  .sl-result .sl-stat .lbl { color: var(--text2); font-size: 0.78rem; }
+  .sl-result .sl-stat .val { font-size: 1rem; font-weight: 600; margin-top: 0.2rem; }
+  .sl-result .sl-tech {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .sl-result .sl-tech-item {
+    background: rgba(108, 92, 231, 0.1); padding: 0.5rem 0.8rem;
+    border-radius: 6px; border-left: 3px solid var(--accent);
+  }
+  .sl-result .sl-tech-item .lbl { color: var(--text2); font-size: 0.78rem; }
+  .sl-result .sl-tech-item .val { font-size: 1rem; font-weight: 600; margin-top: 0.15rem; }
+  .sl-result .sl-chart-wrap {
+    background: var(--card); padding: 0.7rem; border-radius: 8px;
+    height: 200px; margin-bottom: 1rem;
+  }
+  .sl-result .sl-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .sl-result .sl-action-btn {
+    padding: 0.5rem 1rem; background: var(--card);
+    border: 1px solid var(--accent); color: var(--accent);
+    border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
+  }
+  .sl-result .sl-action-btn:hover { background: var(--accent); color: white; }
+  .sl-result .sl-err { color: var(--orange); font-size: 0.95rem; padding: 0.5rem; }
+  .sl-toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: white; padding: 0.6rem 1.4rem;
+    border-radius: 999px; font-size: 0.9rem; opacity: 0;
+    transition: opacity 0.3s; pointer-events: none; z-index: 9999;
+  }
+  .sl-toast.show { opacity: 1; }
+
   /* ---- Footer & Disclaimer ---- */
   .footer {
     text-align: center;
@@ -365,7 +366,7 @@
 
 <div class="header">
   <h1>Angela AI — 低價潛力股推薦 <span class="badge" id="badgeCount">0 支</span></h1>
-  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 01:24 ｜ Powered by Angela Personal Cognitive Butler</div>
+  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 06:16 ｜ Powered by Angela Personal Cognitive Butler</div>
 </div>
 
 <!-- ★ 即時股價查詢 widget(代號或中文名) -->
@@ -606,8 +607,8 @@ applyConditions();
 
 <script>
 // ====== Angela 即時股價查詢 widget (v2 完整版) ======
-const STOCK_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2891": "中信金", "2884": "玉山金", "2885": "元大金", "2603": "長榮", "2609": "陽明", "2615": "萬海", "2002": "中鋼", "1301": "台塑", "1303": "南亞", "2207": "和泰車", "2912": "統一超", "1216": "統一", "2357": "華碩", "2382": "廣達", "2376": "技嘉", "3008": "大立光", "2379": "瑞昱", "3034": "聯詠", "3711": "日月光投控", "2303": "聯電", "6505": "台塑化", "8454": "富邦媒", "2474": "可成", "2105": "正新", "1101": "台泥", "1102": "亞泥", "2880": "華南金", "2886": "兆豐金", "2887": "台新金", "2890": "永豐金", "2892": "第一金", "5880": "合庫金", "2823": "中壽", "0050": "元大台灣50", "0056": "元大高股息", "006208": "富邦台50", "00878": "國泰永續高股息", "00713": "元大台灣高息低波", "00919": "群益台灣精選高息", "2618": "長榮航", "2610": "華航", "1605": "華新", "2356": "英業達"};
-const STOCK_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2891": "TWSE", "2884": "TWSE", "2885": "TWSE", "2603": "TWSE", "2609": "TWSE", "2615": "TWSE", "2002": "TWSE", "1301": "TWSE", "1303": "TWSE", "2207": "TWSE", "2912": "TWSE", "1216": "TWSE", "2357": "TWSE", "2382": "TWSE", "2376": "TWSE", "3008": "TWSE", "2379": "TWSE", "3034": "TWSE", "3711": "TWSE", "2303": "TWSE", "6505": "TWSE", "8454": "TWSE", "2474": "TWSE", "2105": "TWSE", "1101": "TWSE", "1102": "TWSE", "2880": "TWSE", "2886": "TWSE", "2887": "TWSE", "2890": "TWSE", "2892": "TWSE", "5880": "TWSE", "2823": "TWSE", "0050": "TWSE", "0056": "TWSE", "006208": "TWSE", "00878": "TWSE", "00713": "TWSE", "00919": "TWSE", "2618": "TWSE", "2610": "TWSE", "1605": "TWSE", "2356": "TWSE"};
+const STOCK_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2603": "長榮", "2002": "中鋼", "8454": "富邦媒", "0050": "元大台灣50", "0056": "元大高股息", "2382": "廣達", "1216": "統一", "2207": "和泰車"};
+const STOCK_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2603": "TWSE", "2002": "TWSE", "8454": "TWSE", "0050": "TWSE", "0056": "TWSE", "2382": "TWSE", "1216": "TWSE", "2207": "TWSE"};
 
 // 反向 mapping(中文名 → 代號)
 const NAME_TO_CODE = {};
