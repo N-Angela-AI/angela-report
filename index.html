@@ -366,18 +366,7 @@
 
 <div class="header">
   <h1>Angela AI — 低價潛力股推薦 <span class="badge" id="badgeCount">0 支</span></h1>
-  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 06:16 ｜ Powered by Angela Personal Cognitive Butler</div>
-</div>
-
-<!-- ★ 即時股價查詢 widget(代號或中文名) -->
-<div class="quote-widget" id="quoteWidget">
-  <div class="quote-row">
-    <input type="text" id="quoteInput" placeholder="輸入代號(2330)或中文名(台積電)按 Enter" autocomplete="off" />
-    <button id="quoteBtn" onclick="lookupQuote()">查詢</button>
-    <span class="quote-hint">即時報價 by Yahoo Finance</span>
-  </div>
-  <div id="quoteSuggest" class="quote-suggest" style="display:none;"></div>
-  <div id="quoteResult" class="quote-result" style="display:none;"></div>
+  <div class="sub">每週六 00:00 自動更新 ｜ 掃描時間：2026-06-04 06:18 ｜ Powered by Angela Personal Cognitive Butler</div>
 </div>
 
 <!-- ★ 互動式篩選條件 -->
@@ -831,6 +820,185 @@ document.addEventListener('DOMContentLoaded', function() {
       lookupQuote();
       inp.scrollIntoView({behavior: 'smooth'});
     }
+  }
+});
+</script>
+<script>
+// ====== 📊 個股查詢工具 (sl- 獨立區塊) ======
+const SL_NAMES = {"2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2412": "中華電", "2308": "台達電", "2882": "國泰金", "2881": "富邦金", "2603": "長榮", "2002": "中鋼", "8454": "富邦媒", "0050": "元大台灣50", "0056": "元大高股息", "2382": "廣達", "1216": "統一", "2207": "和泰車"};
+const SL_MARKET = {"2330": "TWSE", "2317": "TWSE", "2454": "TWSE", "2412": "TWSE", "2308": "TWSE", "2882": "TWSE", "2881": "TWSE", "2603": "TWSE", "2002": "TWSE", "8454": "TWSE", "0050": "TWSE", "0056": "TWSE", "2382": "TWSE", "1216": "TWSE", "2207": "TWSE"};
+const SL_NAME2CODE = {};
+for (const [c, n] of Object.entries(SL_NAMES)) { if (n) SL_NAME2CODE[n] = c; }
+let _slChart = null;
+
+function _slCalcMA(closes, n) {
+  if (!closes || closes.length < n) return null;
+  const slice = closes.slice(-n).filter(c => c != null && !isNaN(c));
+  if (slice.length === 0) return null;
+  return slice.reduce((a, b) => a + b, 0) / slice.length;
+}
+
+function _slToast(msg) {
+  const t = document.getElementById('slToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function _slCopy(cmd) {
+  navigator.clipboard.writeText(cmd).then(
+    () => _slToast('已複製「' + cmd + '」貼到 Discord'),
+    () => _slToast('複製失敗,請手動打: ' + cmd)
+  );
+}
+
+function _slLookupCode(input) {
+  if (/^\d{4,6}$/.test(input)) return input;
+  if (SL_NAME2CODE[input]) return SL_NAME2CODE[input];
+  const matches = Object.entries(SL_NAMES).filter(([c, n]) => n && n.includes(input)).slice(0, 8);
+  return matches.length === 1 ? matches[0][0] : null;
+}
+
+function _slSuggestNames(input) {
+  if (!input || /^\d/.test(input)) return [];
+  return Object.entries(SL_NAMES).filter(([c, n]) => n && n.includes(input)).slice(0, 8);
+}
+
+async function slLookup() {
+  const inp = document.getElementById('slInput');
+  const btn = document.getElementById('slBtn');
+  const resultDiv = document.getElementById('slResult');
+  const suggestDiv = document.getElementById('slSuggest');
+  const q = (inp.value || '').trim();
+  suggestDiv.style.display = 'none';
+  if (!q) { resultDiv.style.display = 'block'; resultDiv.innerHTML = '<div class="sl-err">請輸入代號或中文名</div>'; return; }
+
+  if (!/^\d/.test(q)) {
+    const matches = _slSuggestNames(q);
+    if (matches.length > 1) {
+      suggestDiv.style.display = 'block';
+      suggestDiv.innerHTML = matches.map(([c, n]) =>
+        '<div class="sl-suggest-item" onclick="document.getElementById('slInput').value=''+c+'';slLookup();">' + c + ' ' + n + '</div>'
+      ).join('');
+      resultDiv.style.display = 'none';
+      return;
+    } else if (matches.length === 0) {
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = '<div class="sl-err">找不到「' + q + '」,確認名稱或改用代號</div>';
+      return;
+    }
+  }
+
+  const code = _slLookupCode(q);
+  if (!code) { resultDiv.style.display = 'block'; resultDiv.innerHTML = '<div class="sl-err">無法識別「' + q + '」</div>'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '查詢中...';
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '<div style="color:var(--text2);">⏳ 抓 Yahoo Finance 即時報價 + 3 個月走勢...</div>';
+
+  let data = null, timestamps = null, closes = null, actualSymbol = null;
+  for (const suffix of ['.TW', '.TWO']) {
+    const symbol = code + suffix;
+    try {
+      const resp = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/' + symbol + '?interval=1d&range=3mo');
+      if (!resp.ok) continue;
+      const j = await resp.json();
+      const r = j && j.chart && j.chart.result && j.chart.result[0];
+      if (r && r.meta && r.meta.regularMarketPrice) {
+        data = r.meta;
+        timestamps = r.timestamp || [];
+        closes = (r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close) || [];
+        actualSymbol = symbol;
+        break;
+      }
+    } catch (e) { /* try next */ }
+  }
+  btn.disabled = false;
+  btn.textContent = '查詢';
+
+  if (!data) {
+    resultDiv.innerHTML = '<div class="sl-err">找不到 ' + code + ' 的即時報價(可能停牌/興櫃/Yahoo 無資料)</div>';
+    return;
+  }
+
+  const name = SL_NAMES[code] || '(無名稱)';
+  const marketLbl = ({ TWSE: '上市', TPEX: '上櫃', ESB: '興櫃' })[SL_MARKET[code]] || '';
+  const price = data.regularMarketPrice;
+  const prevClose = (data.chartPreviousClose != null ? data.chartPreviousClose : (data.previousClose != null ? data.previousClose : price));
+  const change = price - prevClose;
+  const changePct = (change / prevClose) * 100;
+  const upDown = change >= 0 ? 'sl-up' : 'sl-down';
+  const sign = change >= 0 ? '+' : '';
+  const dayHi = data.regularMarketDayHigh != null ? data.regularMarketDayHigh : '-';
+  const dayLo = data.regularMarketDayLow != null ? data.regularMarketDayLow : '-';
+  const vol = data.regularMarketVolume != null ? data.regularMarketVolume : '-';
+  const w52Hi = data.fiftyTwoWeekHigh != null ? data.fiftyTwoWeekHigh : '-';
+  const w52Lo = data.fiftyTwoWeekLow != null ? data.fiftyTwoWeekLow : '-';
+  const fmt = function(v) { return (typeof v === 'number') ? v.toLocaleString('zh-TW', {maximumFractionDigits: 2}) : v; };
+
+  const ma20 = _slCalcMA(closes, 20);
+  const ma60 = _slCalcMA(closes, 60);
+  const ma20D = ma20 != null ? fmt(ma20) : '-';
+  const ma60D = ma60 != null ? fmt(ma60) : '-';
+  const ma20C = (ma20 != null) ? (price > ma20 ? 'sl-up' : 'sl-down') : '';
+  const ma60C = (ma60 != null) ? (price > ma60 ? 'sl-up' : 'sl-down') : '';
+  let pos52 = '-';
+  if (typeof w52Hi === 'number' && typeof w52Lo === 'number' && w52Hi > w52Lo) {
+    pos52 = (((price - w52Lo) / (w52Hi - w52Lo)) * 100).toFixed(1) + '%';
+  }
+
+  resultDiv.innerHTML =
+    '<div class="sl-head">' +
+      '<div><span class="sl-name">' + name + '</span><span class="sl-code">' + actualSymbol + (marketLbl ? ' · ' + marketLbl : '') + '</span></div>' +
+      '<div class="sl-price ' + upDown + '">' + fmt(price) + ' <span style="font-size:1.1rem;">(' + sign + fmt(change) + ' ' + sign + changePct.toFixed(2) + '%)</span></div>' +
+    '</div>' +
+    '<div class="sl-stats">' +
+      '<div class="sl-stat"><div class="lbl">前收</div><div class="val">' + fmt(prevClose) + '</div></div>' +
+      '<div class="sl-stat"><div class="lbl">日高</div><div class="val">' + fmt(dayHi) + '</div></div>' +
+      '<div class="sl-stat"><div class="lbl">日低</div><div class="val">' + fmt(dayLo) + '</div></div>' +
+      '<div class="sl-stat"><div class="lbl">成交量</div><div class="val">' + (typeof vol === 'number' ? Math.round(vol/1000).toLocaleString()+' 張' : vol) + '</div></div>' +
+      '<div class="sl-stat"><div class="lbl">52w 高</div><div class="val">' + fmt(w52Hi) + '</div></div>' +
+      '<div class="sl-stat"><div class="lbl">52w 低</div><div class="val">' + fmt(w52Lo) + '</div></div>' +
+    '</div>' +
+    '<div class="sl-tech">' +
+      '<div class="sl-tech-item"><div class="lbl">MA20(月均)</div><div class="val ' + ma20C + '">' + ma20D + '</div></div>' +
+      '<div class="sl-tech-item"><div class="lbl">MA60(季均)</div><div class="val ' + ma60C + '">' + ma60D + '</div></div>' +
+      '<div class="sl-tech-item"><div class="lbl">52 週位階</div><div class="val">' + pos52 + '</div></div>' +
+    '</div>' +
+    '<div class="sl-chart-wrap"><canvas id="slChartCanvas"></canvas></div>' +
+    '<div class="sl-actions">' +
+      '<button class="sl-action-btn" onclick="_slCopy('!angela 基本面 ' + code + '')">📊 基本面分析(複製)</button>' +
+      '<button class="sl-action-btn" onclick="_slCopy('!angela 籌碼 ' + code + '')">💰 籌碼分析(複製)</button>' +
+      '<button class="sl-action-btn" onclick="_slCopy('!angela 深度分析 ' + code + '')">🔬 深度分析(複製)</button>' +
+    '</div>';
+
+  setTimeout(() => {
+    const canvas = document.getElementById('slChartCanvas');
+    if (!canvas || !window.Chart) return;
+    if (_slChart) { _slChart.destroy(); _slChart = null; }
+    const labels = timestamps.map(t => new Date(t * 1000).toLocaleDateString('zh-TW', {month: 'numeric', day: 'numeric'}));
+    _slChart = new Chart(canvas, {
+      type: 'line',
+      data: { labels: labels, datasets: [{ label: name, data: closes.map(c => c == null ? null : c),
+        borderColor: change >= 0 ? '#d63031' : '#00b894',
+        backgroundColor: change >= 0 ? 'rgba(214,48,49,0.1)' : 'rgba(0,184,148,0.1)',
+        fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { ticks: { color: '#8b8fa3', font: { size: 10 }, maxTicksLimit: 6 }, grid: { display: false } },
+                  y: { ticks: { color: '#8b8fa3', font: { size: 10 } }, grid: { color: 'rgba(139,143,163,0.1)' } } } }
+    });
+  }, 50);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const inp = document.getElementById('slInput');
+  if (inp) {
+    inp.addEventListener('keyup', function(e) { if (e.key === 'Enter') slLookup(); });
+    const params = new URLSearchParams(window.location.search);
+    const preset = params.get('stock');
+    if (preset) { inp.value = preset; slLookup(); inp.scrollIntoView({behavior: 'smooth'}); }
   }
 });
 </script>
